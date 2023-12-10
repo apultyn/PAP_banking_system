@@ -53,6 +53,20 @@ public class ConnectionManager {
         }
     }
 
+    public void registerTransaction(Transaction newTransaction) throws SQLException{
+        String sqlInsert = "INSERT INTO users (transaction_id, title, amount, date, " +
+                "type, sender_id, reciever_id) values (?, ?, ?, ?, ?, ?, ?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
+        preparedStatement.setInt(1, newTransaction.getTransactionId());
+        preparedStatement.setString(2, newTransaction.getTitle());
+        preparedStatement.setFloat(3, newTransaction.getAmount());
+        preparedStatement.setDate(4, newTransaction.getDate());
+        preparedStatement.setInt(5, newTransaction.getType());
+        preparedStatement.setInt(6, newTransaction.getSourceId());
+        preparedStatement.setInt(7, newTransaction.getTargetId());
+        preparedStatement.executeUpdate();
+    }
+
     public List<Transaction> findTransactionsBySender(int sender_id) throws SQLException {
         String sqlQuery = "SELECT * FROM transactions "+
                 "WHERE accounts_account_id = " + sender_id;
