@@ -1,21 +1,23 @@
 package banking_app.classes;
 
-import java.sql.Connection;
+import connections.ConnectionManager;
+
+import java.sql.Date;
+import java.sql.SQLException;
 
 public class Transaction
 {
-    private int transactionId, day, month, year, sourceId, targetId;
+    private int transactionId, sourceId, targetId;
     private float amount;
-    private char type;
+    private int type;
     private String title;
 
-    public Transaction(int transactionId, int day, int month,
-                       int year, int sourceId, int targetId,
-                       float amount, char type, String title){
+    private Date date;
+
+    public Transaction(int transactionId, int sourceId, int targetId,
+                       Date date, float amount, int type, String title){
         this.transactionId = transactionId;
-        this.year = year;
-        this.day = day;
-        this.month = month;
+        this.date = date;
         this.sourceId = sourceId;
         this.targetId = targetId;
         this.amount = amount;
@@ -25,20 +27,14 @@ public class Transaction
     public int getTransactionId(){
         return transactionId;
     }
-    public int getDay() {
-        return day;
-    }
-    public int getMonth() {
-        return month;
-    }
-    public int getYear() {
-        return year;
-    }
     public int getSourceId() {
         return sourceId;
     }
     public int getTargetId() {
         return targetId;
+    }
+    public Date getDate() {
+        return date;
     }
     public float getAmount() {
         return amount;
@@ -46,12 +42,11 @@ public class Transaction
     public String getTitle() {
         return title;
     }
-    public char getType() {
+    public int getType() {
         return type;
     }
-    public String registerTransaction(Connection connection) {
-        //save to bd
-        return "Successfuly regirested transaction" + transactionId;
+    public static void registerTransaction(ConnectionManager connectionManager, Transaction newTransaction) throws SQLException {
+        connectionManager.registerTransaction(newTransaction);
     }
 
 }
