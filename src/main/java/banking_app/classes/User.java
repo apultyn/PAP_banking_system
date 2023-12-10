@@ -1,5 +1,9 @@
 package banking_app.classes;
 
+import connections.ConnectionManager;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class User {
@@ -17,6 +21,21 @@ public class User {
         this.surname = surname;
         this.email = email;
         this.password = password;
+    }
+
+//    public User(String name, String surname, String email, String password) {
+//        this.name = name;
+//        this.surname = surname;
+//        this.email = email;
+//        this.password = password;
+//    }
+
+    public User(ResultSet resultSet) throws SQLException {
+        this(resultSet.getInt("user_id"),
+                resultSet.getString("name"),
+                resultSet.getString("surname"),
+                resultSet.getString("email"),
+                resultSet.getString("password"));
     }
 
     public int getId() {
@@ -60,6 +79,24 @@ public class User {
             System.out.print("Repeat your password: ");
         System.out.println(name + " " + surname + " " + email + " " + password);
         return new User(currId++, name, surname, email, password);
+    }
+
+    public static User login(ConnectionManager manager) throws SQLException {
+        String email;
+        String password;
+        User user;
+        System.out.print("Wprowadź e-mail: ");
+        email = scanner.next();
+        System.out.print("Wprowadź hasło: ");
+        password = scanner.next();
+        while ((user = manager.findUser(email)) == null || !password.equals(user.getPassword())) {
+            System.out.println("Niepoprawne dane, spróbój ponownie");
+            System.out.print("Wprowadź e-mail: ");
+            email = scanner.next();
+            System.out.print("Wprowadź hasło: ");
+            password = scanner.next();
+        };
+        return user;
     }
 }
 

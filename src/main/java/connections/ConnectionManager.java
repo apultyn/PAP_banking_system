@@ -1,8 +1,8 @@
 package connections;
 
 
+import banking_app.classes.User;
 import banking_app.classes.Transaction;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +29,18 @@ public class ConnectionManager {
         }
         return "Worked";
     }
+
+    public void registerUser(User newUser) throws SQLException {
+
+        String sqlInsert = "INSERT INTO users (name, surname, email, password) values (?, ?, ?, ?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
+        preparedStatement.setString(1, newUser.getName());
+        preparedStatement.setString(2, newUser.getSurname());
+        preparedStatement.setString(3, newUser.getEmail());
+        preparedStatement.setString(4, newUser.getPassword());
+        preparedStatement.executeUpdate();
+
+
     public List<Transaction> findTransactionsByReciever(int reciever_id) throws SQLException {
         String sqlQuery = "SELECT * FROM transactions" +
                 "WHERE reciver_id = " + reciever_id + ";";
@@ -37,7 +49,6 @@ public class ConnectionManager {
                 List<Transaction> outcome = new ArrayList<Transaction>();
                 while (resultSet.next()) {
                     int transactionId = resultSet.getInt("transaction_id");
-
                     int sourceId = resultSet.getInt("sender_id");
                     int targetId = resultSet.getInt("reciver_id");
                     float amount = resultSet.getFloat("amount");
@@ -52,6 +63,16 @@ public class ConnectionManager {
             }
         }
     }
+
+    public User findUser(String email) throws SQLException {
+        String sqlQuerry = "SELECT * FROM users WHERE email = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlQuerry);
+        preparedStatement.setString(1, email);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        if (resultSet.next()) {
+            return new User(resultSet);
+        }
+        return null;
 
     public void registerTransaction(Transaction newTransaction) throws SQLException{
         String sqlInsert = "INSERT INTO users (transaction_id, title, amount, date, " +
@@ -117,5 +138,4 @@ public class ConnectionManager {
             }
         }
     }
-
 }
