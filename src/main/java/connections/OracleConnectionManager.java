@@ -30,4 +30,5 @@ public class OracleConnectionManager {
         return DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
     }
 
+
 }

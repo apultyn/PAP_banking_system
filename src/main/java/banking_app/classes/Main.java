@@ -10,6 +10,7 @@ public class Main {
         User user = User.login(manager);
         System.out.println(user.getName());
         String outcome = manager.example();
-        System.out.println(outcome);
+        Transaction newTransaction  = new Transaction(3, 4, 32.00f, "Pierwszy");
+        Transaction.registerTransaction(manager, newTransaction);
     }
 }
