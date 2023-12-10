@@ -39,7 +39,7 @@ public class User {
         return password;
     }
 
-    public static void register() {
+    public static User register() {
         EmailValidator emailValidator = new EmailValidator();
         PasswordValidator passwordValidator = new PasswordValidator();
         System.out.println("Welcome to our bank!");
@@ -59,10 +59,7 @@ public class User {
         while (!scanner.nextLine().equals(password))
             System.out.print("Repeat your password: ");
         System.out.println(name + " " + surname + " " + email + " " + password);
-    }
-
-    public static void main(String[] args) {
-        register();
+        return new User(currId++, name, surname, email, password);
     }
 }
 
