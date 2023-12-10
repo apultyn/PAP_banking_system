@@ -31,15 +31,15 @@ public class ConnectionManager {
     }
     public List<Transaction> findTransactionsByReciever(int reciever_id) throws SQLException {
         String sqlQuery = "SELECT * FROM transactions" +
-                "WHERE ACCOUNTS_ACCOUNT_ID2 = " + reciever_id;
+                "WHERE reciver_id = " + reciever_id + ";";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 List<Transaction> outcome = new ArrayList<Transaction>();
                 while (resultSet.next()) {
                     int transactionId = resultSet.getInt("transaction_id");
 
-                    int sourceId = resultSet.getInt("senger_id");
-                    int targetId = resultSet.getInt("reciever_id");
+                    int sourceId = resultSet.getInt("sender_id");
+                    int targetId = resultSet.getInt("reciver_id");
                     float amount = resultSet.getFloat("amount");
                     Date date = resultSet.getDate("date");
                     int type = resultSet.getInt("type");
@@ -55,7 +55,7 @@ public class ConnectionManager {
 
     public void registerTransaction(Transaction newTransaction) throws SQLException{
         String sqlInsert = "INSERT INTO users (transaction_id, title, amount, date, " +
-                "type, sender_id, reciever_id) values (?, ?, ?, ?, ?, ?, ?)";
+                "type, sender_id, reciver_id) values (?, ?, ?, ?, ?, ?, ?);";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
         preparedStatement.setInt(1, newTransaction.getTransactionId());
         preparedStatement.setString(2, newTransaction.getTitle());
@@ -69,7 +69,7 @@ public class ConnectionManager {
 
     public List<Transaction> findTransactionsBySender(int sender_id) throws SQLException {
         String sqlQuery = "SELECT * FROM transactions "+
-                "WHERE accounts_account_id = " + sender_id;
+                "WHERE sender_id = " + sender_id + ";";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)){
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -77,8 +77,8 @@ public class ConnectionManager {
                 while (resultSet.next()){
                     int transactionId = resultSet.getInt("transaction_id");
                     Date transactionDate =  resultSet.getDate("date");
-                    int sourceId = resultSet.getInt("senger_id");
-                    int targetId = resultSet.getInt("reciever_id");
+                    int sourceId = resultSet.getInt("sender_id");
+                    int targetId = resultSet.getInt("reciver_id");
                     Date date = resultSet.getDate("date");
                     float amount = resultSet.getFloat("amount");
                     int type = resultSet.getInt("type");
@@ -91,4 +91,31 @@ public class ConnectionManager {
             }
         }
     }
+
+    public List<Transaction> findTransactionsByUser(int user_id) throws SQLException {
+        String sqlQuery = "SELECT * FROM transactions "+
+                "WHERE sender_id= " + user_id + " OR reciver_id=" + user_id +
+                " ORDER BY date DESC;";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)){
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                List<Transaction> outcome = new ArrayList<Transaction>();
+                while (resultSet.next()){
+                    int transactionId = resultSet.getInt("transaction_id");
+                    Date transactionDate =  resultSet.getDate("date");
+                    int sourceId = resultSet.getInt("sender_id");
+                    int targetId = resultSet.getInt("reciver_id");
+                    Date date = resultSet.getDate("date");
+                    float amount = resultSet.getFloat("amount");
+                    int type = resultSet.getInt("type");
+                    String title = resultSet.getString("title");
+                    Transaction newTransaction = new Transaction(transactionId, sourceId,
+                            targetId, date, amount, type, title);
+                    outcome.add(newTransaction);
+                }
+                return outcome;
+            }
+        }
+    }
+
 }

@@ -1,7 +1,9 @@
 package banking_app.classes;
 
-import java.sql.Connection;
+import connections.ConnectionManager;
+
 import java.sql.Date;
+import java.sql.SQLException;
 
 public class Transaction
 {
@@ -43,9 +45,8 @@ public class Transaction
     public int getType() {
         return type;
     }
-    public String registerTransaction(Connection connection) {
-        //save to bd
-        return "Successfuly regirested transaction" + transactionId;
+    public static void registerTransaction(ConnectionManager connectionManager, Transaction newTransaction) throws SQLException {
+        connectionManager.registerTransaction(newTransaction);
     }
 
 }
