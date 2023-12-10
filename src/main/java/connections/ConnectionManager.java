@@ -35,7 +35,6 @@ public class ConnectionManager {
     }
 
     public void registerUser(User newUser) throws SQLException {
-
         String sqlInsert = "INSERT INTO users (name, surname, email, password) values (?, ?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
         preparedStatement.setString(1, newUser.getName());
@@ -43,7 +42,7 @@ public class ConnectionManager {
         preparedStatement.setString(3, newUser.getEmail());
         preparedStatement.setString(4, newUser.getPassword());
         preparedStatement.executeUpdate();
-
+    }
 
     public List<Transaction> findTransactionsByReciever(int reciever_id) throws SQLException {
         String sqlQuery = "SELECT * FROM transactions" +
@@ -78,6 +77,7 @@ public class ConnectionManager {
         }
         return null;
 
+    }
     public void registerTransaction(Transaction newTransaction) throws SQLException{
         String sqlInsert = "INSERT INTO transactions (transaction_id, title, amount, date_made, type, sender_id, reciver_id) values (?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
