@@ -43,4 +43,15 @@ public class ConnectionManager {
 
     }
 
+    public User findUser(String email) throws SQLException {
+        String sqlQuerry = "SELECT * FROM users WHERE email = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlQuerry);
+        preparedStatement.setString(1, email);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        if (resultSet.next()) {
+            return new User(resultSet);
+        }
+        return null;
+    }
+
 }
