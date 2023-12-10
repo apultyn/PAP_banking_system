@@ -35,7 +35,7 @@ public class ConnectionManager {
     }
     public List<Transaction> findTransactionsByReciever(int reciever_id) throws SQLException {
         String sqlQuery = "SELECT * FROM transactions" +
-                "WHERE reciver_id = " + reciever_id + ";";
+                "WHERE reciver_id = " + reciever_id;
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 List<Transaction> outcome = new ArrayList<Transaction>();
@@ -45,7 +45,7 @@ public class ConnectionManager {
                     int sourceId = resultSet.getInt("sender_id");
                     int targetId = resultSet.getInt("reciver_id");
                     float amount = resultSet.getFloat("amount");
-                    Date date = resultSet.getDate("date");
+                    Date date = resultSet.getDate("date_made");
                     int type = resultSet.getInt("type");
                     String title = resultSet.getString("title");
                     Transaction newTransaction = new Transaction(transactionId, sourceId,
@@ -58,29 +58,28 @@ public class ConnectionManager {
     }
 
     public void registerTransaction(Transaction newTransaction) throws SQLException{
-        String sqlInsert = "INSERT INTO transactions (title, amount, date, " +
-                "type, sender_id, reciver_id) values (?, ?, ?, ?, ?, ?);";
+        String sqlInsert = "INSERT INTO transactions (transaction_id, title, amount, date_made, type, sender_id, reciver_id) values (?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
-        //preparedStatement.setInt(1, newTransaction.getTransactionId());
-        preparedStatement.setString(1, newTransaction.getTitle());
-        preparedStatement.setFloat(2, newTransaction.getAmount());
-        preparedStatement.setDate(3, newTransaction.getDate());
-        preparedStatement.setInt(4, newTransaction.getType());
-        preparedStatement.setInt(5, newTransaction.getSourceId());
-        preparedStatement.setInt(6, newTransaction.getTargetId());
+        preparedStatement.setNull(1, java.sql.Types.INTEGER);
+        preparedStatement.setString(2, newTransaction.getTitle());
+        preparedStatement.setFloat(3, newTransaction.getAmount());
+        preparedStatement.setDate(4, newTransaction.getDate());
+        preparedStatement.setInt(5, newTransaction.getType());
+        preparedStatement.setInt(6, newTransaction.getSourceId());
+        preparedStatement.setInt(7, newTransaction.getTargetId());
         preparedStatement.executeUpdate();
     }
 
     public List<Transaction> findTransactionsBySender(int sender_id) throws SQLException {
         String sqlQuery = "SELECT * FROM transactions "+
-                "WHERE sender_id = " + sender_id + ";";
+                "WHERE sender_id = " + sender_id;
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)){
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 List<Transaction> outcome = new ArrayList<Transaction>();
                 while (resultSet.next()){
                     int transactionId = resultSet.getInt("transaction_id");
-                    Date transactionDate =  resultSet.getDate("date");
+                    Date transactionDate =  resultSet.getDate("date_made");
                     int sourceId = resultSet.getInt("sender_id");
                     int targetId = resultSet.getInt("reciver_id");
                     Date date = resultSet.getDate("date");
@@ -99,14 +98,14 @@ public class ConnectionManager {
     public List<Transaction> findTransactionsByUser(int user_id) throws SQLException {
         String sqlQuery = "SELECT * FROM transactions "+
                 "WHERE sender_id= " + user_id + " OR reciver_id=" + user_id +
-                " ORDER BY date DESC;";
+                " ORDER BY date DESC";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)){
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 List<Transaction> outcome = new ArrayList<Transaction>();
                 while (resultSet.next()){
                     int transactionId = resultSet.getInt("transaction_id");
-                    Date transactionDate =  resultSet.getDate("date");
+                    Date transactionDate =  resultSet.getDate("date_made");
                     int sourceId = resultSet.getInt("sender_id");
                     int targetId = resultSet.getInt("reciver_id");
                     Date date = resultSet.getDate("date");
