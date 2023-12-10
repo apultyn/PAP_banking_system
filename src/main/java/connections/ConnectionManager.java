@@ -14,6 +14,10 @@ public class ConnectionManager {
     public ConnectionManager() throws SQLException {
         connection = OracleConnectionManager.getConnection();
     }
+
+    public void Close() throws SQLException{
+        connection.close();
+    }
     public String example() throws SQLException {
 
         String sqlQuery = "SELECT * FROM users";
@@ -54,16 +58,16 @@ public class ConnectionManager {
     }
 
     public void registerTransaction(Transaction newTransaction) throws SQLException{
-        String sqlInsert = "INSERT INTO users (transaction_id, title, amount, date, " +
-                "type, sender_id, reciver_id) values (?, ?, ?, ?, ?, ?, ?);";
+        String sqlInsert = "INSERT INTO transactions (title, amount, date, " +
+                "type, sender_id, reciver_id) values (?, ?, ?, ?, ?, ?);";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
-        preparedStatement.setInt(1, newTransaction.getTransactionId());
-        preparedStatement.setString(2, newTransaction.getTitle());
-        preparedStatement.setFloat(3, newTransaction.getAmount());
-        preparedStatement.setDate(4, newTransaction.getDate());
-        preparedStatement.setInt(5, newTransaction.getType());
-        preparedStatement.setInt(6, newTransaction.getSourceId());
-        preparedStatement.setInt(7, newTransaction.getTargetId());
+        //preparedStatement.setInt(1, newTransaction.getTransactionId());
+        preparedStatement.setString(1, newTransaction.getTitle());
+        preparedStatement.setFloat(2, newTransaction.getAmount());
+        preparedStatement.setDate(3, newTransaction.getDate());
+        preparedStatement.setInt(4, newTransaction.getType());
+        preparedStatement.setInt(5, newTransaction.getSourceId());
+        preparedStatement.setInt(6, newTransaction.getTargetId());
         preparedStatement.executeUpdate();
     }
 

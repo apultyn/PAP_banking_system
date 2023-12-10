@@ -34,6 +34,18 @@ public class Transaction
         this.type = type;
         this.title = title;
     }
+
+    public Transaction(int sourceId, int targetId,  float amount, String title)
+    {
+        this.transactionId = 0;
+        long mils = System.currentTimeMillis();
+        this.date = new Date(mils);
+        this.sourceId = sourceId;
+        this.targetId = targetId;
+        this.amount = amount;
+        this.type = 1;
+        this.title = title;
+    }
     public int getTransactionId(){
         return transactionId;
     }
@@ -56,7 +68,7 @@ public class Transaction
         return type;
     }
 
-    public static Transaction getFromConsole(ConnectionManager connectionManager, Account sender) throws SQLException {
+    public static Transaction getFromConsole(ConnectionManager connectionManager, int sender) throws SQLException {
         Scanner sc = new Scanner(System.in);
         System.out.println("Podaj nr rachunku odbiorcy otzymujcego");
         int reciever_acc_id = Integer.parseInt(sc.next());
@@ -64,9 +76,7 @@ public class Transaction
         float amount = Float.parseFloat( sc.next());
         System.out.println("Tytul");
         String title = sc.next();
-        long mils = System.currentTimeMillis();
-        Date date = new Date(mils);
-        Transaction newTransaction = new Transaction(sender.getUserId(), reciever_acc_id, date, amount, 1, title);
+        Transaction newTransaction = new Transaction(sender, reciever_acc_id, amount, title);
         registerTransaction(connectionManager, newTransaction);
         return newTransaction;
     }
