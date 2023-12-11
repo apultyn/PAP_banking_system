@@ -1,6 +1,7 @@
 package connections;
 
 
+import banking_app.classes.Account;
 import banking_app.classes.Transaction;
 import banking_app.classes.User;
 
@@ -78,6 +79,16 @@ public class ConnectionManager {
         }
         return null;
 
+    }
+    public Account findAccount(int accountId) throws SQLException {
+        String sqlQuerry = "SELECT * FROM accounts WHERE account_id = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlQuerry);
+        preparedStatement.setInt(1, accountId);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        if (resultSet.next()) {
+            return new Account(resultSet);
+        }
+        return null;
     }
     public void registerTransaction(Transaction newTransaction) throws SQLException{
         String sqlInsert = "INSERT INTO transactions (transaction_id, title, amount, date_made, type, sender_id, reciver_id) values (?, ?, ?, ?, ?, ?, ?)";
