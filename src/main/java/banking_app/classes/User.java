@@ -163,15 +163,14 @@ public class User {
                 System.out.print("Wprowadź nazwę nowego konta: ");
                 String name = scanner.nextLine();
                 BigDecimal limit;
-                System.out.print("Wpisz limit pojedynczej transakcji (pozostaw puste jeśli nie chcesz go ustawiać): ");
+                System.out.print("Wpisz limit pojedynczej transakcji: ");
                 String limitAns = scanner.nextLine();
                 if (!limitAns.isBlank()) {
                     limit = new BigDecimal(limitAns);
                     manager.createAccount(name, limit, this.getId());
                     break;
                 } else {
-                    manager.createAccount(name, this.getId());
-                    break;
+                    throw new NumberFormatException("");
                 }
             } catch (SQLIntegrityConstraintViolationException e) {
                 System.out.println("Już masz konto o tej nazwie");

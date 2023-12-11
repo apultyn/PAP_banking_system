@@ -11,6 +11,7 @@ public class Main {
         User user = manager.findUser("danielek@op.pl");
         user.createAccount(manager);
 //        user.makeTransaction(manager);
+//        user.makeTransaction(manager);
         //manager.registerTransaction("Przecinek5", 8999009.25f, 1, 1000000000000003L, 1000000000000003L);
 //        User.register(manager);
         //Menu menu = new Menu(manager);
