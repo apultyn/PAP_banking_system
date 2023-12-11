@@ -5,7 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Account {
-    private final int accountId;
+    private final long accountId;
     private String name;
     private float transactionLimit;
     private final Date dateCreated;
@@ -13,7 +13,7 @@ public class Account {
 
     private final float balance;
 
-    public Account(int accountId, String name, float transactionLimit,
+    public Account(long accountId, String name, float transactionLimit,
                    Date dateCreated, int userId, float balance) {
         this.accountId = accountId;
         this.name = name;
@@ -25,7 +25,7 @@ public class Account {
 
     public Account(ResultSet resultSet) throws SQLException {
 
-        this(resultSet.getInt("account_id"),
+        this(resultSet.getLong("account_id"),
                 resultSet.getString("name"),
                 resultSet.getFloat("transaction_limit"),
                 resultSet.getDate("creation_date"),
@@ -33,7 +33,7 @@ public class Account {
                 resultSet.getFloat("balance"));
     }
 
-    public int getAccountId() {
+    public long getAccountId() {
         return accountId;
     }
 

@@ -28,7 +28,7 @@ public class TransactionHistory {
         System.out.println("Rachunek numer: " + account.getName());
 
         for(Transaction transaction: transactions) {
-            if (transaction.getSourceId() == user.getId()) {
+            if (transaction.getSourceId() == this.accountId) {
                 sign = "-";
             } else {
                 sign = "+";

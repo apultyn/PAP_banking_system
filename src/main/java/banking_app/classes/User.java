@@ -114,7 +114,7 @@ public class User {
         System.out.print("Wprowadź hasło: ");
         password = scanner.nextLine();
         while ((user = manager.findUser(email)) == null || !password.equals(user.getPassword())) {
-            System.out.println("Niepoprawne dane, spróbój ponownie");
+            System.out.println("Niepoprawne dane, wprowadź ponownie");
             System.out.print("Wprowadź e-mail: ");
             email = scanner.nextLine();
             System.out.print("Wprowadź hasło: ");
@@ -122,5 +122,48 @@ public class User {
         }
         return user;
     }
+
+    public static boolean amountIsInRange(float a, float b, float x) {
+        return (x > a && x <= b);
+    }
+    public static boolean isFloat(String num)
+    {
+        try{
+            Float.parseFloat(num);
+            return true;
+        } catch (NumberFormatException e){
+            return false;
+        }
+    }
+    public void makeTransaction(ConnectionManager manager) throws SQLException {
+        System.out.print("Na rachunek: ");
+        String input;
+        while (!(input = scanner.nextLine()).matches("\\d{16}")) {
+            System.out.print("Numer rachunku musi się składać z 16 cyfr, wprowadź ponownie: ");
+        }
+        long targetAccountId = Long.parseLong(input);
+
+        System.out.print("Z rachunku: ");
+        while (!(input = scanner.nextLine()).matches("\\d{16}")) {
+            System.out.print("Numer rachunku musi się składać z 16 cyfr, wprowadź ponownie: ");
+        }
+        long sourceAccountId = Long.parseLong(input);
+        Account sourceAccount = manager.findAccount(sourceAccountId);
+        System.out.print("Kwota przelewu: ");
+        float amount;
+        input = scanner.nextLine();
+        while (!isFloat(input) || !amountIsInRange(0, sourceAccount.getTransactionLimit(), Float.parseFloat(input))
+            || sourceAccount.getBalance() < Float.parseFloat(input)) {
+            System.out.print("Niepoprawna kwota, wprowadź ponownie: ");
+            input = scanner.nextLine();
+        }
+        amount = Float.parseFloat(input);
+        System.out.print("Tytuł przelewu: ");
+        String title = scanner.nextLine();
+        manager.registerTransaction(title, amount, 1, sourceAccountId, targetAccountId);
+        manager.addBalance(sourceAccountId, -amount);
+        manager.addBalance(targetAccountId, amount);
+    }
+
 }
 

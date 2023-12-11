@@ -5,7 +5,6 @@ import connections.ConnectionManager;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Scanner;
 
 public class Transaction
 {
@@ -73,23 +72,6 @@ public class Transaction
 
     public static boolean isValidAccountId(ConnectionManager connectionManager, int accountId) throws SQLException{
         return connectionManager.findAccount(accountId) != null;
-    }
-
-    public static void getFromConsole(ConnectionManager connectionManager, Account sender) throws SQLException {
-        Scanner sc = new Scanner(System.in);
-        int reciever_acc_id;
-        do {
-            System.out.println("Podaj nr rachunku odbiorcy otzymujcego");
-            reciever_acc_id = Integer.parseInt(sc.next());
-        } while (isValidAccountId(connectionManager, reciever_acc_id));
-        float amount;
-        do {
-            System.out.println("Podaj kwote do przelania");
-            amount = Float.parseFloat(sc.next());
-        } while (amount < 0 || sender.getTransactionLimit() < amount);
-        System.out.println("Tytul");
-        String title = sc.next();
-        connectionManager.registerTransaction(title, amount, 1, sender.getAccountId(), reciever_acc_id);
     }
 
 }

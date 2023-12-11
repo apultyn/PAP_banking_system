@@ -5,6 +5,7 @@ import banking_app.classes.Account;
 import banking_app.classes.Transaction;
 import banking_app.classes.User;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +47,7 @@ public class ConnectionManager {
         preparedStatement.executeUpdate();
     }
 
-    public List<Transaction> findTransactionsByReciever(int reciever_id) throws SQLException {
+    public List<Transaction> findTransactionsByReciever(long reciever_id) throws SQLException {
         String sqlQuery = "SELECT * FROM transactions" +
                 "WHERE reciver_id = " + reciever_id;
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
@@ -73,10 +74,10 @@ public class ConnectionManager {
 
     }
 
-    public Account findAccount(int accountId) throws SQLException {
+    public Account findAccount(long accountId) throws SQLException {
         String sqlQuerry = "SELECT * FROM accounts WHERE account_id = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlQuerry);
-        preparedStatement.setInt(1, accountId);
+        preparedStatement.setLong(1, accountId);
         ResultSet resultSet = preparedStatement.executeQuery();
         if (resultSet.next()) {
             return new Account(resultSet);
@@ -84,11 +85,11 @@ public class ConnectionManager {
         return null;
     }
 
-    public void createAccount(String name, Float transactionLimit, int ownerId) throws SQLException {
+    public void createAccount(String name, BigDecimal transactionLimit, int ownerId) throws SQLException {
         String sqlInsert = "INSERT INTO accounts (name, transaction_limit, owner_id) values (?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
         preparedStatement.setString(1, name);
-        preparedStatement.setFloat(2, transactionLimit);
+        preparedStatement.setBigDecimal(2, transactionLimit);
         preparedStatement.setInt(3, ownerId);
 
         preparedStatement.executeUpdate();
@@ -112,14 +113,22 @@ public class ConnectionManager {
         return accounts;
     }
 
-    public void registerTransaction(String title, float amount, int type, int sourceId, int targetId) throws SQLException{
-        String sqlInsert = "INSERT INTO transactions (title, amount, type, sender_id, reciver_id) values (?, ?, ?, ?, ?, ?)";
+    public void addBalance(long accountId, float amount) throws SQLException{
+        String sqlQuery = "UPDATE ACCOUNTS SET BALANCE = BALANCE + ? WHERE ACCOUNT_ID = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+        preparedStatement.setFloat(1, amount);
+        preparedStatement.setLong(2, accountId);
+        preparedStatement.executeUpdate();
+    }
+
+    public void registerTransaction(String title, float amount, int type, long sourceId, long targetId) throws SQLException{
+        String sqlInsert = "INSERT INTO transactions (title, amount, type, sender_id, reciver_id) values (?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
-        preparedStatement.setString(2, title);
-        preparedStatement.setFloat(3, amount);
-        preparedStatement.setInt(4, type);
-        preparedStatement.setInt(5, sourceId);
-        preparedStatement.setInt(6, targetId);
+        preparedStatement.setString(1, title);
+        preparedStatement.setFloat(2, amount);
+        preparedStatement.setInt(3, type);
+        preparedStatement.setLong(4, sourceId);
+        preparedStatement.setLong(5, targetId);
         preparedStatement.executeUpdate();
     }
 
@@ -155,4 +164,7 @@ public class ConnectionManager {
             }
         }
     }
+
+//    public List<Transaction> findTransactionsByUser(int id) {
+//    }
 }
