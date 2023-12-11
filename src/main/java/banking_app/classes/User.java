@@ -104,7 +104,7 @@ public class User {
         System.out.print("Wprowadź hasło: ");
         password = scanner.nextLine();
         while ((user = manager.findUser(email)) == null || !password.equals(user.getPassword())) {
-            System.out.println("Niepoprawne dane, spróbój ponownie");
+            System.out.println("Niepoprawne dane, wprowadź ponownie");
             System.out.print("Wprowadź e-mail: ");
             email = scanner.nextLine();
             System.out.print("Wprowadź hasło: ");
@@ -112,5 +112,45 @@ public class User {
         }
         return user;
     }
+
+    private boolean amountIsInRange(float a, float b, float x) {
+        return (x > a && x <= b);
+    }
+
+    public Transaction makeTransaction(ConnectionManager manager) throws SQLException {
+        System.out.print("Na rachunek: ");
+        String input;
+        while (!(input = scanner.nextLine()).matches("\\d{16}")) {
+            System.out.print("Numer rachunku musi się składać z 16 cyfr, wprowadź ponownie: ");
+        }
+        long targetAccountId = Long.parseLong(input);
+
+        System.out.print("Z rachunku: ");
+        while (!(input = scanner.nextLine()).matches("\\d{16}")) {
+            System.out.print("Numer rachunku musi się składać z 16 cyfr, wprowadź ponownie: ");
+        }
+        long sourceAccountId = Long.parseLong(input);
+        Account sourceAccount = manager.findAccount(sourceAccountId);
+        System.out.print("Kwota przlewu: ");
+        float amount;
+//        input = scanner.nextLine();
+        while (!scanner.hasNextFloat() || amountIsInRange(0, sourceAccount.getTransactionLimit(), amount = scanner.nextFloat()) ) {
+            if (!scanner.hasNextFloat()) {
+                System.out.print("Kwota przelewu musi być liczbą, wprowadź ponownie");
+            }
+            else if (Float.parseFloat(input) <= 0) {
+                System.out.print("Kwota przelewu musi być dodatnia, wprowadź ponownie");
+            } else {
+                System.out.print("Przekroczony limit transakcji, wprowadź ponownie");
+            }
+        }
+        amount = Float.parseFloat(input);
+        System.out.print("Tytuł przelewu: ");
+        String title = scanner.nextLine();
+        manager.registerTransaction(title, amount, 1, sourceAccountId, targetAccountId);
+        return null;
+
+    }
+
 }
 

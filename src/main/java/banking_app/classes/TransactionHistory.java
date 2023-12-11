@@ -12,7 +12,7 @@ public class TransactionHistory {
 
     public TransactionHistory(User user, ConnectionManager manager) throws SQLException {
         this.user = user;
-        this.transactions = manager.findTransactionsByUser(user.getId());
+//        this.transactions = manager.findTransactionsByUser(user.getId());
     }
 
     public void printTransactionHistory() {

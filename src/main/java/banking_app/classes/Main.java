@@ -7,14 +7,17 @@ import java.sql.SQLException;
 public class Main {
     public static void main(String[] args) throws SQLException {
         ConnectionManager manager = new ConnectionManager();
+        User user = manager.findUser("danielek@op.pl");
+        user.makeTransaction(manager);
 //        User.register(manager);
 //        Menu menu = new Menu(manager);
 //        menu.menu();
-        //manager.createAccount("Konto Tomka oszczedzanie", 200.0f, 21);
+//        manager.createAccount("Konto główne", 200.0f, 25);
         //System.out.println();
-        manager.findUsersAccounts(21).forEach(a->
-                System.out.println(a.getAccountId())
-        );
+//        manager.findUsersAccounts(21).forEach(a->
+//                System.out.println(a.getAccountId())
+//        );
+//        User.makeTransaction(manager);
 //        User user = User.login(manager);
 //        System.out.println(user.getName());
 //        String outcome = manager.example();

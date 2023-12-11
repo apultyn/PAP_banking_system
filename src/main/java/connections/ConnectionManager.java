@@ -46,7 +46,7 @@ public class ConnectionManager {
         preparedStatement.executeUpdate();
     }
 
-    public List<Transaction> findTransactionsByReciever(int reciever_id) throws SQLException {
+    public List<Transaction> findTransactionsByReciever(long reciever_id) throws SQLException {
         String sqlQuery = "SELECT * FROM transactions" +
                 "WHERE reciver_id = " + reciever_id;
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
@@ -73,10 +73,10 @@ public class ConnectionManager {
 
     }
 
-    public Account findAccount(int accountId) throws SQLException {
+    public Account findAccount(long accountId) throws SQLException {
         String sqlQuerry = "SELECT * FROM accounts WHERE account_id = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlQuerry);
-        preparedStatement.setInt(1, accountId);
+        preparedStatement.setLong(1, accountId);
         ResultSet resultSet = preparedStatement.executeQuery();
         if (resultSet.next()) {
             return new Account(resultSet);
@@ -112,14 +112,14 @@ public class ConnectionManager {
         return accounts;
     }
 
-    public void registerTransaction(String title, float amount, int type, int sourceId, int targetId) throws SQLException{
+    public void registerTransaction(String title, float amount, int type, long sourceId, long targetId) throws SQLException{
         String sqlInsert = "INSERT INTO transactions (title, amount, type, sender_id, reciver_id) values (?, ?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
         preparedStatement.setString(2, title);
         preparedStatement.setFloat(3, amount);
         preparedStatement.setInt(4, type);
-        preparedStatement.setInt(5, sourceId);
-        preparedStatement.setInt(6, targetId);
+        preparedStatement.setLong(5, sourceId);
+        preparedStatement.setLong(6, targetId);
         preparedStatement.executeUpdate();
     }
 
@@ -155,4 +155,7 @@ public class ConnectionManager {
             }
         }
     }
+
+//    public List<Transaction> findTransactionsByUser(int id) {
+//    }
 }
