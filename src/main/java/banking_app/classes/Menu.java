@@ -92,7 +92,7 @@ public class Menu {
 
         switch (choice) {
             case 1 -> {
-                //funkcja logowania
+                //funkcja logowaniaa
                 user = User.login(this.manager);
                 logged=true;
             }
