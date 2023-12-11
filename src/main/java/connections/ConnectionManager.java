@@ -1,8 +1,9 @@
 package connections;
 
 
-import banking_app.classes.User;
 import banking_app.classes.Transaction;
+import banking_app.classes.User;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,13 +35,13 @@ public class ConnectionManager {
         return "Worked";
     }
 
-    public void registerUser(User newUser) throws SQLException {
+    public void registerUser(String name, String surname, String email, String password) throws SQLException {
         String sqlInsert = "INSERT INTO users (name, surname, email, password) values (?, ?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
-        preparedStatement.setString(1, newUser.getName());
-        preparedStatement.setString(2, newUser.getSurname());
-        preparedStatement.setString(3, newUser.getEmail());
-        preparedStatement.setString(4, newUser.getPassword());
+        preparedStatement.setString(1, name);
+        preparedStatement.setString(2, surname);
+        preparedStatement.setString(3, email);
+        preparedStatement.setString(4, password);
         preparedStatement.executeUpdate();
     }
 
