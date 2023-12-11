@@ -36,16 +36,6 @@ public class Transaction
         this.title = title;
     }
 
-    public Transaction(int sourceId, int targetId,  float amount, String title)
-    {
-        long mils = System.currentTimeMillis();
-        this.date = new Date(mils);
-        this.sourceId = sourceId;
-        this.targetId = targetId;
-        this.amount = amount;
-        this.type = 1;
-        this.title = title;
-    }
 
     public Transaction(ResultSet resultSet) throws SQLException {
         this(resultSet.getInt("transaction_id"),
@@ -84,7 +74,7 @@ public class Transaction
         return connectionManager.findAccount(accountId) != null;
     }
 
-    public static Transaction getFromConsole(ConnectionManager connectionManager, int sender) throws SQLException {
+    public static void getFromConsole(ConnectionManager connectionManager, Account sender) throws SQLException {
         Scanner sc = new Scanner(System.in);
         int reciever_acc_id;
         do {
@@ -95,14 +85,10 @@ public class Transaction
         do {
             System.out.println("Podaj kwote do przelania");
             amount = Float.parseFloat(sc.next());
-        } while (amount < 0);
+        } while (amount < 0 || sender.getTransactionLimit() < amount);
         System.out.println("Tytul");
         String title = sc.next();
-        Transaction newTransaction = new Transaction(sender, reciever_acc_id, amount, title);
-        registerTransaction(connectionManager, newTransaction);
-        return newTransaction;
+        connectionManager.registerTransaction(title, amount, 1, sender.getAccountId(), reciever_acc_id);
     }
-    public static void registerTransaction(ConnectionManager connectionManager, Transaction newTransaction) throws SQLException {
-        connectionManager.registerTransaction(newTransaction);
-    }
+
 }
