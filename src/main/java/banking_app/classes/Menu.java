@@ -14,10 +14,11 @@ public class Menu {
         this.manager = manager;
     }
 
-    public int accountsMenu(User user) throws SQLException {
+    public long accountsMenu(User user) throws SQLException {
         int choosenAccountId;
+        long accountId;
         Scanner sc;
-        System.out.println("Wybierz rachunek: ");
+
 
         List<Account> usersAccounts = manager.findUsersAccounts(user.getId());
         List<Integer> accountsIds = new ArrayList<>();
@@ -27,6 +28,8 @@ public class Menu {
             System.out.println(i+1 + ") " + usersAccounts.get(i).getName());
             accountsIds.add(i);
         }
+        System.out.println("Wybierz rachunek: ");
+
         do {
             sc = new Scanner(System.in);
 
@@ -43,7 +46,8 @@ public class Menu {
             }
         } while (!accountsIds.contains(choosenAccountId));
 
-        return  choosenAccountId;
+        accountId = usersAccounts.get(choosenAccountId).getAccountId();
+        return accountId;
 
     }
 
@@ -53,7 +57,7 @@ public class Menu {
         System.out.print("1) Wykonaj przelew \n2) Zobacz historię transakcji \n3) Sprawdź saldo konta \nWybierz cyfrę: ");
         Scanner sc;
         int choice;
-        int account_id;
+        long account_id;
 
         do {
             sc = new Scanner(System.in);
@@ -74,6 +78,7 @@ public class Menu {
         switch (choice) {
             case 1 -> {
                 //funkcja przelewu
+                user.makeTransaction(manager);
                 System.out.println("Przelew");
             }
             case 2-> {

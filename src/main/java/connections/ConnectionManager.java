@@ -154,12 +154,12 @@ public class ConnectionManager {
         }
     }
 
-    public List<Transaction> findTransactionsByAccount(int account_id) throws SQLException {
-        String sqlQuery = "SELECT * FROM transactions "+
-                "WHERE sender_id= " + account_id + " OR reciver_id=" + account_id +
-                " ORDER BY DATE_MADE DESC";
+    public List<Transaction> findTransactionsByAccount(long account_id) throws SQLException {
+        String sqlQuery = "SELECT * FROM transactions WHERE sender_id= ? OR reciver_id= ? ORDER BY DATE_MADE DESC";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)){
+            preparedStatement.setLong(1, account_id);
+            preparedStatement.setLong(2, account_id);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 List<Transaction> outcome = new ArrayList<Transaction>();
                 while (resultSet.next()){
@@ -171,6 +171,4 @@ public class ConnectionManager {
         }
     }
 
-//    public List<Transaction> findTransactionsByUser(int id) {
-//    }
 }

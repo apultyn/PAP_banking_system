@@ -8,14 +8,15 @@ import java.sql.SQLException;
 
 public class Transaction
 {
-    private int transactionId, sourceId, targetId;
+    private int transactionId;
+    private long sourceId, targetId;
     private float amount;
     private int type;
     private String title;
 
     private Date date;
 
-    public Transaction(int transactionId, int sourceId, int targetId,
+    public Transaction(int transactionId, long sourceId, long targetId,
                        Date date, float amount, int type, String title){
         this.transactionId = transactionId;
         this.date = date;
@@ -25,7 +26,7 @@ public class Transaction
         this.type = type;
         this.title = title;
     }
-    public Transaction(int sourceId, int targetId, Date date, float amount, int type, String title)
+    public Transaction(long sourceId, long targetId, Date date, float amount, int type, String title)
     {
         this.date = date;
         this.sourceId = sourceId;
@@ -38,8 +39,8 @@ public class Transaction
 
     public Transaction(ResultSet resultSet) throws SQLException {
         this(resultSet.getInt("transaction_id"),
-                resultSet.getInt("sender_id"),
-                resultSet.getInt("target_id"),
+                resultSet.getLong("sender_id"),
+                resultSet.getLong("reciver_id"),
                 resultSet.getDate("date_made"),
                 resultSet.getFloat("amount"),
                 resultSet.getInt("type"),
@@ -49,10 +50,10 @@ public class Transaction
     public int getTransactionId(){
         return transactionId;
     }
-    public int getSourceId() {
+    public long getSourceId() {
         return sourceId;
     }
-    public int getTargetId() {
+    public long getTargetId() {
         return targetId;
     }
     public Date getDate() {
