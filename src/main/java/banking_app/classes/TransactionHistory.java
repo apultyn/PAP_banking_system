@@ -8,21 +8,27 @@ import java.util.List;
 
 public class TransactionHistory {
     User user;
+    int accountId;
+    ConnectionManager manager;
     private  List<Transaction> transactions;
 
-    public TransactionHistory(User user, ConnectionManager manager) throws SQLException {
+    public TransactionHistory(User user, int accountId, ConnectionManager manager) throws SQLException {
         this.user = user;
-//        this.transactions = manager.findTransactionsByUser(user.getId());
+        this.accountId = accountId;
+        this.transactions = manager.findTransactionsByAccount(accountId);
+        this.manager = manager;
     }
 
-    public void printTransactionHistory() {
+    public void printTransactionHistory() throws SQLException {
         String transactionString;
         String sign;
+        Account account = this.manager.findAccount(this.accountId);
 
-        System.out.println("========= Historia transakcji ============");
+        System.out.println("========= Historia transakcji ===========");
+        System.out.println("Rachunek numer: " + account.getName());
 
         for(Transaction transaction: transactions) {
-            if (transaction.getSourceId() == user.getId()) {
+            if (transaction.getSourceId() == this.accountId) {
                 sign = "-";
             } else {
                 sign = "+";
