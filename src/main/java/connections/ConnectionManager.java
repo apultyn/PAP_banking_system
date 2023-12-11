@@ -1,6 +1,7 @@
 package connections;
 
 
+import banking_app.classes.Account;
 import banking_app.classes.Transaction;
 import banking_app.classes.User;
 
@@ -79,6 +80,35 @@ public class ConnectionManager {
         return null;
 
     }
+
+    public void createAccount(String name, Float transactionLimit, int ownerId) throws SQLException {
+        String sqlInsert = "INSERT INTO accounts (name, transaction_limit, owner_id) values (?, ?, ?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
+        preparedStatement.setString(1, name);
+        preparedStatement.setFloat(2, transactionLimit);
+        preparedStatement.setInt(3, ownerId);
+
+        preparedStatement.executeUpdate();
+
+    }
+
+
+    public List<Account> findUsersAccounts(int user_id) throws SQLException {
+        String sqlQuery = "SELECT * FROM accounts WHERE owner_id = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+        preparedStatement.setInt(1, user_id);
+        List<Account> accounts = new ArrayList<>();
+
+        try (ResultSet resultSet = preparedStatement.executeQuery()) {
+            while (resultSet.next()) {
+                Account account = new Account(resultSet);
+                accounts.add(account);
+            }
+        }
+
+        return accounts;
+    }
+
     public void registerTransaction(Transaction newTransaction) throws SQLException{
         String sqlInsert = "INSERT INTO transactions (transaction_id, title, amount, date_made, type, sender_id, reciver_id) values (?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
