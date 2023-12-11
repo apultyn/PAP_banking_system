@@ -2,8 +2,10 @@ package banking_app.classes;
 
 import connections.ConnectionManager;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Scanner;
 
 public class User {
@@ -155,5 +157,28 @@ public class User {
         manager.addBalance(targetAccountId, amount);
     }
 
+    public void createAccount(ConnectionManager manager) throws SQLException {
+        while (true) {
+            try {
+                System.out.print("Wprowadź nazwę nowego konta: ");
+                String name = scanner.nextLine();
+                BigDecimal limit;
+                System.out.print("Wpisz limit pojedynczej transakcji (pozostaw puste jeśli nie chcesz go ustawiać): ");
+                String limitAns = scanner.nextLine();
+                if (!limitAns.isBlank()) {
+                    limit = new BigDecimal(limitAns);
+                    manager.createAccount(name, limit, this.getId());
+                    break;
+                } else {
+                    manager.createAccount(name, this.getId());
+                    break;
+                }
+            } catch (SQLIntegrityConstraintViolationException e) {
+                System.out.println("Już masz konto o tej nazwie");
+            } catch (NumberFormatException e) {
+                System.out.println("Podaj prawidłową liczbę");
+            }
+        }
+    }
 }
 
