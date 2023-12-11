@@ -113,11 +113,19 @@ public class User {
         return user;
     }
 
-    private boolean amountIsInRange(float a, float b, float x) {
+    public static boolean amountIsInRange(float a, float b, float x) {
         return (x > a && x <= b);
     }
-
-    public Transaction makeTransaction(ConnectionManager manager) throws SQLException {
+    public static boolean isFloat(String num)
+    {
+        try{
+            Float.parseFloat(num);
+            return true;
+        } catch (NumberFormatException e){
+            return false;
+        }
+    }
+    public static Transaction makeTransaction(ConnectionManager manager) throws SQLException {
         System.out.print("Na rachunek: ");
         String input;
         while (!(input = scanner.nextLine()).matches("\\d{16}")) {
@@ -133,21 +141,24 @@ public class User {
         Account sourceAccount = manager.findAccount(sourceAccountId);
         System.out.print("Kwota przlewu: ");
         float amount;
-//        input = scanner.nextLine();
-        while (!scanner.hasNextFloat() || amountIsInRange(0, sourceAccount.getTransactionLimit(), amount = scanner.nextFloat()) ) {
-            if (!scanner.hasNextFloat()) {
-                System.out.print("Kwota przelewu musi być liczbą, wprowadź ponownie");
-            }
-            else if (Float.parseFloat(input) <= 0) {
-                System.out.print("Kwota przelewu musi być dodatnia, wprowadź ponownie");
-            } else {
-                System.out.print("Przekroczony limit transakcji, wprowadź ponownie");
-            }
+        input = scanner.nextLine();
+        while (!isFloat(input) || !amountIsInRange(0, sourceAccount.getTransactionLimit(), Float.parseFloat(input))
+            || sourceAccount.getBalance() < Float.parseFloat(input)) {
+            if (!isFloat(input))
+                System.out.println("Kwota musi byc dodatnia liczba");
+            else if(!amountIsInRange(0, sourceAccount.getTransactionLimit(), Float.parseFloat(input)))
+                System.out.println("Kwota musi byc mniejsza niz limit");
+            else if (sourceAccount.getBalance() < Float.parseFloat(input))
+                System.out.println("Kwota musi byc mniejsza niz balans");
+            input = scanner.nextLine();
         }
         amount = Float.parseFloat(input);
         System.out.print("Tytuł przelewu: ");
         String title = scanner.nextLine();
         manager.registerTransaction(title, amount, 1, sourceAccountId, targetAccountId);
+        // change balance of accounts
+        manager.addBalance(sourceAccountId, -amount);
+        manager.addBalance(targetAccountId, amount);
         return null;
 
     }

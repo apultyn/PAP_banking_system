@@ -112,14 +112,22 @@ public class ConnectionManager {
         return accounts;
     }
 
+    public void addBalance(long accountId, float amount) throws SQLException{
+        String sqlQuery = "UPDATE ACCOUNTS SET BALANCE = BALANCE + ? WHERE ACCOUNT_ID = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+        preparedStatement.setFloat(1, amount);
+        preparedStatement.setLong(2, accountId);
+        preparedStatement.executeUpdate();
+    }
+
     public void registerTransaction(String title, float amount, int type, long sourceId, long targetId) throws SQLException{
-        String sqlInsert = "INSERT INTO transactions (title, amount, type, sender_id, reciver_id) values (?, ?, ?, ?, ?, ?)";
+        String sqlInsert = "INSERT INTO transactions (title, amount, type, sender_id, reciver_id) values (?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
-        preparedStatement.setString(2, title);
-        preparedStatement.setFloat(3, amount);
-        preparedStatement.setInt(4, type);
-        preparedStatement.setLong(5, sourceId);
-        preparedStatement.setLong(6, targetId);
+        preparedStatement.setString(1, title);
+        preparedStatement.setFloat(2, amount);
+        preparedStatement.setInt(3, type);
+        preparedStatement.setLong(4, sourceId);
+        preparedStatement.setLong(5, targetId);
         preparedStatement.executeUpdate();
     }
 
