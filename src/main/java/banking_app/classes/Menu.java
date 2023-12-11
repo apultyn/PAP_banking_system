@@ -51,10 +51,10 @@ public class Menu {
 
     }
 
-    public void userMenu(User user) throws SQLException {
-        String name = user.getName();
-        System.out.println("Witaj, "+ name);
-        System.out.print("1) Wykonaj przelew \n2) Zobacz historię transakcji \n3) Sprawdź saldo konta \nWybierz cyfrę: ");
+    public boolean userMenu(User user, boolean logged) throws SQLException {
+
+        System.out.print("1) Wykonaj przelew \n2) Zobacz historię transakcji \n3) Sprawdź saldo konta " +
+                "\n4) Utwórz nowy rachunek \n5) WYLOGUJ SIĘ\nWybierz cyfrę: ");
         Scanner sc;
         int choice;
         long account_id;
@@ -65,15 +65,15 @@ public class Menu {
             try {
                 choice = Integer.parseInt(sc.next());
 
-                if (choice != 1 && choice != 2) {
-                    System.out.println("Błąd: Wybierz tylko 1, 2 lub 3. Spróbuj ponownie.");
+                if (choice != 1 && choice != 2 && choice != 3 && choice != 4 && choice != 5) {
+                    System.out.println("Błąd: Wybierz tylko 1, 2, 3, 4 lub 5. Spróbuj ponownie.");
                 }
 
             } catch (NumberFormatException e) {
                 System.out.println("Błąd: Wprowadź poprawną liczbę. Spróbuj ponownie.");
                 choice = 0;
             }
-        } while (choice != 1 && choice != 2 && choice != 3);
+        } while (choice != 1 && choice != 2 && choice != 3 & choice != 4 && choice != 5);
 
         switch (choice) {
             case 1 -> {
@@ -85,16 +85,24 @@ public class Menu {
                 //funkcja sprawdzania historii transakcji
                 account_id = accountsMenu(user);
                 TransactionHistory transactionHistory = new TransactionHistory(user, account_id, this.manager);
-                //zabezpieczyc to !!!!!!!!!!!!
                 transactionHistory.printTransactionHistory();
             }
             case 3 -> {
                 //funkcja sprawdzania salda
                 System.out.println("Saldo");
             }
+            case 4 -> {
+                //funkcja tworzenia nowego rachunku
+                user.createAccount(manager);
+                System.out.println("Tworzenie rachunku.");
+            }
+            case 5 -> {
+                System.out.println("Wylogowywanie...");
+                logged = false;
+            }
         }
 
-
+        return logged;
     }
 
     public static int choiceLoop() {
@@ -143,11 +151,19 @@ public class Menu {
             }
         }
 
-        if (logged){
-            userMenu(user);
-            //konto uzytkownika
+        while (logged){
+            String name = user.getName();
+            System.out.println("Witaj, "+ name);
+            logged = userMenu(user, logged);
         }
+        System.out.println("Wylogowano");
     }
 
+    public void mainMenu() throws SQLException {
+        while (true) {
+            System.out.println("\n");
+            menu();
+        }
+    }
     
 }

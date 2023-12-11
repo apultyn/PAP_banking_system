@@ -9,7 +9,7 @@ public class Main {
         ConnectionManager manager = new ConnectionManager();
 
         Menu menu = new Menu(manager);
-        menu.menu();
+        menu.mainMenu();
         
     }
 }
