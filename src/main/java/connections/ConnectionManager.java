@@ -91,9 +91,15 @@ public class ConnectionManager {
         preparedStatement.setString(1, name);
         preparedStatement.setBigDecimal(2, transactionLimit);
         preparedStatement.setInt(3, ownerId);
-
         preparedStatement.executeUpdate();
+    }
 
+    public void createAccount(String name, int ownerId) throws SQLException {
+        String sqlInsert = "INSERT INTO accounts (name, owner_id) values (?, ?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
+        preparedStatement.setString(1, name);
+        preparedStatement.setInt(2, ownerId);
+        preparedStatement.executeUpdate();
     }
 
 
