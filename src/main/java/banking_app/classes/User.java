@@ -14,6 +14,7 @@ public class User {
     private String surname;
     private String email;
     private String password;
+    private List<Account> accounts;
     private static final Scanner scanner = new Scanner(System.in);
 
     public User(int id, String name, String surname, String email, String password) {
@@ -51,6 +52,14 @@ public class User {
 
     public String getPassword() {
         return password;
+    }
+
+    public List<Account> getAccounts() {
+        return accounts;
+    }
+
+    public void loadAccounts(ConnectionManager manager) throws SQLException {
+        manager.findUsersAccounts(this.id);
     }
 
     public static User register(ConnectionManager manager) throws SQLException {

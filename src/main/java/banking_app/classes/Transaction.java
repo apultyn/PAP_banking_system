@@ -63,6 +63,7 @@ public class Transaction
     }
     public String getTitle() {
         return title;
+        //abc
     }
     public int getType() {
         return type;
