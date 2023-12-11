@@ -1,10 +1,19 @@
 package banking_app.classes;
 
+import connections.ConnectionManager;
+
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class Menu {
-    public static void userMenu() {
-        String name = "Jan";
+    ConnectionManager manager;
+
+    public Menu(ConnectionManager manager) {
+        this.manager = manager;
+    }
+
+    public void userMenu(User user) throws SQLException {
+        String name = user.getName();
         System.out.println("Witaj, "+ name);
         System.out.print("1) Wykonaj przelew \n2) Zobacz historię transakcji \n3) Sprawdź saldo konta \nWybierz cyfrę: ");
         Scanner sc;
@@ -33,7 +42,8 @@ public class Menu {
             }
             case 2-> {
                 //funkcja sprawdzania historii transakcji
-                System.out.println("Historia transakcji");
+                TransactionHistory transactionHistory = new TransactionHistory(user, this.manager);
+                transactionHistory.printTransactionHistory();
             }
             case 3 -> {
                 //funkcja sprawdzania salda
@@ -43,9 +53,8 @@ public class Menu {
 
 
     }
-    public static void main(String[] args) {
-        System.out.println("Witamy w naszym banku.\nJeśli posiadasz konto - zaloguj się (1), jeśli nie zarejestruj się (2)");
-        System.out.print("Wybierz liczbę: ");
+
+    public static int choiceLoop() {
         Scanner sc;
         int choice;
         do {
@@ -63,24 +72,39 @@ public class Menu {
                 choice = 0;
             }
         } while (choice != 1 && choice != 2);
+        return choice;
+    }
+
+    public void menu() throws SQLException {
+        System.out.println("Witamy w naszym banku.\nJeśli posiadasz konto - zaloguj się (1), jeśli nie zarejestruj się (2)");
+        System.out.print("Wybierz liczbę: ");
+
 
         boolean logged = false;
+        User user = null;
+        
+        int choice = choiceLoop();
 
         switch (choice) {
             case 1 -> {
                 //funkcja logowania
-                System.out.println("Logujemy się");
+                user = User.login(this.manager);
                 logged=true;
             }
             case 2 -> {
                 //funkcja rejestracji
-                System.out.println("Rejestrujemy się");
+                User.register(this.manager);
+                System.out.println("Teraz się zaloguj.");
+                user = User.login(this.manager);
+                logged=true;
             }
         }
 
         if (logged){
-            userMenu();
+            userMenu(user);
             //konto uzytkownika
         }
     }
+
+    
 }
