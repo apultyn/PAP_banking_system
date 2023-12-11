@@ -3,6 +3,8 @@ package banking_app.classes;
 import connections.ConnectionManager;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Menu {
@@ -10,6 +12,39 @@ public class Menu {
 
     public Menu(ConnectionManager manager) {
         this.manager = manager;
+    }
+
+    public int accountsMenu(User user) throws SQLException {
+        int choosenAccountId;
+        Scanner sc;
+        System.out.println("Wybierz rachunek: ");
+
+        List<Account> usersAccounts = manager.findUsersAccounts(user.getId());
+        List<Integer> accountsIds = new ArrayList<>();
+
+
+        for(int i = 0; i < usersAccounts.size(); i++){
+            System.out.println(i+1 + ") " + usersAccounts.get(i).getName());
+            accountsIds.add(i);
+        }
+        do {
+            sc = new Scanner(System.in);
+
+            try {
+                choosenAccountId = Integer.parseInt(sc.next()) - 1;
+
+                if (!accountsIds.contains(choosenAccountId)) {
+                    System.out.println("Błąd: Wybierz tylko rachunek z listy. Spróbuj ponownie.");
+                }
+
+            } catch (NumberFormatException e) {
+                System.out.println("Błąd: Wprowadź poprawną liczbę. Spróbuj ponownie.");
+                choosenAccountId = 0;
+            }
+        } while (!accountsIds.contains(choosenAccountId));
+
+        return  choosenAccountId;
+
     }
 
     public void userMenu(User user) throws SQLException {
@@ -43,9 +78,7 @@ public class Menu {
             }
             case 2-> {
                 //funkcja sprawdzania historii transakcji
-                System.out.println("Podaj numer rachnku, którego historię chcesz wyświetlić: ");
-                sc = new Scanner(System.in);
-                account_id = Integer.parseInt(sc.next());
+                account_id = accountsMenu(user);
                 TransactionHistory transactionHistory = new TransactionHistory(user, account_id, this.manager);
                 //zabezpieczyc to !!!!!!!!!!!!
                 transactionHistory.printTransactionHistory();
@@ -92,7 +125,7 @@ public class Menu {
 
         switch (choice) {
             case 1 -> {
-                //funkcja logowaniaa
+                //funkcja logowania
                 user = User.login(this.manager);
                 logged=true;
             }
