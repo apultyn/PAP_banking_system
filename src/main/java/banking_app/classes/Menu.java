@@ -18,6 +18,7 @@ public class Menu {
         System.out.print("1) Wykonaj przelew \n2) Zobacz historię transakcji \n3) Sprawdź saldo konta \nWybierz cyfrę: ");
         Scanner sc;
         int choice;
+        int account_id;
 
         do {
             sc = new Scanner(System.in);
@@ -42,7 +43,11 @@ public class Menu {
             }
             case 2-> {
                 //funkcja sprawdzania historii transakcji
-                TransactionHistory transactionHistory = new TransactionHistory(user, this.manager);
+                System.out.println("Podaj numer rachnku, którego historię chcesz wyświetlić: ");
+                sc = new Scanner(System.in);
+                account_id = Integer.parseInt(sc.next());
+                TransactionHistory transactionHistory = new TransactionHistory(user, account_id, this.manager);
+                //zabezpieczyc to !!!!!!!!!!!!
                 transactionHistory.printTransactionHistory();
             }
             case 3 -> {
@@ -94,7 +99,7 @@ public class Menu {
             case 2 -> {
                 //funkcja rejestracji
                 User.register(this.manager);
-                System.out.println("Teraz się zaloguj.");
+                System.out.println("Konto założone pomyślnie. Teraz ZALOGUJ SIĘ.");
                 user = User.login(this.manager);
                 logged=true;
             }
