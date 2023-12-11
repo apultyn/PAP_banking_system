@@ -2,13 +2,15 @@ package banking_app.classes;
 
 import connections.ConnectionManager;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 
 public class Main {
     public static void main(String[] args) throws SQLException {
         ConnectionManager manager = new ConnectionManager();
-        User user = manager.findUser("danielek@op.pl");
-        User.makeTransaction(manager);
+        manager.createAccount("Konto główne", BigDecimal.valueOf(2000.23), 24);
+//        User user = manager.findUser("danielek@op.pl");
+//        user.makeTransaction(manager);
         //manager.registerTransaction("Przecinek5", 8999009.25f, 1, 1000000000000003L, 1000000000000003L);
 //        User.register(manager);
         //Menu menu = new Menu(manager);

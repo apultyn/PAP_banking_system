@@ -125,7 +125,7 @@ public class User {
             return false;
         }
     }
-    public static Transaction makeTransaction(ConnectionManager manager) throws SQLException {
+    public void makeTransaction(ConnectionManager manager) throws SQLException {
         System.out.print("Na rachunek: ");
         String input;
         while (!(input = scanner.nextLine()).matches("\\d{16}")) {
@@ -139,28 +139,20 @@ public class User {
         }
         long sourceAccountId = Long.parseLong(input);
         Account sourceAccount = manager.findAccount(sourceAccountId);
-        System.out.print("Kwota przlewu: ");
+        System.out.print("Kwota przelewu: ");
         float amount;
         input = scanner.nextLine();
         while (!isFloat(input) || !amountIsInRange(0, sourceAccount.getTransactionLimit(), Float.parseFloat(input))
             || sourceAccount.getBalance() < Float.parseFloat(input)) {
-            if (!isFloat(input))
-                System.out.println("Kwota musi byc dodatnia liczba");
-            else if(!amountIsInRange(0, sourceAccount.getTransactionLimit(), Float.parseFloat(input)))
-                System.out.println("Kwota musi byc mniejsza niz limit");
-            else if (sourceAccount.getBalance() < Float.parseFloat(input))
-                System.out.println("Kwota musi byc mniejsza niz balans");
+            System.out.print("Niepoprawna kwota, wprowadź ponownie: ");
             input = scanner.nextLine();
         }
         amount = Float.parseFloat(input);
         System.out.print("Tytuł przelewu: ");
         String title = scanner.nextLine();
         manager.registerTransaction(title, amount, 1, sourceAccountId, targetAccountId);
-        // change balance of accounts
         manager.addBalance(sourceAccountId, -amount);
         manager.addBalance(targetAccountId, amount);
-        return null;
-
     }
 
 }

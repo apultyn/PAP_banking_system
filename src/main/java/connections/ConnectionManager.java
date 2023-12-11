@@ -5,6 +5,7 @@ import banking_app.classes.Account;
 import banking_app.classes.Transaction;
 import banking_app.classes.User;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,11 +85,11 @@ public class ConnectionManager {
         return null;
     }
 
-    public void createAccount(String name, Float transactionLimit, int ownerId) throws SQLException {
+    public void createAccount(String name, BigDecimal transactionLimit, int ownerId) throws SQLException {
         String sqlInsert = "INSERT INTO accounts (name, transaction_limit, owner_id) values (?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
         preparedStatement.setString(1, name);
-        preparedStatement.setFloat(2, transactionLimit);
+        preparedStatement.setBigDecimal(2, transactionLimit);
         preparedStatement.setInt(3, ownerId);
 
         preparedStatement.executeUpdate();
