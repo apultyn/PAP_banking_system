@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -60,7 +61,7 @@ public class User {
     }
 
     public void loadAccounts(ConnectionManager manager) throws SQLException {
-        manager.findUsersAccounts(this.id);
+        this.accounts = manager.findUsersAccounts(this.id);
     }
 
     public static User register(ConnectionManager manager) throws SQLException {
@@ -125,45 +126,54 @@ public class User {
         return user;
     }
 
-    public static boolean amountIsInRange(float a, float b, float x) {
-        return (x > a && x <= b);
+    public static boolean amountIsInRange(BigDecimal a, BigDecimal b, BigDecimal x) {
+        return (x.compareTo(a) > 0 && x.compareTo(b) <= 0);
     }
-    public static boolean isFloat(String num)
+    public static boolean isBigDecimal(String num)
     {
-        try{
-            Float.parseFloat(num);
+        try {
+            new BigDecimal(num);
             return true;
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             return false;
         }
     }
     public void makeTransaction(ConnectionManager manager) throws SQLException {
+        ArrayList<Long> usersAccountsIds = new ArrayList<>();
+        manager.findUsersAccounts(this.getId()).forEach(account -> usersAccountsIds.add(account.getAccountId()));
         System.out.print("Na rachunek: ");
-        String input;
-        while (!(input = scanner.nextLine()).matches("\\d{16}")) {
+        String input = scanner.nextLine();
+        long targetAccountId;
+        while (!(input.matches("\\d{16}"))) {
             System.out.print("Numer rachunku musi się składać z 16 cyfr, wprowadź ponownie: ");
+            input = scanner.nextLine();
         }
-        long targetAccountId = Long.parseLong(input);
+        targetAccountId = Long.parseLong(input);
 
+        long sourceAccountId;
         System.out.print("Z rachunku: ");
-        while (!(input = scanner.nextLine()).matches("\\d{16}")) {
-            System.out.print("Numer rachunku musi się składać z 16 cyfr, wprowadź ponownie: ");
+        input = scanner.nextLine();
+        while (!input.matches("\\d{16}" ) || !usersAccountsIds.contains(sourceAccountId = Long.parseLong(input))) {
+            if (!input.matches("\\d{16}" ))
+                System.out.print("Numer rachunku musi się składać z 16 cyfr, wprowadź ponownie: ");
+            else
+                System.out.print("Rachunek musi należeć do ciebie, wprowadź ponownie: ");
+            input = scanner.nextLine();
         }
-        long sourceAccountId = Long.parseLong(input);
         Account sourceAccount = manager.findAccount(sourceAccountId);
         System.out.print("Kwota przelewu: ");
-        float amount;
+        BigDecimal amount;
         input = scanner.nextLine();
-        while (!isFloat(input) || !amountIsInRange(0, sourceAccount.getTransactionLimit(), Float.parseFloat(input))
-            || sourceAccount.getBalance() < Float.parseFloat(input)) {
+        while (!isBigDecimal(input) ||
+                !amountIsInRange(BigDecimal.ZERO, BigDecimal.valueOf(sourceAccount.getTransactionLimit()).min(BigDecimal.valueOf(sourceAccount.getBalance())), new BigDecimal(input))) {
             System.out.print("Niepoprawna kwota, wprowadź ponownie: ");
             input = scanner.nextLine();
         }
-        amount = Float.parseFloat(input);
+        amount = new BigDecimal(input);
         System.out.print("Tytuł przelewu: ");
         String title = scanner.nextLine();
         manager.registerTransaction(title, amount, 1, sourceAccountId, targetAccountId);
-        manager.addBalance(sourceAccountId, -amount);
+        manager.addBalance(sourceAccountId, amount.negate());
         manager.addBalance(targetAccountId, amount);
     }
 

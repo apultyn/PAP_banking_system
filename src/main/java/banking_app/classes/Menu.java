@@ -19,7 +19,6 @@ public class Menu {
         long accountId;
         Scanner sc;
 
-
         List<Account> usersAccounts = manager.findUsersAccounts(user.getId());
         List<Integer> accountsIds = new ArrayList<>();
 
@@ -55,6 +54,7 @@ public class Menu {
 
         System.out.print("1) Wykonaj przelew \n2) Zobacz historię transakcji \n3) Sprawdź saldo konta " +
                 "\n4) Utwórz nowy rachunek \n5) WYLOGUJ SIĘ\nWybierz cyfrę: ");
+        user.loadAccounts(manager);
         Scanner sc;
         int choice;
         long account_id;
@@ -79,17 +79,21 @@ public class Menu {
             case 1 -> {
                 //funkcja przelewu
                 user.makeTransaction(manager);
-                System.out.println("Przelew");
+                System.out.println("Przelew powiódł się.");
             }
             case 2-> {
                 //funkcja sprawdzania historii transakcji
-                account_id = accountsMenu(user);
-                TransactionHistory transactionHistory = new TransactionHistory(user, account_id, this.manager);
-                transactionHistory.printTransactionHistory();
+                if (user.getAccounts().isEmpty()) {
+                    System.out.println("Nie posiadasz jeszcze żadnego rachunku. ");
+                } else {
+                    TransactionHistory transactionHistory = new TransactionHistory(user, accountsMenu(user), this.manager);
+                    transactionHistory.printTransactionHistory();
+                }
             }
             case 3 -> {
                 //funkcja sprawdzania salda
-                System.out.println("Saldo");
+                Account account = manager.findAccount(accountsMenu(user));
+                account.showBalance();
             }
             case 4 -> {
                 //funkcja tworzenia nowego rachunku

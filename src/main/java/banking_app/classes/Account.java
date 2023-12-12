@@ -57,4 +57,11 @@ public class Account {
     public float getBalance() {
         return balance;
     }
+
+    public void showBalance() {
+        System.out.println("==============================");
+        System.out.println("Stan konta: " + String.format("%.2f", this.getBalance()) + " zł");
+        System.out.println("==============================");
+
+    }
 }

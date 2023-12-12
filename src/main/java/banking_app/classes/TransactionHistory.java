@@ -25,7 +25,8 @@ public class TransactionHistory {
         Account account = this.manager.findAccount(this.accountId);
 
         System.out.println("========= Historia transakcji ===========");
-        System.out.println("Rachunek numer: " + account.getName());
+        System.out.println("Nazwa: " + account.getName());
+        System.out.println("Numer rachunku: " + account.getAccountId());
 
         for(Transaction transaction: transactions) {
             if (transaction.getSourceId() == this.accountId) {

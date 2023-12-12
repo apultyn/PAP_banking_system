@@ -2,6 +2,7 @@ package banking_app.classes;
 
 import connections.ConnectionManager;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,14 +11,14 @@ public class Transaction
 {
     private int transactionId;
     private long sourceId, targetId;
-    private float amount;
+    private BigDecimal amount;
     private int type;
     private String title;
 
     private Date date;
 
     public Transaction(int transactionId, long sourceId, long targetId,
-                       Date date, float amount, int type, String title){
+                       Date date, BigDecimal amount, int type, String title){
         this.transactionId = transactionId;
         this.date = date;
         this.sourceId = sourceId;
@@ -26,7 +27,7 @@ public class Transaction
         this.type = type;
         this.title = title;
     }
-    public Transaction(long sourceId, long targetId, Date date, float amount, int type, String title)
+    public Transaction(long sourceId, long targetId, Date date, BigDecimal amount, int type, String title)
     {
         this.date = date;
         this.sourceId = sourceId;
@@ -42,7 +43,7 @@ public class Transaction
                 resultSet.getLong("sender_id"),
                 resultSet.getLong("reciver_id"),
                 resultSet.getDate("date_made"),
-                resultSet.getFloat("amount"),
+                resultSet.getBigDecimal("amount"),
                 resultSet.getInt("type"),
                 resultSet.getString("title"));
     }
@@ -59,7 +60,7 @@ public class Transaction
     public Date getDate() {
         return date;
     }
-    public float getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
     public String getTitle() {

@@ -47,21 +47,6 @@ public class ConnectionManager {
         preparedStatement.executeUpdate();
     }
 
-    public List<Transaction> findTransactionsByReciever(long reciever_id) throws SQLException {
-        String sqlQuery = "SELECT * FROM transactions" +
-                "WHERE reciver_id = " + reciever_id;
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                List<Transaction> outcome = new ArrayList<Transaction>();
-                while (resultSet.next()) {
-                    Transaction newTransaction = new Transaction(resultSet);
-                    outcome.add(newTransaction);
-                }
-                return outcome;
-            }
-        }
-    }
-
     public User findUser(String email) throws SQLException {
         String sqlQuerry = "SELECT * FROM users WHERE email = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlQuerry);
@@ -119,38 +104,50 @@ public class ConnectionManager {
         return accounts;
     }
 
-    public void addBalance(long accountId, float amount) throws SQLException{
+    public void addBalance(long accountId, BigDecimal amount) throws SQLException{
         String sqlQuery = "UPDATE ACCOUNTS SET BALANCE = BALANCE + ? WHERE ACCOUNT_ID = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
-        preparedStatement.setFloat(1, amount);
+        preparedStatement.setBigDecimal(1, amount);
         preparedStatement.setLong(2, accountId);
         preparedStatement.executeUpdate();
     }
 
-    public void registerTransaction(String title, float amount, int type, long sourceId, long targetId) throws SQLException{
+    public void registerTransaction(String title, BigDecimal amount, int type, long sourceId, long targetId) throws SQLException{
         String sqlInsert = "INSERT INTO transactions (title, amount, type, sender_id, reciver_id) values (?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
         preparedStatement.setString(1, title);
-        preparedStatement.setFloat(2, amount);
+        preparedStatement.setBigDecimal(2, amount);
         preparedStatement.setInt(3, type);
         preparedStatement.setLong(4, sourceId);
         preparedStatement.setLong(5, targetId);
         preparedStatement.executeUpdate();
     }
 
-    public List<Transaction> findTransactionsBySender(int sender_id) throws SQLException {
-        String sqlQuery = "SELECT * FROM transactions "+
-                "WHERE sender_id = " + sender_id;
+    public List<Transaction> findTransactionsBySender(long sender_id) throws SQLException {
+        String sqlQuery = "SELECT * FROM transactions WHERE sender_id = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)){
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                List<Transaction> outcome = new ArrayList<Transaction>();
-                while (resultSet.next()) {
-                    Transaction newTransaction = new Transaction(resultSet);
-                    outcome.add(newTransaction);
-                }
-                return outcome;
+            preparedStatement.setLong(1, sender_id);
+            return getTransactions(preparedStatement);
+        }
+    }
+
+    public List<Transaction> findTransactionsByReceiver(long receiver_id) throws SQLException {
+        String sqlQuery = "SELECT * FROM transactions WHERE reciver_id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
+            preparedStatement.setLong(1, receiver_id);
+            return getTransactions(preparedStatement);
+        }
+    }
+
+    private List<Transaction> getTransactions(PreparedStatement preparedStatement) throws SQLException {
+        try (ResultSet resultSet = preparedStatement.executeQuery()) {
+            List<Transaction> outcome = new ArrayList<>();
+            while (resultSet.next()) {
+                Transaction newTransaction = new Transaction(resultSet);
+                outcome.add(newTransaction);
             }
+            return outcome;
         }
     }
 
@@ -160,14 +157,7 @@ public class ConnectionManager {
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)){
             preparedStatement.setLong(1, account_id);
             preparedStatement.setLong(2, account_id);
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                List<Transaction> outcome = new ArrayList<Transaction>();
-                while (resultSet.next()){
-                    Transaction newTransaction = new Transaction(resultSet);
-                    outcome.add(newTransaction);
-                }
-                return outcome;
-            }
+            return getTransactions(preparedStatement);
         }
     }
 
