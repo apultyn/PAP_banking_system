@@ -11,7 +11,7 @@
 
 * Aplikacja bankowa dla użytkownika
 
-## Uchomienie projektu
+## Uruchomienie projektu
 
 Po sklonowaniu repozytorium, aby uruchomić aplikajcę należy wpisać następującą komendę w linii komend:
 
