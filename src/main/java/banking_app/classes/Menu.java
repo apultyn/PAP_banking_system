@@ -92,8 +92,12 @@ public class Menu {
             }
             case 3 -> {
                 //funkcja sprawdzania salda
-                Account account = manager.findAccount(accountsMenu(user));
-                account.showBalance();
+                if (user.getAccounts().isEmpty()) {
+                    System.out.println("Nie posiadasz jeszcze żadnego rachunku. ");
+                } else {
+                    Account account = manager.findAccount(accountsMenu(user));
+                    account.showBalance();
+                }
             }
             case 4 -> {
                 //funkcja tworzenia nowego rachunku
