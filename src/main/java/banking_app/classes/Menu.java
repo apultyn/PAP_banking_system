@@ -78,8 +78,12 @@ public class Menu {
         switch (choice) {
             case 1 -> {
                 //funkcja przelewu
-                user.makeTransaction(manager);
-                System.out.println("Przelew powiódł się.");
+                if (user.getAccounts().isEmpty()) {
+                    System.out.println("Nie posiadasz jeszcze żadnego rachunku. ");
+                } else {
+                    user.makeTransaction(manager);
+                    System.out.println("Przelew powiódł się.");
+                }
             }
             case 2-> {
                 //funkcja sprawdzania historii transakcji
