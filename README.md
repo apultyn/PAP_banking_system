@@ -15,6 +15,6 @@
 
 Po sklonowaniu repozytorium, aby uruchomić aplikajcę należy wpisać następującą komendę w linii komend:
 
-cd pap2023z-z11; chmod +x start.sh; ./start.sh
+`cd pap2023z-z11; chmod +x start.sh; ./start.sh`
 
 Skrypt start.sh jeśli to konieczne pobierze Java JDK 17 oraz maven i uruchomi aplikajcę.
