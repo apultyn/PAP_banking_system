@@ -15,7 +15,6 @@
 
 
     <dependencies>
-        <!-- Zależność do sterownika JDBC Oracle -->
         <dependency>
             <groupId>com.oracle.database.jdbc</groupId>
             <artifactId>ojdbc8</artifactId>
@@ -34,7 +33,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version> <!-- Zaktualizuj do najnowszej dostępnej wersji -->
+                <version>3.11.0</version>
                 <configuration>
                     <source>17</source>
                     <target>17</target>
@@ -44,7 +43,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>3.3.1</version> <!-- Zaktualizuj do najnowszej dostępnej wersji -->
+                <version>3.3.1</version> 
                 <executions>
                     <execution>
                         <id>copy-resources</id>
@@ -71,7 +70,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>3.0.0</version> <!-- Zaktualizuj do najnowszej dostępnej wersji -->
+                <version>3.0.0</version> 
                 <executions>
                     <execution>
                         <id>execute-main-class</id>
