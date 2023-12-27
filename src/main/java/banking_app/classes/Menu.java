@@ -2,10 +2,13 @@ package banking_app.classes;
 
 import connections.ConnectionManager;
 
+import javax.swing.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class Menu {
     ConnectionManager manager;
@@ -142,33 +145,57 @@ public class Menu {
         System.out.println("Witamy w naszym banku.\nJeśli posiadasz konto - zaloguj się (1), jeśli nie zarejestruj się (2)");
         System.out.print("Wybierz liczbę: ");
 
-
         boolean logged = false;
         User user = null;
-        
-        int choice = choiceLoop();
 
-        switch (choice) {
-            case 1 -> {
-                //funkcja logowania
-                user = User.login(this.manager);
+        JFrame mainWindow = new JFrame("Banking app");
+        JPanel mainPanel = new JPanel();
+
+        JButton loginButton = new JButton("Zaloguj sie");
+        JButton registerButton = new JButton("Rejestruj");
+
+        loginButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean logged = false;
+                User user = null;
+                try {
+                    user = User.login(manager);
+                } catch (SQLException a) {
+                    System.out.println("SQL threw");
+                }
+                logged = (user != null);
+            }
+        });
+
+        registerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean logged = false;
+                User user = null;
+                try {
+                    User.register(manager);
+                    System.out.println("Konto założone pomyślnie. Teraz ZALOGUJ SIĘ.");
+                    user = User.login(manager);
+                } catch (SQLException a) {
+                    System.out.println("SQL threw");
+                }
+
                 logged=true;
             }
-            case 2 -> {
-                //funkcja rejestracji
-                User.register(this.manager);
-                System.out.println("Konto założone pomyślnie. Teraz ZALOGUJ SIĘ.");
-                user = User.login(this.manager);
-                logged=true;
-            }
-        }
+        });
 
-        while (logged){
-            String name = user.getName();
-            System.out.println("Witaj, "+ name);
-            logged = userMenu(user, logged);
-        }
-        System.out.println("Wylogowano");
+        mainPanel.add(loginButton);
+        mainPanel.add(registerButton);
+
+        // Add the panel to the frame
+        mainWindow.add(mainPanel);
+
+        // Set the size and make the frame visible
+        mainWindow.setSize(300, 200);
+        mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainWindow.setVisible(true);
+
     }
 
     public void mainMenu() throws SQLException {
