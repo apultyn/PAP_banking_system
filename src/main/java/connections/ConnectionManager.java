@@ -169,4 +169,16 @@ public class ConnectionManager {
             preparedStatement.executeUpdate();
         }
     }
+
+    public void createDeposit(String name, BigDecimal amount,
+                              BigDecimal rate, int ownerId, Date end) throws SQLException {
+        String sqlInsert = "INSERT INTO deposits (name, rate, end_date, amount, owner_id) values (?, ?, ?, ?, ?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
+        preparedStatement.setString(1, name);
+        preparedStatement.setBigDecimal(2, rate);
+        preparedStatement.setDate(3, end);
+        preparedStatement.setBigDecimal(4, amount);
+        preparedStatement.setInt(5, ownerId);
+        preparedStatement.executeUpdate();
+    }
 }
