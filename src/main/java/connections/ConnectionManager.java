@@ -161,4 +161,12 @@ public class ConnectionManager {
         }
     }
 
+    public void setTransactionLimit(long account_id, float newLimit) throws SQLException{
+        String sqlQuery = "UPDATE accounts SET transaction_limit= ? WHERE account_id= ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)){
+            preparedStatement.setFloat(1, newLimit);
+            preparedStatement.setLong(2, account_id);
+            preparedStatement.executeUpdate();
+        }
+    }
 }

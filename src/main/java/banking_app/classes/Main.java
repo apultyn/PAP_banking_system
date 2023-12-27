@@ -8,7 +8,6 @@ public class Main {
         System.out.println("Main run!");
         ConnectionManager manager = new ConnectionManager();
         System.out.println("Connection established!");
-        Menu menu = new Menu(manager);
-        menu.mainMenu();
+        manager.setTransactionLimit(1000000000000043L, 503.02f);
     }
 }
