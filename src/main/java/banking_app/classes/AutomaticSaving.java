@@ -1,21 +1,35 @@
 package banking_app.classes;
 
+import java.math.BigDecimal;
 import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class AutomaticSaving {
     private final int savingID;
     private String name;
     private Date dateStarted;
-    private int sourceAccountId;
-    private int targetAccountId;
+    private long sourceAccountId;
+    private long targetAccountId;
 
-    public AutomaticSaving(int savingID, String name, Date started,
-                           int sourceAccountId, int targetAccountId) {
+    private BigDecimal amount;
+
+    public AutomaticSaving(int savingID, String name, Date started, long sender_id, long reciever_id, BigDecimal am) {
         this.savingID = savingID;
         this.name = name;
         this.dateStarted = started;
-        this.sourceAccountId = sourceAccountId;
-        this.targetAccountId = targetAccountId;
+        this.sourceAccountId = sender_id;
+        this.targetAccountId = reciever_id;
+        this.amount = am;
+    }
+
+    public AutomaticSaving(ResultSet resultSet) throws SQLException {
+        this(resultSet.getInt("saving_id"),
+                resultSet.getString("name"),
+                resultSet.getDate("start_date"),
+                resultSet.getLong("sender_id"),
+                resultSet.getLong("reciever_id"),
+                resultSet.getBigDecimal("amount"));
     }
 
     public int getSavingID() {
@@ -30,11 +44,13 @@ public class AutomaticSaving {
         return dateStarted;
     }
 
-    public int getSourceAccountId() {
+    public long getSourceAccountId() {
         return sourceAccountId;
     }
 
-    public int getTargetAccountId() {
+    public long getTargetAccountId() {
         return targetAccountId;
     }
+
+    public  BigDecimal getAmount() { return amount; }
 }

@@ -181,4 +181,15 @@ public class ConnectionManager {
         preparedStatement.setInt(5, ownerId);
         preparedStatement.executeUpdate();
     }
+
+
+    public void createAutomaticSaving(String name, long sender_id, long reciever_id, BigDecimal amount) throws SQLException {
+        String sqlInsert = "INSERT INTO automatic_savings (name, sender_id, reciever_id, amount) values (?, ?, ?, ?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
+        preparedStatement.setString(1, name);
+        preparedStatement.setLong(2, sender_id);
+        preparedStatement.setLong(3, reciever_id);
+        preparedStatement.setBigDecimal(4, amount);
+        preparedStatement.executeUpdate();
+    }
 }
