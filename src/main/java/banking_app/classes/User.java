@@ -64,46 +64,21 @@ public class User {
         this.accounts = manager.findUsersAccounts(this.id);
     }
 
-    public static User register(ConnectionManager manager) throws SQLException {
+    public static User register(ConnectionManager manager, String email,
+                                String name, String surname, char[] password, char[] repPassword) throws SQLException {
         EmailValidator emailValidator = new EmailValidator();
         PasswordValidator passwordValidator = new PasswordValidator();
 
-        String email;
-        System.out.print("Wprowadź e-mail: ");
-        email = scanner.nextLine();
-        while (!emailValidator.validate(email) ||
-                manager.findUser(email) != null) {
-            if (!emailValidator.validate(email)) {
-                System.out.print("Niepoprawny e-mail, wprowadź ponownie: ");
-                email = scanner.nextLine();
-
-            } else {
-                System.out.print("E-mail jest już wykorzystany, wprowadź ponownie: ");
-                email = scanner.nextLine();
-            }
-        }
-
-        String password;
-        System.out.print("Wprowadź hasło (8-20 znaków, min. 1: cyfra, mała litera, duża litera, znak zpecjalny (!@#$%&*()-+=^), bez spacji): ");
-        while (!passwordValidator.validate(password = scanner.nextLine())) {
-            System.out.print("Niepoprawne hasło, wprowadź ponownie: ");
-        }
-        System.out.print("Powtórz hasło: ");
-        while (!scanner.nextLine().equals(password)) {
-            System.out.print("Hasła nie pasują, wprowadź ponownie: ");
-        }
-
-        String name;
-        System.out.print("Wprowadź imię: ");
-        while ((name = scanner.nextLine()).contains(" ")) {
-            System.out.print("Imię nie może mieć spacji, wprowadź ponownie: ");
-        }
-
-        String surname;
-        System.out.print("Wprowadź nazwisko: ");
-        while ((surname = scanner.nextLine()).contains(" ")) {
-            System.out.print("Nazwisko nie może mieć spacji, wprowadź ponownie: ");
-        }
+        if (!emailValidator.validate(email))
+            return null;
+        if (manager.findUser(email) != null)
+            return null;
+        if (!passwordValidator.validate(password))
+            return null;
+        if (!repPassword.equals(password))
+            return null;
+        if (name.contains(" ") || surname.contains(" "))
+            return null;
         manager.registerUser(name, surname, email, password);
         return manager.findUser(email);
     }
