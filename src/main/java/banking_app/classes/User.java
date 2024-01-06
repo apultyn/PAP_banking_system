@@ -1,5 +1,6 @@
 package banking_app.classes;
 
+import banking_exceptions.*;
 import connections.ConnectionManager;
 
 import java.math.BigDecimal;
@@ -65,21 +66,21 @@ public class User {
     }
 
     public static User register(ConnectionManager manager, String email,
-                                String name, String surname, char[] password, char[] repPassword) throws SQLException {
+                                String name, String surname, char[] password, char[] repPassword) throws SQLException, Exception {
         EmailValidator emailValidator = new EmailValidator();
         PasswordValidator passwordValidator = new PasswordValidator();
 
-        if (!emailValidator.validate(email))
-            return null;
         if (manager.findUser(email) != null)
-            return null;
-        if (!passwordValidator.validate(password))
-            return null;
+            throw new OccupiedEmailException("Email already in use!");
+        if (!emailValidator.validate(email))
+            throw new InvalidEmailException("Wrong email format!");
+        if (!passwordValidator.validate(String.valueOf(password)))
+            throw new InvalidPasswordException("Wrong password format!");
         if (!repPassword.equals(password))
-            return null;
+            throw new PasswordMissmatchException("Password not repeated correctly!");
         if (name.contains(" ") || surname.contains(" "))
-            return null;
-        manager.registerUser(name, surname, email, password);
+            throw new InvalidNameException("Name or surname contains space!");
+        manager.registerUser(name, surname, email, String.valueOf(password));
         return manager.findUser(email);
     }
 
