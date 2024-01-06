@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -66,7 +67,8 @@ public class User {
     }
 
     public static User register(ConnectionManager manager, String email,
-                                String name, String surname, char[] password, char[] repPassword) throws SQLException, Exception {
+                                String name, String surname, char[] password, char[] repPassword) throws SQLException,
+            OccupiedEmailException, InvalidEmailException, InvalidPasswordException, PasswordMissmatchException, InvalidNameException {
         EmailValidator emailValidator = new EmailValidator();
         PasswordValidator passwordValidator = new PasswordValidator();
 
@@ -76,7 +78,7 @@ public class User {
             throw new InvalidEmailException("Wrong email format!");
         if (!passwordValidator.validate(String.valueOf(password)))
             throw new InvalidPasswordException("Wrong password format!");
-        if (!repPassword.equals(password))
+        if (!Arrays.equals(repPassword, password))
             throw new PasswordMissmatchException("Password not repeated correctly!");
         if (name.contains(" ") || surname.contains(" "))
             throw new InvalidNameException("Name or surname contains space!");
@@ -84,21 +86,12 @@ public class User {
         return manager.findUser(email);
     }
 
-    public static User login(ConnectionManager manager) throws SQLException {
-        String email;
-        String password;
+    public static User login(ConnectionManager manager,
+                             String email, char[] password) throws SQLException, LoginFailedException {
         User user;
-        System.out.print("Wprowadź e-mail: ");
-        email = scanner.nextLine();
-        System.out.print("Wprowadź hasło: ");
-        password = scanner.nextLine();
-        while ((user = manager.findUser(email)) == null || !password.equals(user.getPassword())) {
-            System.out.println("Niepoprawne dane, wprowadź ponownie");
-            System.out.print("Wprowadź e-mail: ");
-            email = scanner.nextLine();
-            System.out.print("Wprowadź hasło: ");
-            password = scanner.nextLine();
-        }
+        user = manager.findUser(email);
+        if (user == null || !String.valueOf(password).equals(user.getPassword()))
+            throw new LoginFailedException("Incorrect logging data");
         return user;
     }
 

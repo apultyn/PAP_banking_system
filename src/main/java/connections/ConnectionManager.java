@@ -56,7 +56,6 @@ public class ConnectionManager {
             return new User(resultSet);
         }
         return null;
-
     }
 
     public Account findAccount(long accountId) throws SQLException {
