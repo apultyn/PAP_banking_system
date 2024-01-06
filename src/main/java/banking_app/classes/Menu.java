@@ -145,7 +145,7 @@ public class Menu {
 
         boolean logged = false;
         User user = null;
-        
+
         int choice = choiceLoop();
 
         switch (choice) {
@@ -177,5 +177,5 @@ public class Menu {
             menu();
         }
     }
-    
+
 }

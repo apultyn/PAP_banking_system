@@ -5,8 +5,8 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class AutomaticSaving {
-    private final int savingID;
+public class StandingOrder {
+    private final int orderId;
     private String name;
     private Date dateStarted;
     private long sourceAccountId;
@@ -14,8 +14,8 @@ public class AutomaticSaving {
 
     private BigDecimal amount;
 
-    public AutomaticSaving(int savingID, String name, Date started, long sender_id, long reciever_id, BigDecimal am) {
-        this.savingID = savingID;
+    public StandingOrder(int savingID, String name, Date started, long sender_id, long reciever_id, BigDecimal am) {
+        this.orderId = savingID;
         this.name = name;
         this.dateStarted = started;
         this.sourceAccountId = sender_id;
@@ -23,8 +23,8 @@ public class AutomaticSaving {
         this.amount = am;
     }
 
-    public AutomaticSaving(ResultSet resultSet) throws SQLException {
-        this(resultSet.getInt("saving_id"),
+    public StandingOrder(ResultSet resultSet) throws SQLException {
+        this(resultSet.getInt("order_id"),
                 resultSet.getString("name"),
                 resultSet.getDate("start_date"),
                 resultSet.getLong("sender_id"),
@@ -33,7 +33,7 @@ public class AutomaticSaving {
     }
 
     public int getSavingID() {
-        return savingID;
+        return orderId;
     }
 
     public String getName() {

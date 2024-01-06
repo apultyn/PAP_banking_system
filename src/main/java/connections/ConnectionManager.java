@@ -160,4 +160,59 @@ public class ConnectionManager {
         }
     }
 
+    public void setTransactionLimit(long account_id, float newLimit) throws SQLException{
+        String sqlQuery = "UPDATE accounts SET transaction_limit= ? WHERE account_id= ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)){
+            preparedStatement.setFloat(1, newLimit);
+            preparedStatement.setLong(2, account_id);
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    public void createDeposit(String name, BigDecimal amount,
+                              BigDecimal rate, int ownerId, Date end) throws SQLException {
+        String sqlInsert = "INSERT INTO deposits (name, rate, end_date, amount, owner_id) values (?, ?, ?, ?, ?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
+        preparedStatement.setString(1, name);
+        preparedStatement.setBigDecimal(2, rate);
+        preparedStatement.setDate(3, end);
+        preparedStatement.setBigDecimal(4, amount);
+        preparedStatement.setInt(5, ownerId);
+        preparedStatement.executeUpdate();
+    }
+
+
+    public void createAutomaticSaving(String name, long sender_id, long reciever_id, BigDecimal amount) throws SQLException {
+        String sqlInsert = "INSERT INTO automatic_savings (name, sender_id, reciever_id, amount) values (?, ?, ?, ?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
+        preparedStatement.setString(1, name);
+        preparedStatement.setLong(2, sender_id);
+        preparedStatement.setLong(3, reciever_id);
+        preparedStatement.setBigDecimal(4, amount);
+        preparedStatement.executeUpdate();
+    }
+
+    public void deleteAutomaticSaving(long saving_id) throws SQLException {
+        String sqlInsert = "DELETE FROM automatic_savings WHERE saving_id = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
+        preparedStatement.setLong(1, saving_id);
+        preparedStatement.executeUpdate();
+    }
+
+    public void createStadningOrder(String name, BigDecimal amount, long sender_id, long reciever_id ) throws SQLException {
+        String sqlInsert = "INSERT INTO standing_orders (name, amount, sender_id, reciever_id) values (?, ?, ?, ?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
+        preparedStatement.setString(1, name);
+        preparedStatement.setBigDecimal(2, amount);
+        preparedStatement.setLong(3, sender_id);
+        preparedStatement.setLong(4, reciever_id);
+        preparedStatement.executeUpdate();
+    }
+
+    public void deleteStadingOrder(long orderId) throws SQLException {
+        String sqlInsert = "DELETE FROM standing_orders WHERE order_id = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
+        preparedStatement.setLong(1, orderId);
+        preparedStatement.executeUpdate();
+    }
 }
