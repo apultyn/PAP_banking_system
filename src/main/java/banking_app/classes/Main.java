@@ -13,7 +13,7 @@ public class Main {
         /*manager.setTransactionLimit(1000000000000043L, 503.02f);
         Date end = new Date(Date.valueOf("2023-12-29").getTime());
         manager.createDeposit("drugi", new BigDecimal("10"), new BigDecimal("7.3"), 87, end);*/
-        BigDecimal amount = new BigDecimal("10");
-        manager.createAutomaticSaving("pierwszy", 1000000000000040L, 1000000000000041L, amount);
+        BigDecimal amount = new BigDecimal("5");
+        manager.deleteAutomaticSaving(22);
     }
 }

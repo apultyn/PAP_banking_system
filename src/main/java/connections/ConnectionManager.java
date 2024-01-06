@@ -192,4 +192,28 @@ public class ConnectionManager {
         preparedStatement.setBigDecimal(4, amount);
         preparedStatement.executeUpdate();
     }
+
+    public void deleteAutomaticSaving(long saving_id) throws SQLException {
+        String sqlInsert = "DELETE FROM automatic_savings WHERE saving_id = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
+        preparedStatement.setLong(1, saving_id);
+        preparedStatement.executeUpdate();
+    }
+
+    public void createStadningOrder(String name, BigDecimal amount, long sender_id, long reciever_id ) throws SQLException {
+        String sqlInsert = "INSERT INTO standing_orders (name, amount, sender_id, reciever_id) values (?, ?, ?, ?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
+        preparedStatement.setString(1, name);
+        preparedStatement.setBigDecimal(2, amount);
+        preparedStatement.setLong(3, sender_id);
+        preparedStatement.setLong(4, reciever_id);
+        preparedStatement.executeUpdate();
+    }
+
+    public void deleteStadingOrder(long orderId) throws SQLException {
+        String sqlInsert = "DELETE FROM standing_orders WHERE order_id = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
+        preparedStatement.setLong(1, orderId);
+        preparedStatement.executeUpdate();
+    }
 }
