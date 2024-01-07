@@ -24,15 +24,18 @@ public class MainMenu extends JFrame {
         //JPanel userPanel = new JPanel(); // Dodaj elementy do userPanel
 
         LoginPanel loginPanel = new LoginPanel(manager, cardLayout, cardPanel);
-
         RegisterPanel registerPanel = new RegisterPanel(manager, cardLayout, cardPanel);
-
         UserProfilePanel userProfilePanel = new UserProfilePanel(manager, cardLayout, cardPanel);
+        ModifyProfilePanel modifyProfilePanel = new ModifyProfilePanel(manager, cardLayout, cardPanel);
+        TransactionsPanel transactionsPanel = new TransactionsPanel(manager, cardLayout, cardPanel);
 
 
         cardPanel.add(loginPanel, "Login");
         cardPanel.add(registerPanel, "Register");
         cardPanel.add(userProfilePanel, "User");
+        cardPanel.add(modifyProfilePanel, "ModifyProfile");
+        cardPanel.add(transactionsPanel, "Transactions");
+
 
 
         // Logika przełączania kart
