@@ -1,5 +1,6 @@
 package banking_app.classes;
 
+import banking_app.gui.MainMenu;
 import connections.ConnectionManager;
 
 import javax.swing.*;
@@ -13,7 +14,7 @@ public class Main {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new Menu(manager);
+                new MainMenu();
             }
         });
     }
