@@ -100,7 +100,6 @@ public class ConnectionManager {
                 accounts.add(account);
             }
         }
-
         return accounts;
     }
 
@@ -182,6 +181,17 @@ public class ConnectionManager {
         preparedStatement.executeUpdate();
     }
 
+    public void createDeposit(Deposit deposit) throws SQLException {
+        String sqlInsert = "INSERT INTO deposits (name, rate, end_date, amount, owner_acc_id) values (?, ?, ?, ?, ?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
+        preparedStatement.setString(1, deposit.getName());
+        preparedStatement.setBigDecimal(2, deposit.getRate());
+        preparedStatement.setDate(3, deposit.getEnd());
+        preparedStatement.setBigDecimal(4, deposit.getAmount());
+        preparedStatement.setLong(5, deposit.getOwnerAccId());
+        preparedStatement.executeUpdate();
+    }
+
     public Boolean checkDepositName(String name, long ownerId) throws SQLException {
         String sqlQuery = "SELECT * FROM deposits WHERE owner_acc_id = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
@@ -193,6 +203,43 @@ public class ConnectionManager {
                 return false;
         }
         return true;
+    }
+
+    public List<Deposit> findUsersDeposits(int user_id) throws SQLException {
+        List<Account> listAccounts = findUsersAccounts(user_id);
+        List<Long> accountIds = new ArrayList<>();
+        for (Account account : listAccounts) {
+            accountIds.add(account.getAccountId());
+        }
+
+        if (accountIds.isEmpty()) {
+            return new ArrayList<>(); // Return empty list if no accounts found
+        }
+
+        String sql = createSqlQuery(accountIds);
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            for (int i = 0; i < accountIds.size(); i++) {
+                pstmt.setLong(i + 1, accountIds.get(i)); // Set account ID for each placeholder
+            }
+            ResultSet rs = pstmt.executeQuery();
+            List<Deposit> deposits = new ArrayList<>();
+            while (rs.next()) {
+                deposits.add(new Deposit(rs));
+            }
+            return deposits;
+        }
+    }
+
+    private String createSqlQuery(List<Long> accountIds) {
+        StringBuilder builder = new StringBuilder("SELECT * FROM deposits WHERE owner_acc_id IN (");
+        for (int i = 0; i < accountIds.size(); i++) {
+            builder.append("?");
+            if (i < accountIds.size() - 1) {
+                builder.append(",");
+            }
+        }
+        builder.append(")");
+        return builder.toString();
     }
 
     public Boolean checkAmountAtAccount(BigDecimal amount, long AccountId) throws SQLException {

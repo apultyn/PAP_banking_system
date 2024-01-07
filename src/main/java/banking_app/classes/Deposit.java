@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class Deposit {
     private final int depositId;
@@ -74,5 +75,34 @@ public class Deposit {
         if (!manager.checkAmountAtAccount(amount, ownerAccId))
             throw new NotEnoughFundsException("Not enough funds at account!");
         manager.createDeposit(name, amount, rate, ownerAccId, end);
+    }
+
+    @Override
+    public String toString() {
+        return "Deposit{" +
+                "depositId=" + depositId +
+                ", name='" + name + '\'' +
+                ", amount=" + amount +
+                ", rate=" + rate +
+                ", ownerAccId=" + ownerAccId +
+                ", start=" + start +
+                ", end=" + end +
+                '}';
+    }
+
+    public static void main(String[] args) throws SQLException {
+        ConnectionManager manager = new ConnectionManager();
+        Deposit deposit1 = new Deposit(0, "Pierwsze", new BigDecimal(0.1), new BigDecimal(5), 1000000000000046L,
+                new Date(2023, 1, 8), new Date(2023, 1, 9));
+        Deposit deposit2 = new Deposit(0, "Drugie", new BigDecimal(0.1), new BigDecimal(5), 1000000000000062L,
+                new Date(2023, 1, 8), new Date(2023, 1, 9));
+        Deposit deposit3 = new Deposit(0, "Trzecie", new BigDecimal(0.1), new BigDecimal(5), 1000000000000063L,
+                new Date(2023, 1, 8), new Date(2023, 1, 9));
+        manager.createDeposit(deposit2);
+        manager.createDeposit(deposit3);
+        ArrayList<Deposit> list = new ArrayList<>(manager.findUsersDeposits(85));
+        for (Deposit deposit : list) {
+            System.out.println(deposit);
+        }
     }
 }
