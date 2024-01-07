@@ -215,4 +215,19 @@ public class ConnectionManager {
         preparedStatement.setLong(1, orderId);
         preparedStatement.executeUpdate();
     }
+
+    public void createContact(String name, long account_id) throws SQLException {
+        String sqlInsert = "INSERT INTO contacts (name, accounts_account_id) values (?, ?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
+        preparedStatement.setString(1, name);
+        preparedStatement.setLong(2, account_id);
+        preparedStatement.executeUpdate();
+    }
+
+    public void deleteContact(int contact_id) throws SQLException {
+        String sqlDelete = "DELETE FROM contacts WHERE contact_id = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlDelete);
+        preparedStatement.setInt(1, contact_id);
+        preparedStatement.executeUpdate();
+    }
 }
