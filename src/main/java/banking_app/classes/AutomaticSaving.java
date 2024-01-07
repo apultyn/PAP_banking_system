@@ -1,9 +1,12 @@
 package banking_app.classes;
 
+import connections.ConnectionManager;
+
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class AutomaticSaving {
     private final int savingID;
@@ -53,4 +56,29 @@ public class AutomaticSaving {
     }
 
     public  BigDecimal getAmount() { return amount; }
+
+    public static void registerAutomaticSaving(ConnectionManager connection, User user, String name, String senderId, String recieverId, String howMuch)
+            throws NumberFormatException, SQLException {
+        List<Account> accounts = connection.findUsersAccounts(user.getId());
+
+        long sender, reciever;
+        BigDecimal amount;
+        if (senderId.length() != 16 || recieverId.length() != 16)
+            throw new NumberFormatException("Short id");
+        sender = Long.parseLong(senderId);
+        reciever = Long.parseLong(recieverId);
+
+        boolean recieverIsMy = false, senderIsMy= false;
+        for (Account a:accounts) {
+            if (a.getAccountId() == sender)
+                senderIsMy = true;
+            if (a.getAccountId() == reciever)
+                recieverIsMy = true;
+        }
+
+        if (!senderIsMy || !recieverIsMy)
+            throw new NumberFormatException("Not my accounts");
+        amount = new BigDecimal(howMuch);
+        connection.createAutomaticSaving(name, sender, reciever, amount);
+    }
 }
