@@ -32,30 +32,30 @@ public class RegisterPanel extends JPanel {
         backButton.addActionListener(e-> cardLayout.show(cardPanel, "Login"));
         add(backButton);
 
-        add(new JLabel("Rejestracja"), gbc);
+        add(new JLabel("Rejestracja"));
 
-        add(new JLabel("Imię"), gbc);
+        add(new JLabel("Imię"));
 
         firstNameField = new JTextField(10);
         add(firstNameField);
 
-        add(new JLabel("Nazwisko"), gbc);
+        add(new JLabel("Nazwisko"));
 
         lastNameField = new JTextField(10);
         add(lastNameField);
 
-        add(new JLabel("Email"), gbc);
+        add(new JLabel("Email"));
 
         emailField = new JTextField(20);
         add(emailField);
 
-        add(new JLabel("Podaj haslo"), gbc);
+        add(new JLabel("Podaj haslo"));
 
         passwordField = new JPasswordField(20);
         add(passwordField);
 
 
-        add(new JLabel("Powtorz haslo"), gbc);
+        add(new JLabel("Powtorz haslo"));
 
         passwordRepeatedField = new JPasswordField(20);
         add(passwordRepeatedField);

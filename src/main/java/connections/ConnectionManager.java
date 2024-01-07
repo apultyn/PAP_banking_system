@@ -2,6 +2,7 @@ package connections;
 
 
 import banking_app.classes.Account;
+import banking_app.classes.AutomaticSaving;
 import banking_app.classes.Transaction;
 import banking_app.classes.User;
 
@@ -192,7 +193,7 @@ public class ConnectionManager {
         preparedStatement.executeUpdate();
     }
 
-    public void deleteAutomaticSaving(long saving_id) throws SQLException {
+    public void deleteAutomaticSaving(int saving_id) throws SQLException {
         String sqlInsert = "DELETE FROM automatic_savings WHERE saving_id = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
         preparedStatement.setLong(1, saving_id);
@@ -261,5 +262,19 @@ public class ConnectionManager {
         preparedStatement.setString(1, password);
         preparedStatement.setInt(2, user_id);
         preparedStatement.executeUpdate();
+    }
+    public List<AutomaticSaving> findUsersSavings(int user_id) throws SQLException {
+        String sqlQuery = "SELECT * FROM automatic_savings WHERE owner_id = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+        preparedStatement.setInt(1, user_id);
+        List<AutomaticSaving> savings = new ArrayList<>();
+
+        try (ResultSet resultSet = preparedStatement.executeQuery()) {
+            while (resultSet.next()) {
+                AutomaticSaving saving = new AutomaticSaving(resultSet);
+                savings.add(saving);
+            }
+        }
+        return savings;
     }
 }

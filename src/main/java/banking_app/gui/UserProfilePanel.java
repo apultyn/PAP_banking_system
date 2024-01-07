@@ -29,6 +29,7 @@ public class UserProfilePanel extends JPanel {
         JButton contactsButton = new JButton("Contacts");
         JButton transactionHistoryButton = new JButton("Transaction History");
         JButton modifyProfileButton = new JButton("Modify data");
+        JButton automaticSavingButton = new JButton("Automatic Savings");
 
 
         add(helloLabel);
@@ -36,8 +37,10 @@ public class UserProfilePanel extends JPanel {
         add(contactsButton);
         add(transactionHistoryButton);
         add(modifyProfileButton);
+        add(automaticSavingButton);
 
         modifyProfileButton.addActionListener(e -> handleModifyButton());
+        automaticSavingButton.addActionListener(e -> handleAutomaticSavings());
     }
 
     public void setUser(User setted_user) {
@@ -56,5 +59,11 @@ public class UserProfilePanel extends JPanel {
         TransactionsPanel transactionsPanel = (TransactionsPanel) cardPanel.getComponent(4);
         transactionsPanel.setUser(user);
         cardLayout.show(cardPanel, "Transactions");
+    }
+
+    public void handleAutomaticSavings() {
+        AutomaticSavingsGui savingsPanel = (AutomaticSavingsGui) cardPanel.getComponent(5);
+        savingsPanel.setUser(user);
+        cardLayout.show(cardPanel, "SavingsPanel");
     }
 }
