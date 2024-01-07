@@ -1,181 +1,127 @@
 package banking_app.classes;
 
+import banking_exceptions.*;
 import connections.ConnectionManager;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
 
-public class Menu {
-    ConnectionManager manager;
+public class Menu extends JFrame {
+    private final ConnectionManager manager;
+    private JPanel mainPanel;
+    private JPanel welcomePanel;
+    private JButton loginButton;
+    private JButton registerButton;
+    private JLabel welcomeLabel;
+    private JPanel loginPanel;
+    private JLabel emailLabel;
+    private JFormattedTextField emailInputField;
+    private JLabel passwordLabel;
+    private JPasswordField passwordInputField;
+    private JPanel registerPanel;
+    private JLabel emailRegisterLabel;
+    private JButton returnButton;
+    private JButton confirmLoginButton;
+    private JButton confirmRegisterButton;
+    private JLabel nameRegisterLabel;
+    private JFormattedTextField emailRegisterField;
+    private JFormattedTextField nameRegisterField;
+    private JLabel passwordRegisterLabel2;
+    private JLabel passwordRegisterLabel;
+    private JButton returnRegisterButton;
+    private JPasswordField passwordRegisterField1;
+    private JPasswordField passwordRegisterField2;
+    private JLabel surnameRegisterLabel;
+    private JFormattedTextField surnameRegisterField;
 
-    public Menu(ConnectionManager manager) {
-        this.manager = manager;
-    }
-
-    public long accountsMenu(User user) throws SQLException {
-        int choosenAccountId;
-        long accountId;
-        Scanner sc;
-
-        List<Account> usersAccounts = manager.findUsersAccounts(user.getId());
-        List<Integer> accountsIds = new ArrayList<>();
+    public Menu(ConnectionManager m) {
+        manager = m;
 
 
-        for(int i = 0; i < usersAccounts.size(); i++){
-            System.out.println(i+1 + ") " + usersAccounts.get(i).getName());
-            accountsIds.add(i);
-        }
-        System.out.println("Wybierz rachunek: ");
+        CardLayout cardLayout = (CardLayout) mainPanel.getLayout();
+        setContentPane(mainPanel);
 
-        do {
-            sc = new Scanner(System.in);
-
-            try {
-                choosenAccountId = Integer.parseInt(sc.next()) - 1;
-
-                if (!accountsIds.contains(choosenAccountId)) {
-                    System.out.println("Błąd: Wybierz tylko rachunek z listy. Spróbuj ponownie.");
-                }
-
-            } catch (NumberFormatException e) {
-                System.out.println("Błąd: Wprowadź poprawną liczbę. Spróbuj ponownie.");
-                choosenAccountId = 0;
+        loginButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cardLayout.show(mainPanel, "login");
             }
-        } while (!accountsIds.contains(choosenAccountId));
+        });
 
-        accountId = usersAccounts.get(choosenAccountId).getAccountId();
-        return accountId;
-
-    }
-
-    public boolean userMenu(User user, boolean logged) throws SQLException {
-
-        System.out.print("1) Wykonaj przelew \n2) Zobacz historię transakcji \n3) Sprawdź saldo konta " +
-                "\n4) Utwórz nowy rachunek \n5) WYLOGUJ SIĘ\nWybierz cyfrę: ");
-        user.loadAccounts(manager);
-        Scanner sc;
-        int choice;
-        long account_id;
-
-        do {
-            sc = new Scanner(System.in);
-
-            try {
-                choice = Integer.parseInt(sc.next());
-
-                if (choice != 1 && choice != 2 && choice != 3 && choice != 4 && choice != 5) {
-                    System.out.println("Błąd: Wybierz tylko 1, 2, 3, 4 lub 5. Spróbuj ponownie.");
-                }
-
-            } catch (NumberFormatException e) {
-                System.out.println("Błąd: Wprowadź poprawną liczbę. Spróbuj ponownie.");
-                choice = 0;
+        registerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cardLayout.show(mainPanel, "register");
             }
-        } while (choice != 1 && choice != 2 && choice != 3 & choice != 4 && choice != 5);
+        });
+        mainPanel.add(loginPanel, "login");
+        mainPanel.add(registerPanel, "register");
+        mainPanel.add(welcomePanel, "welcome");
 
-        switch (choice) {
-            case 1 -> {
-                //funkcja przelewu
-                if (user.getAccounts().isEmpty()) {
-                    System.out.println("Nie posiadasz jeszcze żadnego rachunku. ");
-                } else {
-                    user.makeTransaction(manager);
-                    System.out.println("Przelew powiódł się.");
-                }
+
+        setTitle("Druzyna Bank");
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setSize(800, 800);
+        setLocationRelativeTo(null);
+        setVisible(true);
+        returnButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cardLayout.show(mainPanel, "welcome");
+
             }
-            case 2-> {
-                //funkcja sprawdzania historii transakcji
-                if (user.getAccounts().isEmpty()) {
-                    System.out.println("Nie posiadasz jeszcze żadnego rachunku. ");
-                } else {
-                    TransactionHistory transactionHistory = new TransactionHistory(user, accountsMenu(user), this.manager);
-                    transactionHistory.printTransactionHistory();
+        });
+        confirmLoginButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String email = emailInputField.getText();
+                char[] password = passwordInputField.getPassword();
+                User user;
+                try {
+                    user = User.login(manager, email, password);
+                    JOptionPane.showMessageDialog(Menu.this, "Zalogowano");
+
+                } catch (LoginFailedException error) {
+                    JOptionPane.showMessageDialog(Menu.this, "Zle dane");
+                } catch (SQLException error) {
+                    JOptionPane.showMessageDialog(Menu.this, "Zle dane");
                 }
             }
-            case 3 -> {
-                //funkcja sprawdzania salda
-                if (user.getAccounts().isEmpty()) {
-                    System.out.println("Nie posiadasz jeszcze żadnego rachunku. ");
-                } else {
-                    Account account = manager.findAccount(accountsMenu(user));
-                    account.showBalance();
+        });
+        returnRegisterButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cardLayout.show(mainPanel, "welcome");
+            }
+        });
+        confirmRegisterButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String email = emailRegisterField.getText();
+                String name = nameRegisterField.getText();
+                String surname = surnameRegisterField.getText();
+                char[] password = passwordRegisterField1.getPassword();
+                char[] passwordRepeated = passwordRegisterField2.getPassword();
+                User user;
+                try {
+                    user = User.register(manager, email, name, surname, password, passwordRepeated);
+                } catch (OccupiedEmailException a) {
+                    JOptionPane.showMessageDialog(Menu.this, "Email zostal uzyty");
+                } catch (InvalidEmailException a) {
+                    JOptionPane.showMessageDialog(Menu.this, "Niepoprawny email");
+                } catch (InvalidPasswordException a) {
+                    JOptionPane.showMessageDialog(Menu.this, "Niepoprawne haslo");
+                } catch (PasswordMissmatchException a) {
+                    JOptionPane.showMessageDialog(Menu.this, "Hasla nie sa takie same");
+                } catch (InvalidNameException a) {
+                    JOptionPane.showMessageDialog(Menu.this, "Zle dane w polu imie");
+                } catch (SQLException a) {
+                    JOptionPane.showMessageDialog(Menu.this, "Blad bazy");
                 }
             }
-            case 4 -> {
-                //funkcja tworzenia nowego rachunku
-                user.createAccount(manager);
-                System.out.println("Tworzenie rachunku.");
-            }
-            case 5 -> {
-                System.out.println("Wylogowywanie...");
-                logged = false;
-            }
-        }
-
-        return logged;
+        });
     }
-
-    public static int choiceLoop() {
-        Scanner sc;
-        int choice;
-        do {
-            sc = new Scanner(System.in);
-
-            try {
-                choice = Integer.parseInt(sc.next());
-
-                if (choice != 1 && choice != 2) {
-                    System.out.println("Błąd: Wybierz tylko 1 lub 2. Spróbuj ponownie.");
-                }
-
-            } catch (NumberFormatException e) {
-                System.out.println("Błąd: Wprowadź poprawną liczbę. Spróbuj ponownie.");
-                choice = 0;
-            }
-        } while (choice != 1 && choice != 2);
-        return choice;
-    }
-
-    public void menu() throws SQLException {
-        System.out.println("Witamy w naszym banku.\nJeśli posiadasz konto - zaloguj się (1), jeśli nie zarejestruj się (2)");
-        System.out.print("Wybierz liczbę: ");
-
-
-        boolean logged = false;
-        User user = null;
-
-        int choice = choiceLoop();
-
-        switch (choice) {
-            case 1 -> {
-                //funkcja logowania
-                user = User.login(this.manager);
-                logged=true;
-            }
-            case 2 -> {
-                //funkcja rejestracji
-                User.register(this.manager);
-                System.out.println("Konto założone pomyślnie. Teraz ZALOGUJ SIĘ.");
-                user = User.login(this.manager);
-                logged=true;
-            }
-        }
-
-        while (logged){
-            String name = user.getName();
-            System.out.println("Witaj, "+ name);
-            logged = userMenu(user, logged);
-        }
-        System.out.println("Wylogowano");
-    }
-
-    public void mainMenu() throws SQLException {
-        while (true) {
-            System.out.println("\n");
-            menu();
-        }
-    }
-
 }

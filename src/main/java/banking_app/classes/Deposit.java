@@ -10,27 +10,27 @@ public class Deposit {
     private String name;
     private BigDecimal amount;
     private BigDecimal rate;
-    private int ownerId;
+    private long ownerAccId;
     private Date start, end;
 
     public Deposit(int depositId, String name, BigDecimal amount,
-                   BigDecimal rate, int ownerId, Date start, Date end) {
+                   BigDecimal rate, long ownerId, Date start, Date end) {
         this.depositId = depositId;
         this.rate = rate;
         this.name = name;
         this.amount = amount;
-        this.ownerId = ownerId;
+        this.ownerAccId = ownerId;
         this.start = start;
         this.end = end;
     }
 
     public Deposit(ResultSet resultSet) throws SQLException {
 
-        this(resultSet.getInt("depositId"),
+        this(resultSet.getInt("deposit_Id"),
                 resultSet.getString("name"),
                 resultSet.getBigDecimal("amount"),
                 resultSet.getBigDecimal("rate"),
-                resultSet.getInt("ownerId"),
+                resultSet.getLong("owner_acc_id"),
                 resultSet.getDate("start_date"),
                 resultSet.getDate("end_date"));
     }
@@ -51,7 +51,7 @@ public class Deposit {
     }
 
     public long getOwnerId() {
-        return ownerId;
+        return ownerAccId;
     }
 
     public Date getStart() {
