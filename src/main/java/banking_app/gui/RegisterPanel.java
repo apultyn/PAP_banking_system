@@ -1,9 +1,12 @@
 package banking_app.gui;
 
+import banking_app.classes.User;
+import banking_exceptions.*;
 import connections.ConnectionManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.SQLException;
 
 public class RegisterPanel extends JPanel {
 
@@ -11,72 +14,81 @@ public class RegisterPanel extends JPanel {
     private JTextField lastNameField;
     private JTextField emailField;
     private JPasswordField passwordField;
+    private JPasswordField passwordRepeatedField;
     private JButton registerButton;
     private JButton backButton;
+    private ConnectionManager manager;
 
     public RegisterPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel) {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
-        // Ustawienia dla komponentów
-        gbc.insets = new Insets(4, 4, 4, 4);
-        gbc.anchor = GridBagConstraints.WEST;
+        this.manager = manager;
 
-        gbc.gridx = 0; // Kolumna 0
-        gbc.gridy = 0; // Wiersz 0
-        gbc.gridwidth = 2; // Rozciąga etykietę "Rejestracja" na 2 kolumny
+        // Ustawienia dla komponentów
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+        backButton = new JButton("cofnij");
+        backButton.addActionListener(e-> cardLayout.show(cardPanel, "Login"));
+        add(backButton);
+
         add(new JLabel("Rejestracja"), gbc);
 
-        gbc.gridwidth = 1; // Reset do 1 kolumny dla następnych komponentów
-        gbc.gridy++; // Wiersz 1
-        gbc.gridx = 0; // Kolumna 0
         add(new JLabel("Imię"), gbc);
 
-        gbc.gridx++; // Kolumna 1
         firstNameField = new JTextField(10);
-        add(firstNameField, gbc);
+        add(firstNameField);
 
-        gbc.gridx++; // Kolumna 2
         add(new JLabel("Nazwisko"), gbc);
 
-        gbc.gridx++; // Kolumna 3
         lastNameField = new JTextField(10);
-        add(lastNameField, gbc);
+        add(lastNameField);
 
-        gbc.gridx = 0; // Reset do kolumny 0 dla nowego wiersza
-        gbc.gridy++; // Wiersz 2
         add(new JLabel("Email"), gbc);
 
-        gbc.gridx++; // Kolumna 1
-        gbc.gridwidth = 3; // Rozciąga pole email przez 3 kolumny
         emailField = new JTextField(20);
-        add(emailField, gbc);
+        add(emailField);
+
+        add(new JLabel("Podaj haslo"), gbc);
+
+        passwordField = new JPasswordField(20);
+        add(passwordField);
 
 
+        add(new JLabel("Powtorz haslo"), gbc);
+
+        passwordRepeatedField = new JPasswordField(20);
+        add(passwordRepeatedField);
+
+        registerButton = new JButton("Register");
+        registerButton.addActionListener(e -> handleRegister(cardLayout, cardPanel));
+        add(registerButton);
     }
 
-    private void handleRegister() {
+    private void handleRegister(CardLayout cardLayout, JPanel cardPanel) {
         String email = emailField.getText();
         String name = firstNameField.getText();
-//        String surname = surnameField.getText();
-//        char[] password = passwordField1.getPassword();
-//        char[] passwordRepeated = passwordField2.getPassword();
-//        User user;
-//        try {
-//            user = User.register(manager, email, name, surname, password, passwordRepeated);
-//        } catch (OccupiedEmailException a) {
-//            JOptionPane.showMessageDialog(banking_app.classes.Menu.this, "Email zostal uzyty");
-//        } catch (InvalidEmailException a) {
-//            JOptionPane.showMessageDialog(banking_app.classes.Menu.this, "Niepoprawny email");
-//        } catch (InvalidPasswordException a) {
-//            JOptionPane.showMessageDialog(banking_app.classes.Menu.this, "Niepoprawne haslo");
-//        } catch (PasswordMissmatchException a) {
-//            JOptionPane.showMessageDialog(banking_app.classes.Menu.this, "Hasla nie sa takie same");
-//        } catch (InvalidNameException a) {
-//            JOptionPane.showMessageDialog(banking_app.classes.Menu.this, "Zle dane w polu imie");
-//        } catch (SQLException a) {
-//            JOptionPane.showMessageDialog(Menu.this, "Blad bazy");
-//        }
+        String surname = lastNameField.getText();
+        char[] password = passwordField.getPassword();
+        char[] passwordRepeated = passwordRepeatedField.getPassword();
+        User user;
+        try {
+            user = User.register(manager, email, name, surname, password, passwordRepeated);
+            JOptionPane.showMessageDialog(this, "Zarejestrowano");
+            cardLayout.show(cardPanel, "Login");
+        } catch (OccupiedEmailException a) {
+            JOptionPane.showMessageDialog(this, "Email zostal uzyty");
+        } catch (InvalidEmailException a) {
+            JOptionPane.showMessageDialog(this, "Niepoprawny email");
+        } catch (InvalidPasswordException a) {
+            JOptionPane.showMessageDialog(this, "Niepoprawne haslo");
+        } catch (PasswordMissmatchException a) {
+            JOptionPane.showMessageDialog(this, "Hasla nie sa takie same");
+        } catch (InvalidNameException a) {
+            JOptionPane.showMessageDialog(this, "Zle dane w polu imie");
+        } catch (SQLException a) {
+            JOptionPane.showMessageDialog(this, "Blad bazy");
+        }
     }
 
 
