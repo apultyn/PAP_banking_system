@@ -134,7 +134,7 @@ public class User {
         BigDecimal amount;
         input = scanner.nextLine();
         while (!isBigDecimal(input) ||
-                !amountIsInRange(BigDecimal.ZERO, BigDecimal.valueOf(sourceAccount.getTransactionLimit()).min(BigDecimal.valueOf(sourceAccount.getBalance())), new BigDecimal(input))) {
+                !amountIsInRange(BigDecimal.ZERO, BigDecimal.valueOf(sourceAccount.getTransactionLimit()).min(sourceAccount.getBalance()), new BigDecimal(input))) {
             System.out.print("Niepoprawna kwota, wprowadź ponownie: ");
             input = scanner.nextLine();
         }

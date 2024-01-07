@@ -2,6 +2,7 @@ package connections;
 
 
 import banking_app.classes.Account;
+import banking_app.classes.Deposit;
 import banking_app.classes.Transaction;
 import banking_app.classes.User;
 
@@ -181,6 +182,31 @@ public class ConnectionManager {
         preparedStatement.executeUpdate();
     }
 
+    public Boolean checkDepositName(String name, long ownerId) throws SQLException {
+        String sqlQuery = "SELECT * FROM deposits WHERE owner_acc_id = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+        preparedStatement.setLong(1, ownerId);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()) {
+            Deposit deposit = new Deposit(resultSet);
+            if (deposit.getName().equals(name))
+                return false;
+        }
+        return true;
+    }
+
+    public Boolean checkAmountAtAccount(BigDecimal amount, long AccountId) throws SQLException {
+        String sqlQuery = "SELECT * FROM accounts WHERE account_id = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+        preparedStatement.setLong(1, AccountId);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        System.out.println("Entered");
+        if (resultSet.next()) {
+            Account account = new Account(resultSet);
+            return account.getBalance().compareTo(amount) > 0;
+        }
+        return false;
+    }
 
     public void createAutomaticSaving(String name, long sender_id, long reciever_id, BigDecimal amount) throws SQLException {
         String sqlInsert = "INSERT INTO automatic_savings (name, sender_id, reciever_id, amount) values (?, ?, ?, ?)";

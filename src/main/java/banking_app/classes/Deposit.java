@@ -1,5 +1,10 @@
 package banking_app.classes;
 
+import banking_exceptions.AccountNotFoundException;
+import banking_exceptions.DepositNameExistingException;
+import banking_exceptions.NotEnoughFundsException;
+import connections.ConnectionManager;
+
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -14,12 +19,12 @@ public class Deposit {
     private Date start, end;
 
     public Deposit(int depositId, String name, BigDecimal amount,
-                   BigDecimal rate, long ownerId, Date start, Date end) {
+                   BigDecimal rate, long ownerAccId, Date start, Date end) {
         this.depositId = depositId;
         this.rate = rate;
         this.name = name;
         this.amount = amount;
-        this.ownerAccId = ownerId;
+        this.ownerAccId = ownerAccId;
         this.start = start;
         this.end = end;
     }
@@ -50,7 +55,7 @@ public class Deposit {
         return rate;
     }
 
-    public long getOwnerId() {
+    public long getOwnerAccId() {
         return ownerAccId;
     }
 
@@ -60,5 +65,14 @@ public class Deposit {
 
     public Date getEnd() {
         return  end;
+    }
+    public void createDeposit(ConnectionManager manager) throws DepositNameExistingException, SQLException, NotEnoughFundsException, AccountNotFoundException {
+        if (manager.findAccount(ownerAccId) == null)
+            throw new AccountNotFoundException("No such account found");
+        if (!manager.checkDepositName(name, ownerAccId))
+            throw new DepositNameExistingException("Deposit with this name already existing!");
+        if (!manager.checkAmountAtAccount(amount, ownerAccId))
+            throw new NotEnoughFundsException("Not enough funds at account!");
+        manager.createDeposit(name, amount, rate, ownerAccId, end);
     }
 }

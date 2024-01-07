@@ -28,6 +28,7 @@ public class MainMenu extends JFrame {
         UserProfilePanel userProfilePanel = new UserProfilePanel(manager, cardLayout, cardPanel);
         ModifyProfilePanel modifyProfilePanel = new ModifyProfilePanel(manager, cardLayout, cardPanel);
         TransactionsPanel transactionsPanel = new TransactionsPanel(manager, cardLayout, cardPanel);
+        DepositPanel depositPanel = new DepositPanel(manager, cardLayout, cardPanel);
 
 
         cardPanel.add(loginPanel, "Login");
@@ -35,6 +36,7 @@ public class MainMenu extends JFrame {
         cardPanel.add(userProfilePanel, "User");
         cardPanel.add(modifyProfilePanel, "ModifyProfile");
         cardPanel.add(transactionsPanel, "Transactions");
+        cardPanel.add(depositPanel, "Deposits");
 
 
 
