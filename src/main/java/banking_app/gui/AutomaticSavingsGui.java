@@ -13,12 +13,13 @@ public class AutomaticSavingsGui extends JPanel {
     private JPanel cardPanel;
     private JButton viewSavingsButton;
     private JButton registerSavings;
-    public AutomaticSavingsGui(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel) {
+    public AutomaticSavingsGui(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) {
+        this.setName(panelName);
         this.manager = manager;
         this.cardLayout = cardLayout;
         this.cardPanel = cardPanel;
 
-        JButton backButton = new JButton("cofnij");
+        JButton backButton = new JButton("Back");
         backButton.addActionListener(e-> cardLayout.show(cardPanel, "User"));
         add(backButton);
 
@@ -38,9 +39,11 @@ public class AutomaticSavingsGui extends JPanel {
     }
 
     public void handleCreateSaving(){
-        CreateAutomaticSavingsPanel createAutomaticSavingsPanel = (CreateAutomaticSavingsPanel) cardPanel.getComponent(6);
-        createAutomaticSavingsPanel.setUser(user);
-        cardLayout.show(cardPanel, "CreateSaving");
+        CreateAutomaticSavingsPanel createAutomaticSavingsPanel = (CreateAutomaticSavingsPanel) SwingUtilities.findPanelByName(cardPanel, "CreateSaving");
+        if (createAutomaticSavingsPanel != null) {
+            createAutomaticSavingsPanel.setUser(user);
+            cardLayout.show(cardPanel, "CreateSaving");
+        }
     }
 
     public void setUser (User user) {

@@ -23,13 +23,14 @@ public class MainMenu extends JFrame {
         //JPanel registerPanel = new JPanel(); // Dodaj elementy do registerPanel
         //JPanel userPanel = new JPanel(); // Dodaj elementy do userPanel
 
-        LoginPanel loginPanel = new LoginPanel(manager, cardLayout, cardPanel);
-        RegisterPanel registerPanel = new RegisterPanel(manager, cardLayout, cardPanel);
-        UserProfilePanel userProfilePanel = new UserProfilePanel(manager, cardLayout, cardPanel);
-        ModifyProfilePanel modifyProfilePanel = new ModifyProfilePanel(manager, cardLayout, cardPanel);
-        TransactionsPanel transactionsPanel = new TransactionsPanel(manager, cardLayout, cardPanel);
-        AutomaticSavingsGui savingsPanel = new AutomaticSavingsGui(manager, cardLayout, cardPanel);
-        CreateAutomaticSavingsPanel createSavingPanel = new CreateAutomaticSavingsPanel(manager, cardLayout, cardPanel);
+        LoginPanel loginPanel = new LoginPanel(manager, cardLayout, cardPanel, "Login");
+        RegisterPanel registerPanel = new RegisterPanel(manager, cardLayout, cardPanel, "Register");
+        UserProfilePanel userProfilePanel = new UserProfilePanel(manager, cardLayout, cardPanel, "User");
+        ModifyProfilePanel modifyProfilePanel = new ModifyProfilePanel(manager, cardLayout, cardPanel, "ModifyPanel");
+        TransactionsPanel transactionsPanel = new TransactionsPanel(manager, cardLayout, cardPanel, "Transactions");
+        AutomaticSavingsGui savingsPanel = new AutomaticSavingsGui(manager, cardLayout, cardPanel, "SavingsPanel");
+        CreateAutomaticSavingsPanel createSavingPanel = new CreateAutomaticSavingsPanel(manager, cardLayout, cardPanel, "CreateSavings");
+        AccountsPanel accountsPanel = new AccountsPanel(manager, cardLayout, cardPanel, "Accounts");
 
         cardPanel.add(loginPanel, "Login");
         cardPanel.add(registerPanel, "Register");
@@ -38,6 +39,7 @@ public class MainMenu extends JFrame {
         cardPanel.add(transactionsPanel, "Transactions");
         cardPanel.add(savingsPanel, "SavingsPanel");
         cardPanel.add(createSavingPanel, "CreateSaving");
+        cardPanel.add(accountsPanel, "Accounts");
 
 
 
@@ -47,4 +49,5 @@ public class MainMenu extends JFrame {
         frame.add(cardPanel);
         frame.setVisible(true);
     }
+
 }

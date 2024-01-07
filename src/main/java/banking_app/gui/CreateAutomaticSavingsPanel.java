@@ -18,7 +18,8 @@ public class CreateAutomaticSavingsPanel extends JPanel {
     private JTextField senderField;
     private JTextField amountField;
     private JButton backButton, confirmButton;
-    public CreateAutomaticSavingsPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel) {
+    public CreateAutomaticSavingsPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) {
+        this.setName(panelName);
         this.manager = manager;
         this.cardLayout = cardLayout;
         this.cardPanel = cardPanel;

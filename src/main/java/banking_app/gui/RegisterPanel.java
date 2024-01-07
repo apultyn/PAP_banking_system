@@ -19,7 +19,8 @@ public class RegisterPanel extends JPanel {
     private JButton backButton;
     private ConnectionManager manager;
 
-    public RegisterPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel) {
+    public RegisterPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) {
+        this.setName(panelName);
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
