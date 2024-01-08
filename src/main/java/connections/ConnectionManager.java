@@ -263,17 +263,33 @@ public class ConnectionManager {
         preparedStatement.setInt(2, user_id);
         preparedStatement.executeUpdate();
     }
-    public List<AutomaticSaving> findUsersSavings(int user_id) throws SQLException {
-        String sqlQuery = "SELECT * FROM automatic_savings WHERE owner_id = ?";
-        PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
-        preparedStatement.setInt(1, user_id);
-        List<AutomaticSaving> savings = new ArrayList<>();
 
+    public List<AutomaticSaving> findSavingsBySenderAcc(long accId) throws SQLException {
+        String sqlQuery = "SELECT * FROM automatic_savings WHERE sender_id = ?";
+        List<Account> accounts = new ArrayList<>();
+
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+        preparedStatement.setLong(1, accId);
+
+        List<AutomaticSaving> savings = new ArrayList<>();
         try (ResultSet resultSet = preparedStatement.executeQuery()) {
             while (resultSet.next()) {
                 AutomaticSaving saving = new AutomaticSaving(resultSet);
                 savings.add(saving);
             }
+        }
+        return savings;
+    }
+
+    public List<AutomaticSaving> findUsersSavings(int user_id) throws SQLException {
+        List<Account> accounts = new ArrayList<>();
+        accounts = findUsersAccounts(user_id);
+
+        List<AutomaticSaving> savings = new ArrayList<>();
+        for (Account a : accounts) {
+            List<AutomaticSaving> savingsSingleAcc = new ArrayList<>();
+            savingsSingleAcc = findSavingsBySenderAcc(a.getAccountId());
+            savings.addAll(savingsSingleAcc);
         }
         return savings;
     }
