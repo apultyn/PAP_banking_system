@@ -1,5 +1,6 @@
 package banking_app.classes;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,10 +12,10 @@ public class Account {
     private final Date dateCreated;
     private final int userId;
 
-    private final float balance;
+    private final BigDecimal balance;
 
     public Account(long accountId, String name, float transactionLimit,
-                   Date dateCreated, int userId, float balance) {
+                   Date dateCreated, int userId, BigDecimal balance) {
         this.accountId = accountId;
         this.name = name;
         this.transactionLimit = transactionLimit;
@@ -30,7 +31,7 @@ public class Account {
                 resultSet.getFloat("transaction_limit"),
                 resultSet.getDate("creation_date"),
                 resultSet.getInt("owner_id"),
-                resultSet.getFloat("balance"));
+                resultSet.getBigDecimal("balance"));
     }
 
     public long getAccountId() {
@@ -54,7 +55,7 @@ public class Account {
         return userId;
     }
 
-    public float getBalance() {
+    public BigDecimal getBalance() {
         return balance;
     }
 
@@ -66,18 +67,17 @@ public class Account {
         System.out.println("==============================");
         System.out.println("Stan konta: " + String.format("%.2f", this.getBalance()) + " zł");
         System.out.println("==============================");
-
-
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (!(obj instanceof Account a)) {
-            return false;
-        }
-        return a.name.equals(this.name) && a.accountId == this.accountId;
+    public String toString() {
+        return "Account{" +
+                "accountId=" + accountId +
+                ", name='" + name + '\'' +
+                ", transactionLimit=" + transactionLimit +
+                ", dateCreated=" + dateCreated +
+                ", userId=" + userId +
+                ", balance=" + balance +
+                '}';
     }
 }

@@ -81,7 +81,7 @@ public class Transaction
     }
 
 
-    public static boolean isValidAccountId(ConnectionManager connectionManager, int accountId) throws SQLException{
+    public static boolean isValidAccountId(ConnectionManager connectionManager, long accountId) throws SQLException {
         return connectionManager.findAccount(accountId) != null;
     }
 

@@ -97,7 +97,6 @@ public class ConnectionManager {
                 accounts.add(account);
             }
         }
-
         return accounts;
     }
 
@@ -167,18 +166,79 @@ public class ConnectionManager {
         }
     }
 
-    public void createDeposit(String name, BigDecimal amount,
-                              BigDecimal rate, long ownerId, Date end) throws SQLException {
+    public void createDeposit(Deposit deposit) throws SQLException {
         String sqlInsert = "INSERT INTO deposits (name, rate, end_date, amount, owner_acc_id) values (?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
-        preparedStatement.setString(1, name);
-        preparedStatement.setBigDecimal(2, rate);
-        preparedStatement.setDate(3, end);
-        preparedStatement.setBigDecimal(4, amount);
-        preparedStatement.setLong(5, ownerId);
+        preparedStatement.setString(1, deposit.getName());
+        preparedStatement.setBigDecimal(2, deposit.getRate());
+        preparedStatement.setDate(3, deposit.getEnd());
+        preparedStatement.setBigDecimal(4, deposit.getAmount());
+        preparedStatement.setLong(5, deposit.getOwnerAccId());
         preparedStatement.executeUpdate();
     }
 
+    public Boolean checkDepositName(String name, long ownerId) throws SQLException {
+        String sqlQuery = "SELECT * FROM deposits WHERE owner_acc_id = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+        preparedStatement.setLong(1, ownerId);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()) {
+            Deposit deposit = new Deposit(resultSet);
+            if (deposit.getName().equals(name))
+                return false;
+        }
+        return true;
+    }
+
+    public List<Deposit> findUsersDeposits(int user_id) throws SQLException {
+        List<Account> listAccounts = findUsersAccounts(user_id);
+        List<Long> accountIds = new ArrayList<>();
+        for (Account account : listAccounts) {
+            accountIds.add(account.getAccountId());
+        }
+
+        if (accountIds.isEmpty()) {
+            return new ArrayList<>(); // Return empty list if no accounts found
+        }
+
+        String sql = createSqlQuery(accountIds);
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            for (int i = 0; i < accountIds.size(); i++) {
+                pstmt.setLong(i + 1, accountIds.get(i)); // Set account ID for each placeholder
+            }
+            ResultSet rs = pstmt.executeQuery();
+            List<Deposit> deposits = new ArrayList<>();
+            while (rs.next()) {
+                deposits.add(new Deposit(rs));
+            }
+            return deposits;
+        }
+    }
+
+    private String createSqlQuery(List<Long> accountIds) {
+        StringBuilder builder = new StringBuilder("SELECT * FROM deposits WHERE owner_acc_id IN (");
+        for (int i = 0; i < accountIds.size(); i++) {
+            builder.append("?");
+            if (i < accountIds.size() - 1) {
+                builder.append(",");
+            }
+        }
+        builder.append(")");
+        return builder.toString();
+    }
+
+    public Boolean checkAmountAtAccount(BigDecimal amount, long AccountId) throws SQLException {
+        String sqlQuery = "SELECT * FROM accounts WHERE account_id = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+        preparedStatement.setLong(1, AccountId);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        System.out.println("Entered");
+        if (resultSet.next()) {
+            Account account = new Account(resultSet);
+            return account.getBalance().compareTo(amount) > 0;
+        }
+        return false;
+    }
 
     public void createAutomaticSaving(String name, long sender_id, long reciever_id, BigDecimal amount) throws SQLException {
         String sqlInsert = "INSERT INTO automatic_savings (name, sender_id, reciever_id, amount) values (?, ?, ?, ?)";
