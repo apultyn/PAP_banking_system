@@ -8,7 +8,14 @@ import java.sql.SQLException;
 
 public class MainMenu extends JFrame {
     private ConnectionManager manager;
-
+    public MainMenu() {
+        String[] arr = new String[]{};
+        try {
+            main(arr);
+        } catch (SQLException a) {
+            System.out.println("a");
+        }
+    }
     public static void main(String[] args) throws SQLException {
         JFrame frame = new JFrame("Bank Application");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
