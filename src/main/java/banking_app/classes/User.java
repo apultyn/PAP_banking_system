@@ -169,20 +169,46 @@ public class User {
             }
         }
     }
-    public void updateFirstName(ConnectionManager manager, String  newName) {
+    public void updateFirstName(ConnectionManager manager, String newName) throws InvalidNameException, SQLException, MissingInformationException, RepeatedDataException {
+        if (newName == null)
+            throw new  MissingInformationException("New name can't be null!");
+        if (newName.equals(name))
+            throw new RepeatedDataException("New name can't be the same as previous!");
+        if (newName.contains(" "))
+            throw new InvalidNameException("New name contains space!");
         manager.updateUserFirstName(id, newName);
     }
 
-    public void updateSurname(ConnectionManager manager, String newSurname) {
+    public void updateSurname(ConnectionManager manager, String newSurname) throws InvalidNameException, SQLException, MissingInformationException, RepeatedDataException {
+        if (newSurname == null)
+            throw new MissingInformationException("New surname can't be null!");
+        if (newSurname.equals(name))
+            throw new RepeatedDataException("New surname can't be the same as previous!");
+        if (newSurname.contains(" "))
+            throw new InvalidNameException("New surname contains space!");
         manager.updateUserSurname(id, newSurname);
     }
 
-    public void updateEmail(ConnectionManager manager, String newEmail) {
+    public void updateEmail(ConnectionManager manager, String newEmail) throws MissingInformationException, RepeatedDataException, InvalidEmailException, SQLException {
+        if (newEmail == null)
+            throw new MissingInformationException("New email can't be null!");
+        if (newEmail.equals(email))
+            throw new RepeatedDataException("New email can't be the same as previous!");
+        if (!new EmailValidator().validate(newEmail))
+            throw new InvalidEmailException("Email in wrong format!");
         manager.updateUserEmail(id, newEmail);
     }
 
-    public void updatePassword(ConnectionManager manager, String oldPassword, String newPassword, String repNewPassword) {
-        manager.updateUserPassword(manager, password);
+    public void updatePassword(ConnectionManager manager, String oldPassword, String newPassword, String repNewPassword) throws MissingInformationException, InvalidPasswordException, LoginFailedException, PasswordMissmatchException, SQLException {
+        if (oldPassword == null || newPassword == null || repNewPassword == null)
+            throw new MissingInformationException("Missing some passwords!");
+        if (!oldPassword.equals(password))
+            throw new LoginFailedException("Wrong old password!");
+        if (!new PasswordValidator().validate(newPassword))
+            throw new InvalidPasswordException("Wrong password format!");
+        if (!newPassword.equals(repNewPassword))
+            throw new PasswordMissmatchException("New password not repeated correctly!");
+        manager.updateUserPassword(id, password);
     }
 }
 
