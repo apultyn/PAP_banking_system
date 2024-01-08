@@ -5,6 +5,7 @@ import connections.ConnectionManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.SQLException;
 
 public class UserProfilePanel extends JPanel {
     private User user;
@@ -47,6 +48,13 @@ public class UserProfilePanel extends JPanel {
         automaticSavingButton.addActionListener(e -> handleAutomaticSavings());
         accountsButton.addActionListener(e -> handleAccountsButton());
         standingOrdersButton.addActionListener(e->handleStandingOrders());
+        transactionsButton.addActionListener(e -> {
+            try {
+                handleTransactionsButton();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
 
     }
 
@@ -64,7 +72,7 @@ public class UserProfilePanel extends JPanel {
 
     }
 
-    public void handleTransactionsButton() {
+    public void handleTransactionsButton() throws SQLException {
         TransactionsPanel transactionsPanel = (TransactionsPanel) SwingUtilities.findPanelByName(cardPanel, "Transactions");
         if (transactionsPanel != null) {
             transactionsPanel.setUser(user);
