@@ -59,7 +59,7 @@ public class DepositPanel extends JPanel {
         createNewButton = new JButton("Create New Deposit");
         createNewButton.addActionListener(e -> {
             try {
-                createNewDeposit(manager, user);
+                createNewDeposit(manager, user, listModel);
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
@@ -107,7 +107,19 @@ public class DepositPanel extends JPanel {
         // Implement go back functionality here
     }
 
-    private void createNewDeposit(ConnectionManager manager, User user) throws SQLException {
+    private void updateDepositList(ConnectionManager manager, DefaultListModel<String> listModel, User user) {
+        listModel.clear();
+        try {
+            deposits = new ArrayList<>(manager.findUsersDeposits(user.getId()));
+            for (Deposit deposit : deposits) {
+                listModel.addElement(deposit.getName());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Handle exceptions appropriately
+        }
+    }
+
+    private void createNewDeposit(ConnectionManager manager, User user, DefaultListModel<String> listModel) throws SQLException {
         JDialog dialog = new JDialog();
         dialog.setTitle("Create New Deposit");
         dialog.setSize(400, 300); // Set the size of the dialog
@@ -148,6 +160,10 @@ public class DepositPanel extends JPanel {
                 try {
                     Deposit deposit = getDeposit(selectedAccount, nameField, amountField, rateField, endDateChooser, accountComboBox);
                     deposit.createDeposit(manager);
+                    JOptionPane.showMessageDialog(dialog, "Deposit created");
+                    dialog.dispose(); // Close the creating deposit window
+                    updateDepositList(manager, listModel, user ); // Update deposit list in main panel
+
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 } catch (NotEnoughFundsException ex) {
@@ -162,6 +178,14 @@ public class DepositPanel extends JPanel {
             }
         });
         dialog.add(submitButton);
+        JButton goBackButton = new JButton("Go Back");
+        goBackButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dialog.dispose(); // Close the dialog
+            }
+        });
+        dialog.add(goBackButton);
 
         // Display the dialog
         dialog.setVisible(true);
