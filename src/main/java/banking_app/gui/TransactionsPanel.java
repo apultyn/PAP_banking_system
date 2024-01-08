@@ -20,13 +20,15 @@ public class TransactionsPanel extends JPanel {
     private JTextField titleField;
     protected JComboBox<Long> accountComboBox;
     private JTextField amountField;
-    protected JButton transferButton;
-    protected JButton backButton;
+    private JButton transferButton;
+    private JButton backButton;
+    private CardLayout cardLayout;
+    private JPanel cardPanel;
     public TransactionsPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) throws SQLException {
-        this.manager = manager;
-
         this.setName(panelName);
-
+        this.manager = manager;
+        this.cardLayout = cardLayout;
+        this.cardPanel = cardPanel;
 
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();

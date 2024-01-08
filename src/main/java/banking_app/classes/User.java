@@ -90,7 +90,7 @@ public class User {
         User user;
         user = manager.findUser(email);
         if (user == null || !String.valueOf(password).equals(user.getPassword()))
-            throw new LoginFailedException("Incorrect logging data");
+            throw new LoginFailedException("Incorrect e-mail or password!");
         return user;
     }
 
@@ -137,7 +137,7 @@ public class User {
         if (!amountIsInRange(BigDecimal.ZERO, BigDecimal.valueOf(senderAccount.getTransactionLimit()), new BigDecimal(amount))) {
             throw new InvalidAmountException("Transaction exceeds the limit!");
         }
-        if (!amountIsInRange(BigDecimal.ZERO, BigDecimal.valueOf(senderAccount.getBalance()), new BigDecimal(amount))) {
+        if (!amountIsInRange(BigDecimal.ZERO, senderAccount.getBalance(), new BigDecimal(amount))) {
             throw new InvalidAmountException("Insufficient funds!");
         }
 
