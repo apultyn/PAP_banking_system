@@ -37,7 +37,7 @@ public class StandingOrdersPanel extends JPanel {
         JButton backButton = new JButton("Back");
         backButton.addActionListener(e-> cardLayout.show(cardPanel, "User"));
 
-        registerSavings = new JButton("Create new automatic savings");
+        registerSavings = new JButton("Create new standing order");
         registerSavings.addActionListener(e->handleCreateOrder());
 
         add(new JLabel("Your standing orders: "));

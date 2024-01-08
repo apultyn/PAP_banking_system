@@ -23,33 +23,35 @@ public class CreateAutomaticSavingsPanel extends JPanel {
         this.cardLayout = cardLayout;
         this.cardPanel = cardPanel;
 
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
         add(new JLabel("Create new automatic saving"));
 
         backButton = new JButton("cofnij");
         backButton.addActionListener(e-> cardLayout.show(cardPanel, "SavingsPanel"));
         add(backButton);
 
-        add(new JLabel("Podaj nazwe"));
+        add(new JLabel("Write the name of the order"));
 
         nameField = new JTextField(10);
         add(nameField);
 
-        add(new JLabel("Podaj konto z ktorego wysylasz"));
+        add(new JLabel("Write account number from which to send"));
 
         senderField = new JTextField(20);
         add(senderField);
 
-        add(new JLabel("Podaj konto na ktore wysylasz"));
+        add(new JLabel("Write account number to which you want to send send"));
 
         recieverField = new JTextField(20);
         add(recieverField);
 
-        add(new JLabel("Podaj ile chcesz wysylac"));
+        add(new JLabel("Write the amount you want to send"));
 
         amountField = new JTextField(20);
         add(amountField);
 
-        confirmButton = new JButton("Potwierdz");
+        confirmButton = new JButton("confirm");
         confirmButton.addActionListener(e-> registerAutomatic());
         add(confirmButton);
 

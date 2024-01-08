@@ -20,7 +20,7 @@ public class RegisterPanel extends JPanel {
     private ConnectionManager manager;
 
     public RegisterPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel) {
-        setLayout(new GridBagLayout());
+
         GridBagConstraints gbc = new GridBagConstraints();
 
         this.manager = manager;

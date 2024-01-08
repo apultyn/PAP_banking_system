@@ -23,9 +23,11 @@ public class CreateStandingOrdersPanel extends JPanel{
         this.cardLayout = cardLayout;
         this.cardPanel = cardPanel;
 
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
         add(new JLabel("Create new standing order"));
 
-        backButton = new JButton("cofnij");
+        backButton = new JButton("Back");
         backButton.addActionListener(e-> cardLayout.show(cardPanel, "StandingOrders"));
         add(backButton);
 
@@ -44,7 +46,7 @@ public class CreateStandingOrdersPanel extends JPanel{
         recieverField = new JTextField(20);
         add(recieverField);
 
-        add(new JLabel("Write ammount that you wanto to send"));
+        add(new JLabel("Write amount that you wanto to send"));
 
         amountField = new JTextField(20);
         add(amountField);
