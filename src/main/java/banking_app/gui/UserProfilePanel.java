@@ -85,4 +85,9 @@ public class UserProfilePanel extends JPanel {
             cardLayout.show(cardPanel, "Accounts");
         }
     }
+    public void handleStandingOrders() {
+        StandingOrdersPanel savingsPanel = (StandingOrdersPanel) cardPanel.getComponent(7);
+        savingsPanel.setUser(user);
+        cardLayout.show(cardPanel, "StandingOrders");
+    }
 }

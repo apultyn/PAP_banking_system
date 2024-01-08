@@ -1,6 +1,6 @@
 package banking_app.gui;
 
-import banking_app.classes.AutomaticSaving;
+import banking_app.classes.StandingOrder;
 import banking_app.classes.User;
 import connections.ConnectionManager;
 
@@ -9,9 +9,9 @@ import java.awt.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class AutomaticSavingsGui extends JPanel {
+public class StandingOrdersPanel extends JPanel {
     private User user;
-    private ArrayList<AutomaticSaving> savings;
+    private ArrayList<StandingOrder> orders;
 
     private ConnectionManager manager;
     private CardLayout cardLayout;
@@ -20,7 +20,7 @@ public class AutomaticSavingsGui extends JPanel {
     private JButton registerSavings;
     private JList<String> asList;
     private JLabel nameLabel, startDateLabel, senderIdLabel, recieverIdLabel, amountLabel;
-    public AutomaticSavingsGui(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel) {
+    public StandingOrdersPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel) {
         this.manager = manager;
         this.cardLayout = cardLayout;
         this.cardPanel = cardPanel;
@@ -34,15 +34,13 @@ public class AutomaticSavingsGui extends JPanel {
         amountLabel = new JLabel("How much:");
 
 
-        JButton backButton = new JButton("cofnij");
+        JButton backButton = new JButton("Back");
         backButton.addActionListener(e-> cardLayout.show(cardPanel, "User"));
 
-        add(new JLabel("Automatyczne oszczedzanie"));
+        registerSavings = new JButton("Create new standing order");
+        registerSavings.addActionListener(e->handleCreateOrder());
 
-        registerSavings = new JButton("Create new automatic savings");
-        registerSavings.addActionListener(e->handleCreateSaving());
-
-        add(new JLabel("Your automatic savings: "));
+        add(new JLabel("Your standing orders: "));
 
         JPanel infoPanel = new JPanel();
         infoPanel.setLayout(new GridLayout(5, 2));
@@ -68,44 +66,41 @@ public class AutomaticSavingsGui extends JPanel {
         return;
     }
 
-    public void handleCreateSaving(){
-        CreateAutomaticSavingsPanel createAutomaticSavingsPanel = (CreateAutomaticSavingsPanel) SwingUtilities.findPanelByName(cardPanel, "CreateSaving");
-        if (createAutomaticSavingsPanel != null) {
-            createAutomaticSavingsPanel.setUser(user);
-            cardLayout.show(cardPanel, "CreateSaving");
-        }
+    public void handleCreateOrder(){
+        CreateStandingOrdersPanel createStandingOrdersPanel = (CreateStandingOrdersPanel) cardPanel.getComponent(8);
+        createStandingOrdersPanel.setUser(user);
+        cardLayout.show(cardPanel, "CreateOrder");
     }
 
     public void setUser (User user) {
         this.user = user;
 
         try {
-            savings = new ArrayList<>(manager.findUsersSavings(user.getId()));
+            orders = new ArrayList<>(manager.findUsersOrders(user.getId()));
         } catch (SQLException a) {
             //JOptionPane.showMessageDialog(this, "Blad bazy");
-            savings = new ArrayList<>();
+            orders = new ArrayList<>();
         }
         DefaultListModel<String> listModel = new DefaultListModel<>();
-        for (AutomaticSaving as : savings) {
-            listModel.addElement(as.getName());
+        for (StandingOrder o : orders) {
+            listModel.addElement(o.getName());
         }
 
         asList = new JList<>(listModel);
         asList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        asList.addListSelectionListener(e -> displaySelectedSaving());
+        asList.addListSelectionListener(e -> displaySelectedOrder());
 
         add(new JScrollPane(asList), BorderLayout.WEST);
     }
-
-    public void displaySelectedSaving() {
+    public void displaySelectedOrder() {
         int selectedIndex = asList.getSelectedIndex();
         if (selectedIndex >= 0) {
-            AutomaticSaving saving = savings.get(selectedIndex);
-            nameLabel.setText("Name: " + saving.getName());
-            startDateLabel.setText("Date started: " + saving.getDateStarted());
-            senderIdLabel.setText("From which account: " + saving.getSourceAccountId());
-            recieverIdLabel.setText("To which account: " + saving.getTargetAccountId());
-            amountLabel.setText("How much: " + saving.getAmount());
+            StandingOrder order = orders.get(selectedIndex);
+            nameLabel.setText("Name: " + order.getName());
+            startDateLabel.setText("Date started: " + order.getDateStarted());
+            senderIdLabel.setText("From which account: " + order.getSourceAccountId());
+            recieverIdLabel.setText("To which account: " + order.getTargetAccountId());
+            amountLabel.setText("How much: " + order.getAmount());
         }
 
     }

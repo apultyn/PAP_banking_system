@@ -1,6 +1,6 @@
 package banking_app.gui;
 
-import banking_app.classes.AutomaticSaving;
+import banking_app.classes.StandingOrder;
 import banking_app.classes.User;
 import connections.ConnectionManager;
 
@@ -8,7 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.sql.SQLException;
 
-public class CreateAutomaticSavingsPanel extends JPanel {
+public class CreateStandingOrdersPanel extends JPanel{
     private User user;
     private ConnectionManager manager;
     private CardLayout cardLayout;
@@ -18,21 +18,20 @@ public class CreateAutomaticSavingsPanel extends JPanel {
     private JTextField senderField;
     private JTextField amountField;
     private JButton backButton, confirmButton;
-    public CreateAutomaticSavingsPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) {
-        this.setName(panelName);
+    public CreateStandingOrdersPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel) {
         this.manager = manager;
         this.cardLayout = cardLayout;
         this.cardPanel = cardPanel;
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        add(new JLabel("Create new automatic saving"));
+        add(new JLabel("Create new standing order"));
 
-        backButton = new JButton("cofnij");
-        backButton.addActionListener(e-> cardLayout.show(cardPanel, "SavingsPanel"));
+        backButton = new JButton("Back");
+        backButton.addActionListener(e-> cardLayout.show(cardPanel, "StandingOrders"));
         add(backButton);
 
-        add(new JLabel("Write the name of the order"));
+        add(new JLabel("Choose name"));
 
         nameField = new JTextField(10);
         add(nameField);
@@ -47,28 +46,28 @@ public class CreateAutomaticSavingsPanel extends JPanel {
         recieverField = new JTextField(20);
         add(recieverField);
 
-        add(new JLabel("Write the amount you want to send"));
+        add(new JLabel("Write amount that you wanto to send"));
 
         amountField = new JTextField(20);
         add(amountField);
 
-        confirmButton = new JButton("confirm");
-        confirmButton.addActionListener(e-> registerAutomatic());
+        confirmButton = new JButton("Confirm");
+        confirmButton.addActionListener(e-> registerStanding());
         add(confirmButton);
 
     }
-    public void registerAutomatic() {
+    public void registerStanding() {
         String name = nameField.getText();
         String senderId = senderField.getText();
         String recieverId = recieverField.getText();
         String amount = amountField.getText();
         try {
-            AutomaticSaving.registerAutomaticSaving(manager, user, name, senderId, recieverId, amount);
-            JOptionPane.showMessageDialog(this, "Utworzono");
+            StandingOrder.registerStandingOrder(manager, user, name, senderId, recieverId, amount);
+            JOptionPane.showMessageDialog(this, "Created");
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Zle dane");
+            JOptionPane.showMessageDialog(this, "Wrong input");
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Blad bazy");
+            JOptionPane.showMessageDialog(this, "Database fault");
         }
     }
     public void setUser(User u) {
