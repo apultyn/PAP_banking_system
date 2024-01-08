@@ -169,9 +169,10 @@ public class User {
             }
         }
     }
-    public void updateFirstName(ConnectionManager manager, String oldName, String newName) throws InvalidNameException, SQLException, MissingInformationException, RepeatedDataException, DataMissmatchException {
-        if (newName == null)
-            throw new  MissingInformationException("New name can't be null!");
+    public void updateFirstName(ConnectionManager manager, String oldName, String newName) throws
+            InvalidNameException, SQLException, MissingInformationException, RepeatedDataException, DataMissmatchException {
+        if (oldName == null || newName == null)
+            throw new MissingInformationException("Missing data!");
         if (!oldName.equals(name))
             throw new DataMissmatchException("Wrong old name!");
         if (newName.equals(name))
@@ -179,11 +180,13 @@ public class User {
         if (newName.contains(" "))
             throw new InvalidNameException("New name contains space!");
         manager.updateUserFirstName(id, newName);
+        name = newName;
     }
 
-    public void updateSurname(ConnectionManager manager, String oldSurname, String newSurname) throws InvalidNameException, SQLException, MissingInformationException, RepeatedDataException, DataMissmatchException {
-        if (newSurname == null)
-            throw new MissingInformationException("New surname can't be null!");
+    public void updateSurname(ConnectionManager manager, String oldSurname, String newSurname) throws
+            InvalidNameException, SQLException, MissingInformationException, RepeatedDataException, DataMissmatchException {
+        if (oldSurname == null|| newSurname == null)
+            throw new MissingInformationException("Missing data!");
         if (!oldSurname.equals(surname))
             throw new DataMissmatchException("Wrong old surname!");
         if (newSurname.equals(name))
@@ -191,10 +194,12 @@ public class User {
         if (newSurname.contains(" "))
             throw new InvalidNameException("New surname contains space!");
         manager.updateUserSurname(id, newSurname);
+        surname = newSurname;
     }
 
-    public void updateEmail(ConnectionManager manager,String oldEmail, String newEmail) throws MissingInformationException, RepeatedDataException, InvalidEmailException, SQLException, DataMissmatchException {
-        if (newEmail == null)
+    public void updateEmail(ConnectionManager manager, String oldEmail, String newEmail) throws
+            MissingInformationException, RepeatedDataException, InvalidEmailException, SQLException, DataMissmatchException {
+        if (oldEmail == null || newEmail == null)
             throw new MissingInformationException("New email can't be null!");
         if (!oldEmail.equals(email))
             throw new DataMissmatchException("Wrong old email!");
@@ -203,18 +208,21 @@ public class User {
         if (!new EmailValidator().validate(newEmail))
             throw new InvalidEmailException("Email in wrong format!");
         manager.updateUserEmail(id, newEmail);
+        email = newEmail;
     }
 
-    public void updatePassword(ConnectionManager manager, String oldPassword, String newPassword, String repNewPassword) throws MissingInformationException, InvalidPasswordException, LoginFailedException, PasswordMissmatchException, SQLException {
+    public void updatePassword(ConnectionManager manager, String oldPassword, String newPassword, String repNewPassword) throws
+            MissingInformationException, InvalidPasswordException, PasswordMissmatchException, SQLException, DataMissmatchException {
         if (oldPassword == null || newPassword == null || repNewPassword == null)
             throw new MissingInformationException("Missing some passwords!");
         if (!oldPassword.equals(password))
-            throw new LoginFailedException("Wrong old password!");
+            throw new DataMissmatchException("Wrong old password!");
         if (!new PasswordValidator().validate(newPassword))
             throw new InvalidPasswordException("Wrong password format!");
         if (!newPassword.equals(repNewPassword))
             throw new PasswordMissmatchException("New password not repeated correctly!");
-        manager.updateUserPassword(id, password);
+        manager.updateUserPassword(id, newPassword);
+        password = newPassword;
     }
 }
 
