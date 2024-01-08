@@ -63,6 +63,13 @@ public class UserProfilePanel extends JPanel {
         automaticSavingButton.addActionListener(e -> handleAutomaticSavings());
         accountsButton.addActionListener(e -> handleAccountsButton());
         standingOrdersButton.addActionListener(e->handleStandingOrders());
+        transactionsButton.addActionListener(e -> {
+            try {
+                handleTransactionsButton();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
 
         setLayout(new BorderLayout());
         add(menuPanel, BorderLayout.NORTH); // Add the menu panel at the top
@@ -147,7 +154,7 @@ public class UserProfilePanel extends JPanel {
 
     }
 
-    public void handleTransactionsButton() {
+    public void handleTransactionsButton() throws SQLException {
         TransactionsPanel transactionsPanel = (TransactionsPanel) SwingUtilities.findPanelByName(cardPanel, "Transactions");
         if (transactionsPanel != null) {
             transactionsPanel.setUser(user);
