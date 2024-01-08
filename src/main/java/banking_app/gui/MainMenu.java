@@ -30,6 +30,8 @@ public class MainMenu extends JFrame {
         TransactionsPanel transactionsPanel = new TransactionsPanel(manager, cardLayout, cardPanel);
         AutomaticSavingsGui savingsPanel = new AutomaticSavingsGui(manager, cardLayout, cardPanel);
         CreateAutomaticSavingsPanel createSavingPanel = new CreateAutomaticSavingsPanel(manager, cardLayout, cardPanel);
+        StandingOrdersPanel standingPanel = new StandingOrdersPanel(manager, cardLayout, cardPanel);
+        CreateStandingOrdersPanel createOrderPanel = new CreateStandingOrdersPanel(manager, cardLayout, cardPanel);
 
         cardPanel.add(loginPanel, "Login");
         cardPanel.add(registerPanel, "Register");
@@ -38,6 +40,8 @@ public class MainMenu extends JFrame {
         cardPanel.add(transactionsPanel, "Transactions");
         cardPanel.add(savingsPanel, "SavingsPanel");
         cardPanel.add(createSavingPanel, "CreateSaving");
+        cardPanel.add(standingPanel, "StandingOrders");
+        cardPanel.add(createOrderPanel, "CreateOrder");
 
 
 

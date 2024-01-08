@@ -1,10 +1,7 @@
 package connections;
 
 
-import banking_app.classes.Account;
-import banking_app.classes.AutomaticSaving;
-import banking_app.classes.Transaction;
-import banking_app.classes.User;
+import banking_app.classes.*;
 
 import java.math.BigDecimal;
 import java.sql.*;
@@ -266,7 +263,6 @@ public class ConnectionManager {
 
     public List<AutomaticSaving> findSavingsBySenderAcc(long accId) throws SQLException {
         String sqlQuery = "SELECT * FROM automatic_savings WHERE sender_id = ?";
-        List<Account> accounts = new ArrayList<>();
 
         PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
         preparedStatement.setLong(1, accId);
@@ -292,5 +288,34 @@ public class ConnectionManager {
             savings.addAll(savingsSingleAcc);
         }
         return savings;
+    }
+
+    public List<StandingOrder> findOrdersBySenderAcc(long accId) throws SQLException {
+        String sqlQuery = "SELECT * FROM standing_orders WHERE sender_id = ?";
+
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+        preparedStatement.setLong(1, accId);
+
+        List<StandingOrder> orders = new ArrayList<>();
+        try (ResultSet resultSet = preparedStatement.executeQuery()) {
+            while (resultSet.next()) {
+                StandingOrder order = new StandingOrder(resultSet);
+                orders.add(order);
+            }
+        }
+        return orders;
+    }
+
+    public List<StandingOrder> findUsersOrders(int user_id) throws SQLException {
+        List<Account> accounts = new ArrayList<>();
+        accounts = findUsersAccounts(user_id);
+
+        List<StandingOrder> orders = new ArrayList<>();
+        for (Account a : accounts) {
+            List<StandingOrder> ordersSingleAcc = new ArrayList<>();
+            ordersSingleAcc = findOrdersBySenderAcc(a.getAccountId());
+            orders.addAll(ordersSingleAcc);
+        }
+        return orders;
     }
 }

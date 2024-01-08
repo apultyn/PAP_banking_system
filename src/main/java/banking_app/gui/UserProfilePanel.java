@@ -15,8 +15,6 @@ public class UserProfilePanel extends JPanel {
     private CardLayout cardLayout;
     private JPanel cardPanel;
 
-
-
     public UserProfilePanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.manager = manager;
@@ -30,6 +28,7 @@ public class UserProfilePanel extends JPanel {
         JButton transactionHistoryButton = new JButton("Transaction History");
         JButton modifyProfileButton = new JButton("Modify data");
         JButton automaticSavingButton = new JButton("Automatic Savings");
+        JButton standingOrdersButton = new JButton("Standing orders");
 
 
         add(helloLabel);
@@ -38,9 +37,11 @@ public class UserProfilePanel extends JPanel {
         add(transactionHistoryButton);
         add(modifyProfileButton);
         add(automaticSavingButton);
+        add(standingOrdersButton);
 
         modifyProfileButton.addActionListener(e -> handleModifyButton());
         automaticSavingButton.addActionListener(e -> handleAutomaticSavings());
+        standingOrdersButton.addActionListener(e->handleStandingOrders());
     }
 
     public void setUser(User setted_user) {
@@ -65,5 +66,10 @@ public class UserProfilePanel extends JPanel {
         AutomaticSavingsGui savingsPanel = (AutomaticSavingsGui) cardPanel.getComponent(5);
         savingsPanel.setUser(user);
         cardLayout.show(cardPanel, "SavingsPanel");
+    }
+    public void handleStandingOrders() {
+        StandingOrdersPanel savingsPanel = (StandingOrdersPanel) cardPanel.getComponent(7);
+        savingsPanel.setUser(user);
+        cardLayout.show(cardPanel, "StandingOrders");
     }
 }
