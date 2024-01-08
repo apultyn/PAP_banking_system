@@ -33,6 +33,7 @@ public class UserProfilePanel extends JPanel {
         JButton automaticSavingButton = new JButton("Automatic Savings");
         JButton accountsButton = new JButton("My Accounts");
         JButton standingOrdersButton = new JButton("Standing Orders");
+        JButton loanCalculatorButton = new JButton("Loan Calculator");
 
         add(helloLabel);
         add(transactionsButton);
@@ -42,11 +43,13 @@ public class UserProfilePanel extends JPanel {
         add(automaticSavingButton);
         add(accountsButton);
         add(standingOrdersButton);
+        add(loanCalculatorButton);
 
         modifyProfileButton.addActionListener(e -> handleModifyButton());
         automaticSavingButton.addActionListener(e -> handleAutomaticSavings());
         accountsButton.addActionListener(e -> handleAccountsButton());
         standingOrdersButton.addActionListener(e->handleStandingOrders());
+        loanCalculatorButton.addActionListener(e->handleLoanCalculator());
 
     }
 
@@ -91,5 +94,10 @@ public class UserProfilePanel extends JPanel {
         StandingOrdersPanel savingsPanel = (StandingOrdersPanel) SwingUtilities.findPanelByName(cardPanel, "StandingOrders");;
         savingsPanel.setUser(user);
         cardLayout.show(cardPanel, "StandingOrders");
+    }
+
+    public void handleLoanCalculator() {
+        LoanCalculatorPanel savingsPanel = (LoanCalculatorPanel) SwingUtilities.findPanelByName(cardPanel, "LoanCalculator");
+        cardLayout.show(cardPanel, "LoanCalculator");
     }
 }
