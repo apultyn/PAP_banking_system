@@ -34,6 +34,7 @@ public class MainMenu extends JFrame {
         StandingOrdersPanel standingOrdersPanel = new StandingOrdersPanel(manager, cardLayout, cardPanel, "StandingOrders");
         CreateStandingOrdersPanel createStandingOrdersPanel = new CreateStandingOrdersPanel(manager, cardLayout, cardPanel, "CreateStanding");
 
+
         cardPanel.add(loginPanel, "Login");
         cardPanel.add(registerPanel, "Register");
         cardPanel.add(userProfilePanel, "User");

@@ -289,7 +289,7 @@ public class ConnectionManager {
         preparedStatement.executeUpdate();
     }
 
-    public void updateFirstName(int user_id, String name) throws SQLException {
+    public void updateUserFirstName(int user_id, String name) throws SQLException {
         String sqlUpdate = "UPDATE users SET name = ? WHERE user_id = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlUpdate);
         preparedStatement.setString(1, name);
@@ -297,7 +297,7 @@ public class ConnectionManager {
         preparedStatement.executeUpdate();
     }
 
-    public void updateSurname(int user_id, String surname) throws SQLException {
+    public void updateUserSurname(int user_id, String surname) throws SQLException {
         String sqlUpdate = "UPDATE users SET surname = ? WHERE user_id = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlUpdate);
         preparedStatement.setString(1, surname);
@@ -305,7 +305,7 @@ public class ConnectionManager {
         preparedStatement.executeUpdate();
     }
 
-    public void updateEmail(int user_id, String email) throws SQLException {
+    public void updateUserEmail(int user_id, String email) throws SQLException {
         String sqlUpdate = "UPDATE users SET email = ? WHERE user_id = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlUpdate);
         preparedStatement.setString(1, email);
@@ -313,7 +313,7 @@ public class ConnectionManager {
         preparedStatement.executeUpdate();
     }
 
-    public void updatePassword(int user_id, String password) throws SQLException {
+    public void updateUserPassword(int user_id, String password) throws SQLException {
         String sqlUpdate = "UPDATE users SET password = ? WHERE user_id = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlUpdate);
         preparedStatement.setString(1, password);

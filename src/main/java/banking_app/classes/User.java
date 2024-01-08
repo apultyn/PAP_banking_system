@@ -137,7 +137,7 @@ public class User {
         if (!amountIsInRange(BigDecimal.ZERO, BigDecimal.valueOf(senderAccount.getTransactionLimit()), new BigDecimal(amount))) {
             throw new InvalidAmountException("Transaction exceeds the limit!");
         }
-        if (!amountIsInRange(BigDecimal.ZERO, BigDecimal.valueOf(senderAccount.getBalance()), new BigDecimal(amount))) {
+        if (!amountIsInRange(BigDecimal.ZERO, senderAccount.getBalance(), new BigDecimal(amount))) {
             throw new InvalidAmountException("Insufficient funds!");
         }
 
@@ -168,6 +168,21 @@ public class User {
                 System.out.println("Podaj prawidłową liczbę");
             }
         }
+    }
+    public void updateFirstName(ConnectionManager manager, String  newName) {
+        manager.updateUserFirstName(id, newName);
+    }
+
+    public void updateSurname(ConnectionManager manager, String newSurname) {
+        manager.updateUserSurname(id, newSurname);
+    }
+
+    public void updateEmail(ConnectionManager manager, String newEmail) {
+        manager.updateUserEmail(id, newEmail);
+    }
+
+    public void updatePassword(ConnectionManager manager, String oldPassword, String newPassword, String repNewPassword) {
+        manager.updateUserPassword(manager, password);
     }
 }
 
