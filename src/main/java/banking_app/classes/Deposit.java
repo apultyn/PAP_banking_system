@@ -73,7 +73,7 @@ public class Deposit {
             throw new DepositNameExistingException("Deposit with this name already existing!");
         if (!manager.checkAmountAtAccount(amount, ownerAccId))
             throw new NotEnoughFundsException("Not enough funds at account!");
-        manager.createDeposit(name, amount, rate, ownerAccId, end);
+        manager.createDeposit(this);
     }
 
     @Override
