@@ -18,7 +18,8 @@ public class LoginPanel extends JPanel {
     private CardLayout cardLayout;
     private JPanel cardPanel;
 
-    public LoginPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel) {
+    public LoginPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) {
+        this.setName(panelName);
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.manager = manager;
         this.cardLayout = cardLayout;
@@ -51,10 +52,11 @@ public class LoginPanel extends JPanel {
             user = User.login(manager, email, password);
             System.out.println("Zalogowano");
             JOptionPane.showMessageDialog(this, "Zalogowano");
-            UserProfilePanel userPanel = (UserProfilePanel) cardPanel.getComponent(2);
-            userPanel.setUser(user);
-            // Przełącz na UserPanel
-            cardLayout.show(cardPanel, "User");
+            UserProfilePanel userPanel = (UserProfilePanel) SwingUtilities.findPanelByName(cardPanel, "User");
+            if (userPanel != null){
+                userPanel.setUser(user);
+                cardLayout.show(cardPanel, "User");
+            }
 
         } catch (LoginFailedException error) {
             JOptionPane.showMessageDialog(this, "Zle dane - nie udalo sie zalogowac");

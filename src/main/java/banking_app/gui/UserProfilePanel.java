@@ -15,7 +15,10 @@ public class UserProfilePanel extends JPanel {
     private CardLayout cardLayout;
     private JPanel cardPanel;
 
-    public UserProfilePanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel) {
+
+
+    public UserProfilePanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) {
+        this.setName(panelName);
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.manager = manager;
         this.cardPanel = cardPanel;
@@ -28,7 +31,7 @@ public class UserProfilePanel extends JPanel {
         JButton transactionHistoryButton = new JButton("Transaction History");
         JButton modifyProfileButton = new JButton("Modify data");
         JButton automaticSavingButton = new JButton("Automatic Savings");
-        JButton standingOrdersButton = new JButton("Standing orders");
+        JButton accountsButton = new JButton("My Accounts");
 
 
         add(helloLabel);
@@ -37,11 +40,12 @@ public class UserProfilePanel extends JPanel {
         add(transactionHistoryButton);
         add(modifyProfileButton);
         add(automaticSavingButton);
-        add(standingOrdersButton);
+        add(accountsButton);
 
         modifyProfileButton.addActionListener(e -> handleModifyButton());
         automaticSavingButton.addActionListener(e -> handleAutomaticSavings());
-        standingOrdersButton.addActionListener(e->handleStandingOrders());
+        accountsButton.addActionListener(e -> handleAccountsButton());
+
     }
 
     public void setUser(User setted_user) {
@@ -50,22 +54,36 @@ public class UserProfilePanel extends JPanel {
     }
 
     public void  handleModifyButton() {
-        ModifyProfilePanel modifyPanel = (ModifyProfilePanel) cardPanel.getComponent(3);
-        modifyPanel.setUser(user);
-        // Przełącz na UserPanel
-        cardLayout.show(cardPanel, "ModifyProfile");
+        ModifyProfilePanel modifyPanel = (ModifyProfilePanel) SwingUtilities.findPanelByName(cardPanel, "ModifyPanel");
+        if (modifyPanel != null){
+            modifyPanel.setUser(user);
+            cardLayout.show(cardPanel, "ModifyProfile");
+        }
+
     }
 
     public void handleTransactionsButton() {
-        TransactionsPanel transactionsPanel = (TransactionsPanel) cardPanel.getComponent(4);
-        transactionsPanel.setUser(user);
-        cardLayout.show(cardPanel, "Transactions");
+        TransactionsPanel transactionsPanel = (TransactionsPanel) SwingUtilities.findPanelByName(cardPanel, "Transactions");
+        if (transactionsPanel != null) {
+            transactionsPanel.setUser(user);
+            cardLayout.show(cardPanel, "Transactions");
+        }
     }
 
     public void handleAutomaticSavings() {
-        AutomaticSavingsGui savingsPanel = (AutomaticSavingsGui) cardPanel.getComponent(5);
-        savingsPanel.setUser(user);
-        cardLayout.show(cardPanel, "SavingsPanel");
+        AutomaticSavingsGui savingsPanel = (AutomaticSavingsGui) SwingUtilities.findPanelByName(cardPanel, "SavingsPanel");
+        if (savingsPanel != null) {
+            savingsPanel.setUser(user);
+            cardLayout.show(cardPanel, "SavingsPanel");
+        }
+    }
+
+    public void handleAccountsButton() {
+        AccountsPanel accountsPanel = (AccountsPanel) SwingUtilities.findPanelByName(cardPanel, "Accounts");
+        if (accountsPanel != null){
+            accountsPanel.setUser(user);
+            cardLayout.show(cardPanel, "Accounts");
+        }
     }
     public void handleStandingOrders() {
         StandingOrdersPanel savingsPanel = (StandingOrdersPanel) cardPanel.getComponent(7);

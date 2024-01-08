@@ -8,8 +8,8 @@ import java.awt.*;
 
 public class TransactionsPanel extends JPanel {
 
-    public TransactionsPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel) {
-
+    public TransactionsPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) {
+        this.setName(panelName);
     }
     public void setUser(User user){
 

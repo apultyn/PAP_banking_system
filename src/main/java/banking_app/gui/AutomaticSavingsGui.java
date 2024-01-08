@@ -69,9 +69,11 @@ public class AutomaticSavingsGui extends JPanel {
     }
 
     public void handleCreateSaving(){
-        CreateAutomaticSavingsPanel createAutomaticSavingsPanel = (CreateAutomaticSavingsPanel) cardPanel.getComponent(6);
-        createAutomaticSavingsPanel.setUser(user);
-        cardLayout.show(cardPanel, "CreateSaving");
+        CreateAutomaticSavingsPanel createAutomaticSavingsPanel = (CreateAutomaticSavingsPanel) SwingUtilities.findPanelByName(cardPanel, "CreateSaving");
+        if (createAutomaticSavingsPanel != null) {
+            createAutomaticSavingsPanel.setUser(user);
+            cardLayout.show(cardPanel, "CreateSaving");
+        }
     }
 
     public void setUser (User user) {
