@@ -17,6 +17,15 @@ public class Transaction
 
     private Date date;
 
+    public Transaction(long targetId, long sourceId, String title, BigDecimal amount, int type) {
+
+        this.targetId = targetId;
+        this.sourceId = sourceId;
+        this.title = title;
+        this.amount = amount;
+        this.type = type;
+    }
+
     public Transaction(int transactionId, long sourceId, long targetId,
                        Date date, BigDecimal amount, int type, String title){
         this.transactionId = transactionId;

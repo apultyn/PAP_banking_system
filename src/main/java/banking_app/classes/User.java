@@ -7,7 +7,6 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
@@ -107,43 +106,45 @@ public class User {
             return false;
         }
     }
-    public void makeTransaction(ConnectionManager manager) throws SQLException {
-        ArrayList<Long> usersAccountsIds = new ArrayList<>();
-        manager.findUsersAccounts(this.getId()).forEach(account -> usersAccountsIds.add(account.getAccountId()));
-        System.out.print("Na rachunek: ");
-        String input = scanner.nextLine();
-        long targetAccountId;
-        while (!(input.matches("\\d{16}"))) {
-            System.out.print("Numer rachunku musi się składać z 16 cyfr, wprowadź ponownie: ");
-            input = scanner.nextLine();
+    public void makeTransaction(ConnectionManager manager, String recipientName, String recipientAccountNumber,
+                                String senderAccountNumber, String title, String amount) throws SQLException, InvalidAccountNumberException, InvalidNameException, InvalidAmountException {
+        if (recipientName.isEmpty()) {
+            throw new InvalidNameException("Recipient name cannot be empty!");
         }
-        targetAccountId = Long.parseLong(input);
+        if (!recipientAccountNumber.matches("\\d{16}")) {
+            throw new InvalidAccountNumberException("Number must be 16 digits long!");
+        }
+        if (manager.findAccount(Long.parseLong(recipientAccountNumber)) == null) {
+            throw new InvalidAccountNumberException("Account not existing!");
+        }
+        if (manager.findUsersAccounts(this.id).contains(manager.findAccount(Long.parseLong(recipientAccountNumber)))) {
+            throw new InvalidAccountNumberException("Account cannot be yours!");
+        }
+        if (title.isEmpty()) {
+            throw new InvalidNameException("Title cannot be empty!");
+        }
+        if (amount.isEmpty()) {
+            throw new InvalidAmountException("Amount cannot be empty!");
+        }
+        if (!isBigDecimal(amount)) {
+            throw new InvalidAmountException("Amount must be a number!");
+        }
+        Account senderAccount =  manager.findAccount(Long.parseLong(senderAccountNumber));
+        Account recipientAccount = manager.findAccount(Long.parseLong(recipientAccountNumber));
+        if (new BigDecimal(amount).compareTo(BigDecimal.ZERO) <= 0) {
+            throw new InvalidAmountException("Amount must be positive!");
+        }
+        if (!amountIsInRange(BigDecimal.ZERO, BigDecimal.valueOf(senderAccount.getTransactionLimit()), new BigDecimal(amount))) {
+            throw new InvalidAmountException("Transaction exceeds the limit!");
+        }
+        if (!amountIsInRange(BigDecimal.ZERO, BigDecimal.valueOf(senderAccount.getBalance()), new BigDecimal(amount))) {
+            throw new InvalidAmountException("Insufficient funds!");
+        }
 
-        long sourceAccountId;
-        System.out.print("Z rachunku: ");
-        input = scanner.nextLine();
-        while (!input.matches("\\d{16}" ) || !usersAccountsIds.contains(sourceAccountId = Long.parseLong(input))) {
-            if (!input.matches("\\d{16}" ))
-                System.out.print("Numer rachunku musi się składać z 16 cyfr, wprowadź ponownie: ");
-            else
-                System.out.print("Rachunek musi należeć do ciebie, wprowadź ponownie: ");
-            input = scanner.nextLine();
-        }
-        Account sourceAccount = manager.findAccount(sourceAccountId);
-        System.out.print("Kwota przelewu: ");
-        BigDecimal amount;
-        input = scanner.nextLine();
-        while (!isBigDecimal(input) ||
-                !amountIsInRange(BigDecimal.ZERO, BigDecimal.valueOf(sourceAccount.getTransactionLimit()).min(sourceAccount.getBalance()), new BigDecimal(input))) {
-            System.out.print("Niepoprawna kwota, wprowadź ponownie: ");
-            input = scanner.nextLine();
-        }
-        amount = new BigDecimal(input);
-        System.out.print("Tytuł przelewu: ");
-        String title = scanner.nextLine();
-        manager.registerTransaction(title, amount, 1, sourceAccountId, targetAccountId);
-        manager.addBalance(sourceAccountId, amount.negate());
-        manager.addBalance(targetAccountId, amount);
+        Transaction transaction = new Transaction(recipientAccount.getAccountId(), senderAccount.getAccountId(), title, new BigDecimal(amount), 1);
+        manager.registerTransaction(transaction);
+        manager.addBalance(transaction.getSourceId(), transaction.getAmount().negate());
+        manager.addBalance(transaction.getTargetId(), transaction.getAmount());
     }
 
     public void createAccount(ConnectionManager manager) throws SQLException {

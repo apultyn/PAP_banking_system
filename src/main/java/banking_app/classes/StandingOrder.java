@@ -1,9 +1,12 @@
 package banking_app.classes;
 
+import connections.ConnectionManager;
+
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class StandingOrder {
     private final int orderId;
@@ -53,4 +56,28 @@ public class StandingOrder {
     }
 
     public  BigDecimal getAmount() { return amount; }
+
+    public static void registerStandingOrder(ConnectionManager manager, User user, String name, String  senderId, String recieverId, String howMuch)
+        throws SQLException, NumberFormatException{
+        List<Account> accounts = manager.findUsersAccounts(user.getId());
+
+        long sender, reciever;
+        BigDecimal amount;
+        if (senderId.length() != 16 || recieverId.length() != 16)
+            throw new NumberFormatException("Short id");
+        sender = Long.parseLong(senderId);
+        reciever = Long.parseLong(recieverId);
+
+        boolean senderIsMy= false;
+        for (Account a:accounts) {
+            if (a.getAccountId() == sender)
+                senderIsMy = true;
+        }
+        if (!senderIsMy)
+            throw new NumberFormatException("Not my accounts");
+
+        amount = new BigDecimal(howMuch);
+        manager.createStadningOrder(name, amount, sender, reciever);
+    }
+
 }

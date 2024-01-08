@@ -1,10 +1,7 @@
 package connections;
 
 
-import banking_app.classes.Account;
-import banking_app.classes.Deposit;
-import banking_app.classes.Transaction;
-import banking_app.classes.User;
+import banking_app.classes.*;
 
 import java.math.BigDecimal;
 import java.sql.*;
@@ -111,14 +108,14 @@ public class ConnectionManager {
         preparedStatement.executeUpdate();
     }
 
-    public void registerTransaction(String title, BigDecimal amount, int type, long sourceId, long targetId) throws SQLException{
+    public void registerTransaction(Transaction transaction) throws SQLException{
         String sqlInsert = "INSERT INTO transactions (title, amount, type, sender_id, reciver_id) values (?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
-        preparedStatement.setString(1, title);
-        preparedStatement.setBigDecimal(2, amount);
-        preparedStatement.setInt(3, type);
-        preparedStatement.setLong(4, sourceId);
-        preparedStatement.setLong(5, targetId);
+        preparedStatement.setString(1, transaction.getTitle());
+        preparedStatement.setBigDecimal(2, transaction.getAmount());
+        preparedStatement.setInt(3, transaction.getType());
+        preparedStatement.setLong(4, transaction.getSourceId());
+        preparedStatement.setLong(5, transaction.getTargetId());
         preparedStatement.executeUpdate();
     }
 
@@ -253,7 +250,7 @@ public class ConnectionManager {
         preparedStatement.executeUpdate();
     }
 
-    public void deleteAutomaticSaving(long saving_id) throws SQLException {
+    public void deleteAutomaticSaving(int saving_id) throws SQLException {
         String sqlInsert = "DELETE FROM automatic_savings WHERE saving_id = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
         preparedStatement.setLong(1, saving_id);
@@ -322,5 +319,63 @@ public class ConnectionManager {
         preparedStatement.setString(1, password);
         preparedStatement.setInt(2, user_id);
         preparedStatement.executeUpdate();
+    }
+
+    public List<AutomaticSaving> findSavingsBySenderAcc(long accId) throws SQLException {
+        String sqlQuery = "SELECT * FROM automatic_savings WHERE sender_id = ?";
+
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+        preparedStatement.setLong(1, accId);
+
+        List<AutomaticSaving> savings = new ArrayList<>();
+        try (ResultSet resultSet = preparedStatement.executeQuery()) {
+            while (resultSet.next()) {
+                AutomaticSaving saving = new AutomaticSaving(resultSet);
+                savings.add(saving);
+            }
+        }
+        return savings;
+    }
+
+    public List<AutomaticSaving> findUsersSavings(int user_id) throws SQLException {
+        List<Account> accounts = new ArrayList<>();
+        accounts = findUsersAccounts(user_id);
+
+        List<AutomaticSaving> savings = new ArrayList<>();
+        for (Account a : accounts) {
+            List<AutomaticSaving> savingsSingleAcc = new ArrayList<>();
+            savingsSingleAcc = findSavingsBySenderAcc(a.getAccountId());
+            savings.addAll(savingsSingleAcc);
+        }
+        return savings;
+    }
+
+    public List<StandingOrder> findOrdersBySenderAcc(long accId) throws SQLException {
+        String sqlQuery = "SELECT * FROM standing_orders WHERE sender_id = ?";
+
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+        preparedStatement.setLong(1, accId);
+
+        List<StandingOrder> orders = new ArrayList<>();
+        try (ResultSet resultSet = preparedStatement.executeQuery()) {
+            while (resultSet.next()) {
+                StandingOrder order = new StandingOrder(resultSet);
+                orders.add(order);
+            }
+        }
+        return orders;
+    }
+
+    public List<StandingOrder> findUsersOrders(int user_id) throws SQLException {
+        List<Account> accounts = new ArrayList<>();
+        accounts = findUsersAccounts(user_id);
+
+        List<StandingOrder> orders = new ArrayList<>();
+        for (Account a : accounts) {
+            List<StandingOrder> ordersSingleAcc = new ArrayList<>();
+            ordersSingleAcc = findOrdersBySenderAcc(a.getAccountId());
+            orders.addAll(ordersSingleAcc);
+        }
+        return orders;
     }
 }

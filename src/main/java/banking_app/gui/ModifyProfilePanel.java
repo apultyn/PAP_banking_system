@@ -13,8 +13,9 @@ public class ModifyProfilePanel extends JPanel {
     private CardLayout cardLayout;
     private JPanel cardPanel;
 
-    public ModifyProfilePanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel) {
+    public ModifyProfilePanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        this.setName(panelName);
         this.manager = manager;
         this.cardPanel = cardPanel;
         this.cardLayout = cardLayout;
