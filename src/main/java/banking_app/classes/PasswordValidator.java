@@ -13,4 +13,5 @@ public class PasswordValidator implements Validator {
         Matcher matcher = passwordPattern.matcher(text);
         return matcher.matches();
     }
+
 }

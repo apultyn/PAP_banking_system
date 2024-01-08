@@ -109,14 +109,14 @@ public class ConnectionManager {
         preparedStatement.executeUpdate();
     }
 
-    public void registerTransaction(String title, BigDecimal amount, int type, long sourceId, long targetId) throws SQLException{
+    public void registerTransaction(Transaction transaction) throws SQLException{
         String sqlInsert = "INSERT INTO transactions (title, amount, type, sender_id, reciver_id) values (?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
-        preparedStatement.setString(1, title);
-        preparedStatement.setBigDecimal(2, amount);
-        preparedStatement.setInt(3, type);
-        preparedStatement.setLong(4, sourceId);
-        preparedStatement.setLong(5, targetId);
+        preparedStatement.setString(1, transaction.getTitle());
+        preparedStatement.setBigDecimal(2, transaction.getAmount());
+        preparedStatement.setInt(3, transaction.getType());
+        preparedStatement.setLong(4, transaction.getSourceId());
+        preparedStatement.setLong(5, transaction.getTargetId());
         preparedStatement.executeUpdate();
     }
 

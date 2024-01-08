@@ -67,5 +67,17 @@ public class Account {
         System.out.println("Stan konta: " + String.format("%.2f", this.getBalance()) + " zł");
         System.out.println("==============================");
 
+
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof Account a)) {
+            return false;
+        }
+        return a.name.equals(this.name) && a.accountId == this.accountId;
     }
 }
