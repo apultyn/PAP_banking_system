@@ -18,10 +18,11 @@ public class CreateStandingOrdersPanel extends JPanel{
     private JTextField senderField;
     private JTextField amountField;
     private JButton backButton, confirmButton;
-    public CreateStandingOrdersPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel) {
+    public CreateStandingOrdersPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) {
         this.manager = manager;
         this.cardLayout = cardLayout;
         this.cardPanel = cardPanel;
+        this.setName(panelName);
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 

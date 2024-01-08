@@ -32,7 +32,7 @@ public class CreateAutomaticSavingsPanel extends JPanel {
         backButton.addActionListener(e-> cardLayout.show(cardPanel, "SavingsPanel"));
         add(backButton);
 
-        add(new JLabel("Write the name of the order"));
+        add(new JLabel("Write the name of the saving"));
 
         nameField = new JTextField(10);
         add(nameField);

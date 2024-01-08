@@ -20,10 +20,11 @@ public class AutomaticSavingsGui extends JPanel {
     private JButton registerSavings;
     private JList<String> asList;
     private JLabel nameLabel, startDateLabel, senderIdLabel, recieverIdLabel, amountLabel;
-    public AutomaticSavingsGui(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel) {
+    public AutomaticSavingsGui(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) {
         this.manager = manager;
         this.cardLayout = cardLayout;
         this.cardPanel = cardPanel;
+        this.setName(panelName);
 
         setLayout(new BorderLayout());
 

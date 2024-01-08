@@ -20,10 +20,11 @@ public class StandingOrdersPanel extends JPanel {
     private JButton registerSavings;
     private JList<String> asList;
     private JLabel nameLabel, startDateLabel, senderIdLabel, recieverIdLabel, amountLabel;
-    public StandingOrdersPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel) {
+    public StandingOrdersPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) {
         this.manager = manager;
         this.cardLayout = cardLayout;
         this.cardPanel = cardPanel;
+        this.setName(panelName);
 
         setLayout(new BorderLayout());
 
@@ -67,9 +68,9 @@ public class StandingOrdersPanel extends JPanel {
     }
 
     public void handleCreateOrder(){
-        CreateStandingOrdersPanel createStandingOrdersPanel = (CreateStandingOrdersPanel) cardPanel.getComponent(8);
+        CreateStandingOrdersPanel createStandingOrdersPanel = (CreateStandingOrdersPanel) SwingUtilities.findPanelByName(cardPanel, "CreateStanding"); ;
         createStandingOrdersPanel.setUser(user);
-        cardLayout.show(cardPanel, "CreateOrder");
+        cardLayout.show(cardPanel, "CreateStanding");
     }
 
     public void setUser (User user) {
