@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class UserProfilePanel extends JPanel {
@@ -34,7 +35,7 @@ public class UserProfilePanel extends JPanel {
         this.cardPanel = cardPanel;
         this.cardLayout = cardLayout;
 
-        transactionHistoryModel = new TransactionsHistoryModel(new ArrayList<>());
+        transactionHistoryModel = new TransactionsHistoryModel(new ArrayList<>(), 0L);
         transactionHistoryTable = new JTable(transactionHistoryModel);
         JScrollPane scrollPane = new JScrollPane(transactionHistoryTable);
 
@@ -122,6 +123,27 @@ public class UserProfilePanel extends JPanel {
         }
     }
 
+    private void updateAccountInfo(long accountId) throws SQLException {
+        currentAccount = manager.findAccount(accountId);
+        String account_info = "Choosen account: " + currentAccount.getName() + ", Account ID: " + currentAccount.getAccountId();
+        accountDetailsLabel.setText(account_info);
+        String balance_info = String.format("Balance: %.2f zł", currentAccount.getBalance());
+        balanceLabel.setText(balance_info);
+    }
+
+    private void createTranscationsHistory() throws SQLException {
+        List<Transaction> incomingTransactions = manager.findTransactionsByReceiver(currentAccount.getAccountId());
+        List<Transaction> outgoingTransactions = manager.findTransactionsBySender(currentAccount.getAccountId());
+        List<Transaction> allTransactions = new ArrayList<>(incomingTransactions);
+        allTransactions.addAll(outgoingTransactions);
+
+        allTransactions.sort(Comparator.comparing(Transaction::getDate).reversed());
+
+        transactionHistoryModel = new TransactionsHistoryModel(allTransactions, currentAccount.getAccountId());
+        transactionHistoryTable.setModel(transactionHistoryModel);
+
+    }
+
     private void onAccountSelected() {
         String selected = (String) accountComboBox.getSelectedItem();
         if (selected != null) {
@@ -130,15 +152,8 @@ public class UserProfilePanel extends JPanel {
             String accountId = parts.length > 1 ? parts[1] : "";
 
             try {
-                currentAccount = manager.findAccount(Long.parseLong(accountId));
-                String account_info = "Choosen account: " + currentAccount.getName() + ", Account ID: " + currentAccount.getAccountId();
-                accountDetailsLabel.setText(account_info);
-                String balance_info = String.format("Balance: %.2f zł", currentAccount.getBalance());
-                balanceLabel.setText(balance_info);
-
-                List<Transaction> history = manager.findTransactionsBySender(currentAccount.getAccountId());
-                transactionHistoryModel = new TransactionsHistoryModel(history);
-                transactionHistoryTable.setModel(transactionHistoryModel);
+                updateAccountInfo(Long.parseLong(accountId));
+                createTranscationsHistory();
             } catch (SQLException e){
                 JOptionPane.showMessageDialog(this, e);
             }
