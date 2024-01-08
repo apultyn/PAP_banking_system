@@ -169,9 +169,11 @@ public class User {
             }
         }
     }
-    public void updateFirstName(ConnectionManager manager, String newName) throws InvalidNameException, SQLException, MissingInformationException, RepeatedDataException {
+    public void updateFirstName(ConnectionManager manager, String oldName, String newName) throws InvalidNameException, SQLException, MissingInformationException, RepeatedDataException, DataMissmatchException {
         if (newName == null)
             throw new  MissingInformationException("New name can't be null!");
+        if (!oldName.equals(name))
+            throw new DataMissmatchException("Wrong old name!");
         if (newName.equals(name))
             throw new RepeatedDataException("New name can't be the same as previous!");
         if (newName.contains(" "))
@@ -179,9 +181,11 @@ public class User {
         manager.updateUserFirstName(id, newName);
     }
 
-    public void updateSurname(ConnectionManager manager, String newSurname) throws InvalidNameException, SQLException, MissingInformationException, RepeatedDataException {
+    public void updateSurname(ConnectionManager manager, String oldSurname, String newSurname) throws InvalidNameException, SQLException, MissingInformationException, RepeatedDataException, DataMissmatchException {
         if (newSurname == null)
             throw new MissingInformationException("New surname can't be null!");
+        if (!oldSurname.equals(surname))
+            throw new DataMissmatchException("Wrong old surname!");
         if (newSurname.equals(name))
             throw new RepeatedDataException("New surname can't be the same as previous!");
         if (newSurname.contains(" "))
@@ -189,9 +193,11 @@ public class User {
         manager.updateUserSurname(id, newSurname);
     }
 
-    public void updateEmail(ConnectionManager manager, String newEmail) throws MissingInformationException, RepeatedDataException, InvalidEmailException, SQLException {
+    public void updateEmail(ConnectionManager manager,String oldEmail, String newEmail) throws MissingInformationException, RepeatedDataException, InvalidEmailException, SQLException, DataMissmatchException {
         if (newEmail == null)
             throw new MissingInformationException("New email can't be null!");
+        if (!oldEmail.equals(email))
+            throw new DataMissmatchException("Wrong old email!");
         if (newEmail.equals(email))
             throw new RepeatedDataException("New email can't be the same as previous!");
         if (!new EmailValidator().validate(newEmail))
