@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static banking_app.gui.SwingUtilities.addLabelAndComponent;
 import static banking_app.gui.SwingUtilities.resetComponents;
 
 public class RegisterPanel extends JPanel {
@@ -45,18 +46,18 @@ public class RegisterPanel extends JPanel {
         registerLabel.setFont(new Font(registerLabel.getFont().getFontName(), Font.BOLD, 24));
         gbc.gridwidth = 1;
         gbc.gridy++;
-        addLabelAndComponent("Name:", firstNameField = new JTextField(20), gbc);
-        addLabelAndComponent("Last name:", lastNameField = new JTextField(20), gbc);
-        addLabelAndComponent("E-mal:", emailField = new JTextField(20), gbc);
-        addLabelAndComponent("Password:", passwordField = new JPasswordField(20), gbc);
-        addLabelAndComponent("Repeat password:", passwordRepeatedField = new JPasswordField(20), gbc);
+        addLabelAndComponent(this, "Name:", firstNameField = new JTextField(20), gbc);
+        addLabelAndComponent(this, "Last name:", lastNameField = new JTextField(20), gbc);
+        addLabelAndComponent(this, "E-mal:", emailField = new JTextField(20), gbc);
+        addLabelAndComponent(this, "Password:", passwordField = new JPasswordField(20), gbc);
+        addLabelAndComponent(this, "Repeat password:", passwordRepeatedField = new JPasswordField(20), gbc);
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         registerButton = new JButton("Register");
         backButton = new JButton("Back");
         registerButton.addActionListener(e -> {
             handleRegister();
-            resetComponents(new ArrayList<Component>(Arrays.asList(passwordField, passwordRepeatedField)));
+            resetComponents(new ArrayList<>(Arrays.asList(passwordField, passwordRepeatedField)));
         });
         backButton.addActionListener(e -> {
             resetComponents(this);
@@ -77,30 +78,23 @@ public class RegisterPanel extends JPanel {
         User user;
         try {
             user = User.register(manager, email, name, surname, password, passwordRepeated);
-            JOptionPane.showMessageDialog(this, "Zarejestrowano");
+            JOptionPane.showMessageDialog(this, "Registered!");
             cardLayout.show(cardPanel, "Login");
-        } catch (OccupiedEmailException a) {
-            JOptionPane.showMessageDialog(this, "Email zostal uzyty");
-        } catch (InvalidEmailException a) {
-            JOptionPane.showMessageDialog(this, "Niepoprawny email");
-        } catch (InvalidPasswordException a) {
-            JOptionPane.showMessageDialog(this, "Niepoprawne haslo");
-        } catch (PasswordMissmatchException a) {
-            JOptionPane.showMessageDialog(this, "Hasla nie sa takie same");
-        } catch (InvalidNameException a) {
-            JOptionPane.showMessageDialog(this, "Zle dane w polu imie");
-        } catch (SQLException a) {
-            JOptionPane.showMessageDialog(this, "Blad bazy");
+        } catch (InvalidNameException | InvalidPasswordException | InvalidEmailException | OccupiedEmailException |
+                 PasswordMissmatchException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    private void addLabelAndComponent(String labelText, Component component, GridBagConstraints gbc) {
-        add(new JLabel(labelText), gbc);
-        gbc.gridx++;
-        add(component, gbc);
-        gbc.gridx = 0;
-        gbc.gridy++;
-    }
+//    private void addLabelAndComponent(String labelText, Component component, GridBagConstraints gbc) {
+//        add(new JLabel(labelText), gbc);
+//        gbc.gridx++;
+//        add(component, gbc);
+//        gbc.gridx = 0;
+//        gbc.gridy++;
+//    }
 
     public String getFirstName() {
         return firstNameField.getText();

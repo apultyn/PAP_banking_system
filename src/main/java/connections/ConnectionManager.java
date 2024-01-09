@@ -67,6 +67,15 @@ public class ConnectionManager {
         return null;
     }
 
+    public void createAccount(Account account) throws SQLException {
+        String sqlInsert = "INSERT INTO accounts (name, transaction_limit, owner_id) values (?, ?, ?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
+        preparedStatement.setString(1, account.getName());
+        preparedStatement.setBigDecimal(2, account.getTransactionLimit());
+        preparedStatement.setInt(3, account.getUserId());
+        preparedStatement.executeUpdate();
+    }
+
     public void createAccount(String name, BigDecimal transactionLimit, int ownerId) throws SQLException {
         String sqlInsert = "INSERT INTO accounts (name, transaction_limit, owner_id) values (?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);

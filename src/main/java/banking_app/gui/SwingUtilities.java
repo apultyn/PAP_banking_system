@@ -33,5 +33,13 @@ public class SwingUtilities {
             }
         }
     }
+
+    public static void addLabelAndComponent(JPanel panel, String labelText, Component component, GridBagConstraints gbc) {
+        panel.add(new JLabel(labelText), gbc);
+        gbc.gridx++;
+        panel.add(component, gbc);
+        gbc.gridx = 0;
+        gbc.gridy++;
+    }
 }
 
