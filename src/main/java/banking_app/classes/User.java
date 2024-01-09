@@ -218,6 +218,25 @@ public class User {
         password = newPassword;
     }
 
+    public void createContact(ConnectionManager manager, String name, String accountId) throws SQLException,
+            MissingInformationException, InvalidAccountNumberException, AccountNotFoundException, InvalidAccountNumberException {
+        if(name.isEmpty() || accountId.isEmpty()) {
+            throw new MissingInformationException("Fields can not be empty.");
+        }
+        if (!isBigDecimal(accountId))
+            throw new InvalidAccountNumberException("Account Number must be a number!");
+        if (manager.findAccount(Long.parseLong(accountId)) == null) {
+            throw new AccountNotFoundException("Account does not exists!");
+        }
+        List<Account> usersAccounts = manager.findUsersAccounts(this.id);
+        for (Account account : usersAccounts) {
+            if (account.getAccountId() == Long.parseLong(accountId)){
+                throw new InvalidAccountNumberException("Can not add your own account!");
+            }
+        }
+        manager.createContact(name, Long.parseLong(accountId), this.id);
+    }
+
     @Override
     public String toString() {
         return "User{" +

@@ -69,6 +69,14 @@ public class TransactionsPanel extends JPanel {
         add(backButton, gbc);
     }
 
+    public void setRecipientName(String name) {
+        recipientNameField.setText(name);
+    }
+
+    public void setRecipientNumber(long accountId) {
+        recipientNumberField.setText(String.valueOf(accountId));
+    }
+
     private void handleMakeTransfer() {
         try {
             user.makeTransaction(manager, recipientNameField.getText(), recipientNumberField.getText(),
