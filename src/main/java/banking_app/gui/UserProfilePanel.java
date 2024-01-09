@@ -54,6 +54,19 @@ public class UserProfilePanel extends JPanel {
         JButton automaticSavingButton = new JButton("Automatic Savings");
         JButton depositsButton = new JButton("Deposits");
         JButton standingOrdersButton = new JButton("Standing Orders");
+        JButton loanCalculatorButton = new JButton("Loan Calculator");
+        JButton loanButton = new JButton("Loans");
+
+        add(helloLabel);
+        add(transactionsButton);
+        add(contactsButton);
+        add(transactionHistoryButton);
+        add(modifyProfileButton);
+        add(automaticSavingButton);
+        add(accountsButton);
+        add(standingOrdersButton);
+        add(loanCalculatorButton);
+        add(loanButton);
 
         menuPanel.add(transactionsButton);
         menuPanel.add(contactsButton);
@@ -74,6 +87,9 @@ public class UserProfilePanel extends JPanel {
         });
 
         standingOrdersButton.addActionListener(e->handleStandingOrders());
+        loanCalculatorButton.addActionListener(e->handleLoanCalculator());
+        loanButton.addActionListener(e->handleLoansButton());
+
         createAccountButton.addActionListener(e->handleCreateAccountButton());
         transactionsButton.addActionListener(e -> {
             try {
@@ -278,7 +294,22 @@ public class UserProfilePanel extends JPanel {
     }
     public void handleStandingOrders() {
         StandingOrdersPanel savingsPanel = (StandingOrdersPanel) SwingUtilities.findPanelByName(cardPanel, "StandingOrders");;
-        savingsPanel.setUser(user);
-        cardLayout.show(cardPanel, "StandingOrders");
+        if (savingsPanel != null) {
+            savingsPanel.setUser(user);
+            cardLayout.show(cardPanel, "StandingOrders");
+        }
+    }
+
+    public void handleLoanCalculator() {
+        LoanCalculatorPanel savingsPanel = (LoanCalculatorPanel) SwingUtilities.findPanelByName(cardPanel, "LoanCalculator");
+        cardLayout.show(cardPanel, "LoanCalculator");
+    }
+
+    public void handleLoansButton() {
+        LoansPanel loansPanel = (LoansPanel) SwingUtilities.findPanelByName(cardPanel, "Loans");
+        if (loansPanel != null) {
+            loansPanel.setUser(user);
+            cardLayout.show(cardPanel, "Loans");
+        }
     }
 }
