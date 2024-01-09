@@ -67,6 +67,18 @@ public class ConnectionManager {
         return null;
     }
 
+    public Account findAccount(int userId, String name) throws SQLException {
+        String sqlQuerry = "SELECT * FROM accounts WHERE owner_id = ? AND name = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlQuerry);
+        preparedStatement.setLong(1, userId);
+        preparedStatement.setString(2, name);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        if (resultSet.next()) {
+            return new Account(resultSet);
+        }
+        return null;
+    }
+
     public void createAccount(Account account) throws SQLException {
         String sqlInsert = "INSERT INTO accounts (name, transaction_limit, owner_id) values (?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);

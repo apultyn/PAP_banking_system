@@ -46,6 +46,7 @@ public class RegisterPanel extends JPanel {
         registerLabel.setFont(new Font(registerLabel.getFont().getFontName(), Font.BOLD, 24));
         gbc.gridwidth = 1;
         gbc.gridy++;
+        gbc.anchor = GridBagConstraints.WEST;
         addLabelAndComponent(this, "Name:", firstNameField = new JTextField(20), gbc);
         addLabelAndComponent(this, "Last name:", lastNameField = new JTextField(20), gbc);
         addLabelAndComponent(this, "E-mal:", emailField = new JTextField(20), gbc);
