@@ -164,9 +164,8 @@ public class UserProfilePanel extends JPanel {
         ModifyProfilePanel modifyPanel = (ModifyProfilePanel) SwingUtilities.findPanelByName(cardPanel, "ModifyPanel");
         if (modifyPanel != null){
             modifyPanel.setUser(user);
-            cardLayout.show(cardPanel, "ModifyProfile");
+            cardLayout.show(cardPanel, "ModifyPanel");
         }
-
     }
 
     public void handleTransactionsButton() throws SQLException {
