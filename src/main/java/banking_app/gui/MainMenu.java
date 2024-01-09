@@ -38,7 +38,6 @@ public class MainMenu extends JFrame {
         CreateAutomaticSavingsPanel createSavingPanel = new CreateAutomaticSavingsPanel(manager, cardLayout, cardPanel, "CreateSaving");
         AccountsPanel accountsPanel = new AccountsPanel(manager, cardLayout, cardPanel, "Accounts");
         StandingOrdersPanel standingOrdersPanel = new StandingOrdersPanel(manager, cardLayout, cardPanel, "StandingOrders");
-        CreateStandingOrdersPanel createStandingOrdersPanel = new CreateStandingOrdersPanel(manager, cardLayout, cardPanel, "CreateStanding");
 
         LoanCalculatorPanel loanCalculator = new LoanCalculatorPanel(cardLayout, cardPanel, "LoanCalculator");
         LoansPanel loansPanel = new LoansPanel(manager, cardLayout, cardPanel, "Loans");
@@ -60,7 +59,6 @@ public class MainMenu extends JFrame {
         cardPanel.add(createSavingPanel, "CreateSaving");
         cardPanel.add(accountsPanel, "Accounts");
         cardPanel.add(standingOrdersPanel, "StandingOrders");
-        cardPanel.add(createStandingOrdersPanel, "CreateStanding");
 
         cardPanel.add(loanCalculator, "LoanCalculator");
         cardPanel.add(loansPanel, "Loans");
