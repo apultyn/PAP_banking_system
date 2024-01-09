@@ -407,6 +407,21 @@ public class ConnectionManager {
         return orders;
     }
 
+
+    public List<Contact> findUsersContacts(int user_id) throws SQLException {
+        String sqlQuery = "SELECT * FROM contacts WHERE owner_id = ?";
+
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+        preparedStatement.setInt(1, user_id);
+
+        List<Contact> contacts = new ArrayList<>();
+        try (ResultSet resultSet = preparedStatement.executeQuery()) {
+            while (resultSet.next()) {
+                Contact contact = new Contact(resultSet);
+                contacts.add(contact);
+            }
+        }
+        return contacts;
     public void createLoan(BigDecimal amount, BigDecimal rate, Date end, long owneraccId, BigDecimal fixed) throws SQLException {
         String sqlInsert = "INSERT INTO loans (amount, rate, finish_date, owner_acc_id, fixed_rate) values (?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
