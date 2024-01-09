@@ -42,6 +42,7 @@ public class LoginPanel extends JPanel {
         loginLabel.setFont(new Font(loginLabel.getFont().getFontName(), Font.BOLD, 24));
         gbc.gridwidth = 1;
         gbc.gridy++;
+        gbc.anchor = GridBagConstraints.WEST;
         addLabelAndComponent(this, "E-mail:", emailField = new JTextField(20), gbc);
         addLabelAndComponent(this, "Password", passwordField = new JPasswordField(20), gbc);
 

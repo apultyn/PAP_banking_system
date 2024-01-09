@@ -45,10 +45,7 @@ public class CreateAccountPanel extends JPanel {
         gbc.gridy++;
         addLabelAndComponent(this, "Account name:", accountNameField = new JTextField(20), gbc);
         addLabelAndComponent(this, "Transfer limit:", transferLimit = new JTextField(20), gbc);
-//        addLabelAndComponent(this, "Title:", titleField = new JTextField(20), gbc);
-//        addLabelAndComponent(this, "From account:", accountComboBox = new JComboBox<>(), gbc);
-//        addLabelAndComponent(this, "Amount:", amountField = new JTextField(20), gbc);
-//
+
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         createAccountButton = new JButton("Create account");
@@ -68,7 +65,9 @@ public class CreateAccountPanel extends JPanel {
     private void handleCreateAccount() {
         try {
             user.createAccount(manager, accountNameField.getText(), transferLimit.getText());
+            JOptionPane.showMessageDialog(this, "Account created!");
             cardLayout.show(cardPanel, "User");
+            resetComponents(this);
         } catch (InvalidNameException | InvalidAmountException e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
         } catch (SQLException e) {

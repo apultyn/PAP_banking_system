@@ -18,6 +18,7 @@ public class TransactionsPanel extends JPanel {
     private User user;
     private ConnectionManager manager;
     private JLabel transferLabel;
+    private JLabel balanceLabel;
     private JTextField recipientNameField;
     private JTextField recipientNumberField;
     private JTextField titleField;
@@ -36,7 +37,6 @@ public class TransactionsPanel extends JPanel {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
-
         gbc.gridwidth = 2;
         gbc.gridheight = 1;
         gbc.gridx = 0;
@@ -48,6 +48,7 @@ public class TransactionsPanel extends JPanel {
         transferLabel.setFont(new Font(transferLabel.getFont().getFontName(), Font.BOLD, 24));
         gbc.gridwidth = 1;
         gbc.gridy++;
+        gbc.anchor = GridBagConstraints.WEST;
         addLabelAndComponent("Recipient name:", recipientNameField = new JTextField(20), gbc);
         addLabelAndComponent("Recipient account number:", recipientNumberField = new JTextField(20), gbc);
         addLabelAndComponent("Title:", titleField = new JTextField(20), gbc);
@@ -74,6 +75,7 @@ public class TransactionsPanel extends JPanel {
                     accountComboBox.getSelectedItem().toString(), titleField.getText(), amountField.getText());
             JOptionPane.showMessageDialog(this, String.format("Transferred successfully!\nYour balance is now %.2f pln", manager.findAccount(Long.parseLong(accountComboBox.getSelectedItem().toString())).getBalance()) );
             cardLayout.show(cardPanel, "User");
+            resetComponents(this);
         } catch (InvalidAccountNumberException | InvalidNameException | InvalidAmountException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
         } catch (SQLException ex) {
@@ -84,6 +86,8 @@ public class TransactionsPanel extends JPanel {
     private void addLabelAndComponent(String labelText, Component component, GridBagConstraints gbc) {
         add(new JLabel(labelText), gbc);
         gbc.gridx++;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
         add(component, gbc);
         gbc.gridx = 0;
         gbc.gridy++;
