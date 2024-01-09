@@ -1,9 +1,14 @@
 package banking_app.classes;
 
+import banking_exceptions.InvalidAmountException;
+import connections.ConnectionManager;
+
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import static banking_app.classes.User.isBigDecimal;
 
 public class Account {
     private final long accountId;
@@ -32,6 +37,16 @@ public class Account {
                 resultSet.getDate("creation_date"),
                 resultSet.getInt("owner_id"),
                 resultSet.getBigDecimal("balance"));
+    }
+
+    public void updateTransactionLimit(ConnectionManager manager, String transferLimit) throws SQLException, InvalidAmountException{
+        if (transferLimit.isEmpty())
+            throw new InvalidAmountException("Transfer limit cannot be empty!");
+        if (!isBigDecimal(transferLimit))
+            throw new InvalidAmountException("Transfer limit must be a number!");
+        if (new BigDecimal(transferLimit).compareTo(BigDecimal.ZERO) <= 0)
+            throw new InvalidAmountException("Transfer limit must be positive!");
+        manager.updateAccountsLimit(accountId, new BigDecimal(transferLimit));
     }
 
     public long getAccountId() {
