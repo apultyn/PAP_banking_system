@@ -66,8 +66,12 @@ public class CreateAccountPanel extends JPanel {
         try {
             user.createAccount(manager, accountNameField.getText(), transferLimit.getText());
             JOptionPane.showMessageDialog(this, "Account created!");
-            cardLayout.show(cardPanel, "User");
-            resetComponents(this);
+            UserProfilePanel userProfilePanel = (UserProfilePanel) SwingUtilities.findPanelByName(cardPanel, "User");
+            if (userProfilePanel != null) {
+                userProfilePanel.setAccounts(manager.findUsersAccounts(user.getId()));
+                cardLayout.show(cardPanel, "User");
+                resetComponents(this);
+            }
         } catch (InvalidNameException | InvalidAmountException e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
         } catch (SQLException e) {
