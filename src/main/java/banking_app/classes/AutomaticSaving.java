@@ -60,7 +60,8 @@ public class AutomaticSaving {
     public static void registerAutomaticSaving(ConnectionManager connection, User user, String name, String senderId, String recieverId, String howMuch)
             throws NumberFormatException, SQLException {
         List<Account> accounts = connection.findUsersAccounts(user.getId());
-
+        if (senderId.equals(recieverId))
+            throw new NumberFormatException("The same accounts");
         long sender, reciever;
         BigDecimal amount;
         if (senderId.length() != 16 || recieverId.length() != 16)

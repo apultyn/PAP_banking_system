@@ -60,7 +60,8 @@ public class StandingOrder {
     public static void registerStandingOrder(ConnectionManager manager, User user, String name, String  senderId, String recieverId, String howMuch)
         throws SQLException, NumberFormatException{
         List<Account> accounts = manager.findUsersAccounts(user.getId());
-
+        if (senderId.equals(recieverId))
+            throw new NumberFormatException("The same accounts");
         long sender, reciever;
         BigDecimal amount;
         if (senderId.length() != 16 || recieverId.length() != 16)
