@@ -175,10 +175,7 @@ public class UserProfilePanel extends JPanel {
             }
         });
 
-        // Cancel button action
         cancelButton.addActionListener(e -> dialog.dispose());
-
-        //dialog.pack();
         dialog.setLocationRelativeTo(SwingUtilities.findPanelByName(cardPanel, "ModifyPanel"));
         dialog.setVisible(true);
     }
@@ -267,7 +264,7 @@ public class UserProfilePanel extends JPanel {
 
     public void handleDepositsButton() {
         DepositPanel depositPanel = (DepositPanel) SwingUtilities.findPanelByName(cardPanel, "Deposit");
-        if (depositPanel != null){
+        if (depositPanel != null) {
             depositPanel.setUser(user);
             cardLayout.show(cardPanel, "Deposit");
         }
