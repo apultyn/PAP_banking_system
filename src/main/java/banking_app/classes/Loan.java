@@ -68,9 +68,16 @@ public class Loan {
     }
 
     public static void createLoan(ConnectionManager manager, BigDecimal amount,
-                                  BigDecimal rate, Date end, long ownerId) throws SQLException {
+                                  BigDecimal rate, Date end, long ownerId) throws SQLException, NumberFormatException {
+        if (rate.doubleValue() > 20d || rate.doubleValue() < 0)
+            throw new NumberFormatException("Wrong rate");
+
         java.util.Date current = new java.util.Date();
         int yearDiff = (end.getYear() - (new java.sql.Date(current.getTime()).getYear()));
+
+        if (yearDiff <= 0)
+            throw new NumberFormatException("Wrong date");
+
         double fixedRate = LoanCalc.calculateLoanMonthly(amount.doubleValue(), yearDiff, rate.doubleValue()), calculatedAmountL;
         BigDecimal finalFixedRate = new BigDecimal(fixedRate);
         finalFixedRate = finalFixedRate.setScale(2, RoundingMode.HALF_UP);
