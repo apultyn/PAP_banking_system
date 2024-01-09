@@ -39,7 +39,6 @@ public class MainMenu extends JFrame {
         DepositPanel depositPanel = new DepositPanel(manager, cardLayout, cardPanel, "Deposit");
         OwnTransfer ownTransfer = new OwnTransfer(manager, cardLayout, cardPanel, "OwnTransfer");
 
-
         cardPanel.add(loginPanel, "Login");
         cardPanel.add(registerPanel, "Register");
         cardPanel.add(userProfilePanel, "User");

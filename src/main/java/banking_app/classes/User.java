@@ -181,6 +181,32 @@ public class User {
         Account account = new Account(id, accountName, new BigDecimal(transferLimit));
         manager.createAccount(account);
     }
+
+    public static void checkInputForFirst(String accountName, String transferLimit) throws InvalidNameException, InvalidAmountException {
+        if (accountName.isEmpty())
+            throw new InvalidNameException("Name cannot be empty!");
+        if (transferLimit.isEmpty())
+            throw new InvalidAmountException("Transfer limit cannot be empty!");
+        if (!isBigDecimal(transferLimit))
+            throw new InvalidAmountException("Transfer limit must be a number!");
+        if (new BigDecimal(transferLimit).compareTo(BigDecimal.ZERO) <= 0)
+            throw new InvalidAmountException("Transfer limit must be positive!");
+    }
+
+    public static void createAccountGivenId(ConnectionManager manager, int userId, String accountName, String transferLimit) throws SQLException, InvalidNameException, InvalidAmountException {
+        if (accountName.isEmpty())
+            throw new InvalidNameException("Name cannot be empty!");
+        if (manager.findAccount(userId, accountName) != null)
+            throw new InvalidNameException("Name is occupied!");
+        if (transferLimit.isEmpty())
+            throw new InvalidAmountException("Transfer limit cannot be empty!");
+        if (!isBigDecimal(transferLimit))
+            throw new InvalidAmountException("Transfer limit must be a number!");
+        if (new BigDecimal(transferLimit).compareTo(BigDecimal.ZERO) <= 0)
+            throw new InvalidAmountException("Transfer limit must be positive!");
+        Account account = new Account(userId, accountName, new BigDecimal(transferLimit));
+        manager.createAccount(account);
+    }
     public void updateFirstName(ConnectionManager manager, String oldName, String newName) throws
             InvalidNameException, SQLException, MissingInformationException, RepeatedDataException, DataMissmatchException {
         if (oldName.isEmpty() || newName.isEmpty())
