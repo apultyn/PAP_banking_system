@@ -53,10 +53,7 @@ public class CreateAccountPanel extends JPanel {
         createAccountButton.addActionListener(e -> {
             handleCreateAccount();
         });
-        backButton.addActionListener(e -> {
-            resetComponents(this);
-            cardLayout.show(cardPanel, "User");
-        });
+        backButton.addActionListener(e -> handleBackButton());
         add(createAccountButton, gbc);
         gbc.gridy++;
         add(backButton, gbc);
@@ -81,5 +78,10 @@ public class CreateAccountPanel extends JPanel {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public void handleBackButton () {
+        resetComponents(this);
+        cardLayout.show(cardPanel, "User");
     }
 }

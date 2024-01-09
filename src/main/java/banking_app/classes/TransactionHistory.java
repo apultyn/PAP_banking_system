@@ -37,7 +37,7 @@ public class TransactionHistory {
             System.out.println();
 
             String amount = String.format("%.2f", transaction.getAmount());
-            transactionString = "Tytuł: " + transaction.getTitle() + " Kwota: "+ sign + amount + "zł Data:" + transaction.getDate()
+            transactionString = "Tytuł: " + transaction.getTitle() + " Kwota: "+ sign + amount + "pln Data:" + transaction.getDate()
                     + "\nNadawca: "  + manager.findAccount(transaction.getSourceId()).getName() + " Numer: " + transaction.getSourceId()
                     + "\nOdbiorca: " + manager.findAccount(transaction.getTargetId()).getName() + " Numer: " + transaction.getTargetId();
             System.out.println(transactionString);

@@ -20,6 +20,8 @@ public class RegisterPanel extends JPanel {
     private JTextField firstNameField;
     private JTextField lastNameField;
     private JTextField emailField;
+    private JTextField accountNameField;
+    private JTextField transferLimit;
     private JPasswordField passwordField;
     private JPasswordField passwordRepeatedField;
     private JTextField pinField, repPinField;
@@ -55,6 +57,14 @@ public class RegisterPanel extends JPanel {
         addLabelAndComponent(this, "Repeat password:", passwordRepeatedField = new JPasswordField(20), gbc);
         addLabelAndComponent(this, "Pin:", pinField = new JTextField(20), gbc);
         addLabelAndComponent(this, "Repeat pin:", repPinField = new JTextField(20), gbc);
+        JLabel headlineLabel = new JLabel("Create your first account");
+        headlineLabel.setFont(headlineLabel.getFont().deriveFont(20f));
+        add(headlineLabel, gbc);
+        gbc.gridy++;
+        gbc.gridx = 0;
+        addLabelAndComponent(this, "Account name:", accountNameField = new JTextField(20), gbc);
+        addLabelAndComponent(this, "Transfer limit:", transferLimit = new JTextField(20), gbc);
+
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         registerButton = new JButton("Register");
@@ -81,12 +91,17 @@ public class RegisterPanel extends JPanel {
         char[] passwordRepeated = passwordRepeatedField.getPassword();
         String pin = pinField.getText();
         String repPin = repPinField.getText();
+        String accName = accountNameField.getText();
+        String transferLimitInput = transferLimit.getText();
         try {
+            User.checkInputForFirst(accName, transferLimitInput);
             User.register(manager, email, name, surname, password, passwordRepeated, pin, repPin);
+            User newUser = manager.findUser(email);
+            User.createAccountGivenId(manager, newUser.getId(), accName, transferLimitInput);
             JOptionPane.showMessageDialog(this, "Registered!");
             cardLayout.show(cardPanel, "Login");
         } catch (InvalidNameException | InvalidPasswordException | InvalidEmailException | OccupiedEmailException |
-                 PasswordMissmatchException | DataMissmatchException | InvalidPinException e) {
+                 PasswordMissmatchException | DataMissmatchException | InvalidPinException | InvalidAmountException e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
         } catch (SQLException e) {
             throw new RuntimeException(e);
