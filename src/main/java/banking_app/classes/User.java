@@ -90,7 +90,7 @@ public class User {
         User user;
         user = manager.findUser(email);
         if (user == null || !String.valueOf(password).equals(user.getPassword()))
-            throw new LoginFailedException("Incorrect logging data");
+            throw new LoginFailedException("Incorrect e-mail or password!");
         return user;
     }
 
