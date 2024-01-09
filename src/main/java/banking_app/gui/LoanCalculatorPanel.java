@@ -51,13 +51,13 @@ public class LoanCalculatorPanel extends JPanel {
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        JButton backButton = new JButton("Back");
-        backButton.addActionListener(e-> cardLayout.show(cardPanel, "User"));
-        add(backButton, gbc);
-        gbc.gridy++;
         confirmButton = new JButton("Confirm");
         confirmButton.addActionListener(e->calcLoan());
         add(confirmButton, gbc);
+        gbc.gridy++;
+        JButton backButton = new JButton("Back");
+        backButton.addActionListener(e-> cardLayout.show(cardPanel, "User"));
+        add(backButton, gbc);
     }
     public void calcLoan() {
         String amount = amountField.getText();

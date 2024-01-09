@@ -34,7 +34,7 @@ public class TransactionsHistoryModel extends AbstractTableModel {
             case 1: return transaction.getTitle();
             case 2: return transaction.getSourceId();
             case 3: return transaction.getTargetId();
-            case 4: return (isIncoming ? "+" : "-") + String.format("%.2f zł", transaction.getAmount());
+            case 4: return (isIncoming ? "+" : "-") + String.format("%.2f pln", transaction.getAmount());
             default: return null;
         }
     }

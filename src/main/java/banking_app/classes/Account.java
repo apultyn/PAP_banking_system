@@ -89,7 +89,7 @@ public class Account {
 
     public void showBalance() {
         System.out.println("==============================");
-        System.out.println("Stan konta: " + String.format("%.2f", this.getBalance()) + " zł");
+        System.out.println("Stan konta: " + String.format("%.2f", this.getBalance()) + " pln");
         System.out.println("==============================");
     }
 

@@ -221,10 +221,10 @@ public class UserProfilePanel extends JPanel {
                 + "\n Created: " + currentAccount.getDateCreated();
         accountDetailsLabel.setText(account_info);
 
-        String balance_info = String.format("Balance: %.2f zł", currentAccount.getBalance());
+        String balance_info = String.format("Balance: %.2f pln", currentAccount.getBalance());
         balanceLabel.setText(balance_info);
 
-        String limit_info = String.format("Your limit: %.2f zł", currentAccount.getTransactionLimit());
+        String limit_info = String.format("Your limit: %.2f pln", currentAccount.getTransactionLimit());
         transactionLimitLabel.setText(limit_info);
     }
 
