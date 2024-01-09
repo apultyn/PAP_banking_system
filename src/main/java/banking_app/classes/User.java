@@ -157,6 +157,9 @@ public class User {
             throw new InvalidAmountException("Transaction exceeds the limit!");
         if (!amountIsInRange(BigDecimal.ZERO, senderAccount.getBalance(), new BigDecimal(amount)))
             throw new InvalidAmountException("Insufficient funds!");
+        if (senderAccount.getAccountId() == recipientAccount.getAccountId()) {
+            throw new InvalidAccountNumberException("Can not use the same accounts");
+        }
 
         Transaction transaction = new Transaction(recipientAccount.getAccountId(), senderAccount.getAccountId(), title, new BigDecimal(amount), 1);
         manager.registerTransaction(transaction);

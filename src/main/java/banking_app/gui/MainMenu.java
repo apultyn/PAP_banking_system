@@ -37,6 +37,7 @@ public class MainMenu extends JFrame {
         CreateAccountPanel createAccountPanel = new CreateAccountPanel(manager, cardLayout, cardPanel, "CreateAccount");
         ContactsPanel contactsPanel = new ContactsPanel(manager, cardLayout, cardPanel, "Contacts");
         DepositPanel depositPanel = new DepositPanel(manager, cardLayout, cardPanel, "Deposit");
+        OwnTransfer ownTransfer = new OwnTransfer(manager, cardLayout, cardPanel, "OwnTransfer");
 
 
         cardPanel.add(loginPanel, "Login");
@@ -51,6 +52,7 @@ public class MainMenu extends JFrame {
         cardPanel.add(createAccountPanel, "CreateAccount");
         cardPanel.add(contactsPanel, "Contacts");
         cardPanel.add(depositPanel, "Deposit");
+        cardPanel.add(ownTransfer, "OwnTransfer");
 
         frame.add(cardPanel);
         frame.setVisible(true);
