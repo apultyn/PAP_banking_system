@@ -28,7 +28,6 @@ public class ConnectionManager {
                 while (resultSet.next()) {
                     int userId = resultSet.getInt("user_id");
                     String name = resultSet.getString("name");
-
                     System.out.println("User ID: " + userId + ", Name: " + name);
                 }
             }
@@ -36,13 +35,14 @@ public class ConnectionManager {
         return "Worked";
     }
 
-    public void registerUser(String name, String surname, String email, String password) throws SQLException {
-        String sqlInsert = "INSERT INTO users (name, surname, email, password) values (?, ?, ?, ?)";
+    public void registerUser(String name, String surname, String email, String password, String pin) throws SQLException {
+        String sqlInsert = "INSERT INTO users (name, surname, email, password, pin) values (?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
         preparedStatement.setString(1, name);
         preparedStatement.setString(2, surname);
         preparedStatement.setString(3, email);
         preparedStatement.setString(4, password);
+        preparedStatement.setString(5, pin);
         preparedStatement.executeUpdate();
     }
 
@@ -339,6 +339,15 @@ public class ConnectionManager {
         String sqlUpdate = "UPDATE users SET password = ? WHERE user_id = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlUpdate);
         preparedStatement.setString(1, password);
+        preparedStatement.setInt(2, user_id);
+        preparedStatement.executeUpdate();
+    }
+
+    public void updateUserPin(int user_id, String pin) throws SQLException {
+        System.out.println("Entered connection function");
+        String sqlUpdate = "UPDATE users SET pin = ? WHERE user_id = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlUpdate);
+        preparedStatement.setString(1, pin);
         preparedStatement.setInt(2, user_id);
         preparedStatement.executeUpdate();
     }

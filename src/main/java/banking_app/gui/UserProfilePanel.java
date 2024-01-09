@@ -255,7 +255,7 @@ public class UserProfilePanel extends JPanel {
 
     public void  handleModifyButton() {
         ModifyProfilePanel modifyPanel = (ModifyProfilePanel) SwingUtilities.findPanelByName(cardPanel, "ModifyPanel");
-        if (modifyPanel != null){
+        if (modifyPanel != null) {
             modifyPanel.setUser(user);
             cardLayout.show(cardPanel, "ModifyPanel");
         }

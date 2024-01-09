@@ -22,6 +22,7 @@ public class RegisterPanel extends JPanel {
     private JTextField emailField;
     private JPasswordField passwordField;
     private JPasswordField passwordRepeatedField;
+    private JTextField pinField, repPinField;
     private JButton registerButton;
     private JButton backButton;
     private ConnectionManager manager;
@@ -52,6 +53,8 @@ public class RegisterPanel extends JPanel {
         addLabelAndComponent(this, "E-mal:", emailField = new JTextField(20), gbc);
         addLabelAndComponent(this, "Password:", passwordField = new JPasswordField(20), gbc);
         addLabelAndComponent(this, "Repeat password:", passwordRepeatedField = new JPasswordField(20), gbc);
+        addLabelAndComponent(this, "Pin:", pinField = new JTextField(20), gbc);
+        addLabelAndComponent(this, "Repeat pin:", repPinField = new JTextField(20), gbc);
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         registerButton = new JButton("Register");
@@ -76,40 +79,17 @@ public class RegisterPanel extends JPanel {
         String surname = lastNameField.getText();
         char[] password = passwordField.getPassword();
         char[] passwordRepeated = passwordRepeatedField.getPassword();
-        User user;
+        String pin = pinField.getText();
+        String repPin = repPinField.getText();
         try {
-            user = User.register(manager, email, name, surname, password, passwordRepeated);
+            User.register(manager, email, name, surname, password, passwordRepeated, pin, repPin);
             JOptionPane.showMessageDialog(this, "Registered!");
             cardLayout.show(cardPanel, "Login");
         } catch (InvalidNameException | InvalidPasswordException | InvalidEmailException | OccupiedEmailException |
-                 PasswordMissmatchException e) {
+                 PasswordMissmatchException | DataMissmatchException | InvalidPinException e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-    }
-
-//    private void addLabelAndComponent(String labelText, Component component, GridBagConstraints gbc) {
-//        add(new JLabel(labelText), gbc);
-//        gbc.gridx++;
-//        add(component, gbc);
-//        gbc.gridx = 0;
-//        gbc.gridy++;
-//    }
-
-    public String getFirstName() {
-        return firstNameField.getText();
-    }
-
-    public String getLastName() {
-        return lastNameField.getText();
-    }
-
-    public String getEmail() {
-        return emailField.getText();
-    }
-
-    public char[] getPassword() {
-        return passwordField.getPassword();
     }
 }

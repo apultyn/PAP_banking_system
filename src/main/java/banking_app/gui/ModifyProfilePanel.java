@@ -9,14 +9,9 @@ import java.awt.*;
 import java.sql.SQLException;
 
 public class ModifyProfilePanel extends JPanel {
-    private JButton modifyNameButton;
-    private JButton returnButton;
-    private JButton modifySurnameButton;
-    private JButton modifyEmailButton;
-    private JButton modifyPasswordButton;
-    private JLabel name;
-    private JLabel surname;
-    private JLabel email;
+    private JButton modifyNameButton, returnButton, modifySurnameButton,
+            modifyEmailButton, modifyPasswordButton, modifyPinButton;
+    private JLabel name, surname, email;
     private User user;
     private ConnectionManager manager;
     private CardLayout cardLayout;
@@ -46,6 +41,7 @@ public class ModifyProfilePanel extends JPanel {
         modifySurnameButton = new JButton("Modify Surname");
         modifyEmailButton = new JButton("Modify Email");
         modifyPasswordButton = new JButton("Modify Password");
+        modifyPinButton = new JButton("Modify Pin");
 
         name = new JLabel();
         surname = new JLabel();
@@ -54,7 +50,8 @@ public class ModifyProfilePanel extends JPanel {
         JPanel namePanel = createLinePanel(name, modifyNameButton);
         JPanel surnamePanel = createLinePanel(surname, modifySurnameButton);
         JPanel emailPanel = createLinePanel(email, modifyEmailButton);
-        JPanel passwordPanel = createLinePanel(new JLabel(), modifyPasswordButton); // No label for password
+        JPanel passwordPanel = createLinePanel(new JLabel(), modifyPasswordButton);
+        JPanel pinPanel = createLinePanel(new JLabel(), modifyPinButton);
 
         returnButton = new JButton("Back");
         returnButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -63,6 +60,7 @@ public class ModifyProfilePanel extends JPanel {
         modifySurnameButton.addActionListener(e -> openModifyDialog("Surname"));
         modifyEmailButton.addActionListener(e -> openModifyDialog("Email"));
         modifyPasswordButton.addActionListener(e -> openModifyDialog("Password")); // No need to show old password
+        modifyPinButton.addActionListener(e -> openModifyDialog("Pin"));
 
         returnButton.addActionListener(e -> cardLayout.show(cardPanel, "User"));
 
@@ -72,6 +70,7 @@ public class ModifyProfilePanel extends JPanel {
         add(surnamePanel, gbc);
         add(emailPanel, gbc);
         add(passwordPanel, gbc);
+        add(pinPanel, gbc);
         add(returnButton, gbc);
     }
 
@@ -100,21 +99,26 @@ public class ModifyProfilePanel extends JPanel {
         dialog.add(newField);
 
         // Additional field for password confirmation
-        JTextField confirmField = new JTextField();;
-        if (field.equals("Password")) {
-            dialog.add(new JLabel("Confirm New Password:"));
-            dialog.add(confirmField);
+        JTextField confirmField = new JTextField();
+        switch (field) {
+            case "Password" -> {
+                dialog.add(new JLabel("Confirm New Password:"));
+                dialog.add(confirmField);
+            }
+            case "Pin" -> {
+                dialog.add(new JLabel("Confirm New Pin:"));
+                dialog.add(confirmField);
+            }
         }
 
         JButton confirmButton = new JButton("Confirm");
         JButton cancelButton = new JButton("Cancel");
         dialog.add(confirmButton);
         dialog.add(cancelButton);
-
-        // Confirm button action
         confirmButton.addActionListener(e -> {
             try {
-                updateUserData(field, oldField.getText(), newField.getText(), field.equals("Password") ? confirmField.getText() : "");
+                updateUserData(field, oldField.getText(), newField.getText(),
+                        (field.equals("Password") || field.equals("Pin")) ? confirmField.getText() : "");
                 JOptionPane.showMessageDialog(dialog, "Modification of " + field + " successful.");
                 setUser(manager.findUser(user.getEmail()));
                 dialog.dispose();
@@ -132,6 +136,10 @@ public class ModifyProfilePanel extends JPanel {
                 JOptionPane.showMessageDialog(dialog, "New password is incorrect!");
             } catch (PasswordMissmatchException ex) {
                 JOptionPane.showMessageDialog(dialog, "New password not repeated correctly!");
+            } catch (InvalidPinException ex) {
+                JOptionPane.showMessageDialog(dialog, "New pin is invalid!");
+            } catch (PinMissmatchException ex) {
+                JOptionPane.showMessageDialog(dialog, "New pin not repeated correctly!");
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(dialog, "Database error!");
             }
@@ -139,8 +147,6 @@ public class ModifyProfilePanel extends JPanel {
 
         // Cancel button action
         cancelButton.addActionListener(e -> dialog.dispose());
-
-        //dialog.pack();
         dialog.setLocationRelativeTo(SwingUtilities.findPanelByName(cardPanel, "ModifyPanel"));
         dialog.setVisible(true);
 
@@ -152,35 +158,15 @@ public class ModifyProfilePanel extends JPanel {
         email.setText(user.getEmail());
     }
     private void updateUserData(String field, String oldValue, String newValue, String confirmValue) throws
-            InvalidNameException, SQLException, RepeatedDataException, MissingInformationException, DataMissmatchException, InvalidPasswordException, PasswordMissmatchException, InvalidEmailException {
-        // Update user data based on field
+            InvalidNameException, SQLException, RepeatedDataException, MissingInformationException, DataMissmatchException,
+            InvalidPasswordException, PasswordMissmatchException, InvalidEmailException, InvalidPinException, PinMissmatchException {
+        System.out.println("Entered updateUserData");
         switch (field) {
-            case "Name":
-                user.updateFirstName(manager, oldValue, newValue);
-                break;
-            case "Surname":
-                user.updateSurname(manager, oldValue, newValue);
-                break;
-            case "Email":
-                user.updateEmail(manager, oldValue, newValue);
-                break;
-            case "Password":
-                user.updatePassword(manager, oldValue, newValue, confirmValue);
-                break;
+            case "Name" -> user.updateFirstName(manager, oldValue, newValue);
+            case "Surname" -> user.updateSurname(manager, oldValue, newValue);
+            case "Email" -> user.updateEmail(manager, oldValue, newValue);
+            case "Password" -> user.updatePassword(manager, oldValue, newValue, confirmValue);
+            case "Pin" -> user.updatePin(manager, oldValue, newValue, confirmValue);
         }
     }
-//    public static void main(String[] args) throws SQLException {
-//        ConnectionManager manager = new ConnectionManager();
-//        User user = manager.findUser("przykladowy.mail@pw.edu.pl");
-////        Deposit deposit = new Deposit(0, "czwarte", new BigDecimal(19.94), new BigDecimal(2),
-////                1000000000000047L, new Date(2024, 1, 10), new Date(2024, 10, 11));
-////        deposit.createDeposit(manager);
-//        ModifyProfilePanel modifyProfilePanel = new ModifyProfilePanel(manager, null, null, "ModifyProfilePanel");
-//        modifyProfilePanel.setUser(user);
-//        JFrame frame = new JFrame("Bank Application");
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.setSize(800, 600);
-//        frame.add(modifyProfilePanel);
-//        frame.setVisible(true);
-//    }
 }
