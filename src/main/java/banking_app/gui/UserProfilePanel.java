@@ -57,24 +57,16 @@ public class UserProfilePanel extends JPanel {
         JButton loanCalculatorButton = new JButton("Loan Calculator");
         JButton loanButton = new JButton("Loans");
 
-        add(helloLabel);
-        add(transactionsButton);
-        add(contactsButton);
-        add(transactionHistoryButton);
-        add(modifyProfileButton);
-        add(automaticSavingButton);
-        add(accountsButton);
-        add(standingOrdersButton);
-        add(loanCalculatorButton);
-        add(loanButton);
-
         menuPanel.add(transactionsButton);
+        menuPanel.add(depositsButton);
         menuPanel.add(contactsButton);
         menuPanel.add(createAccountButton);
         menuPanel.add(modifyProfileButton);
         menuPanel.add(automaticSavingButton);
         menuPanel.add(depositsButton);
         menuPanel.add(standingOrdersButton);
+        menuPanel.add(loanCalculatorButton);
+        menuPanel.add(loanButton);
 
         modifyProfileButton.addActionListener(e -> handleModifyButton());
         automaticSavingButton.addActionListener(e -> handleAutomaticSavings());
