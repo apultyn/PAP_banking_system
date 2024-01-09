@@ -2,6 +2,9 @@ package banking_app.gui;
 
 import banking_app.classes.Contact;
 import banking_app.classes.User;
+import banking_exceptions.AccountNotFoundException;
+import banking_exceptions.InvalidAccountNumberException;
+import banking_exceptions.MissingInformationException;
 import connections.ConnectionManager;
 
 import javax.swing.*;
@@ -21,7 +24,6 @@ public class ContactsPanel extends JPanel {
     private JScrollPane scrollPane;
     private JButton createNewContactButton, backButton;
     private JLabel headerLabel;
-    private JPanel contactsDisplayPanel;
     private JList<Contact> contactsListDisplay;
 
 
@@ -41,13 +43,6 @@ public class ContactsPanel extends JPanel {
         add(headerLabel, BorderLayout.NORTH);
         add(Box.createVerticalStrut(20));
 
-        // Contacts display panel inside a scroll pane
-//        contactsDisplayPanel = new JPanel();
-//        contactsDisplayPanel.setLayout(new BoxLayout(contactsDisplayPanel, BoxLayout.Y_AXIS));
-//        contactsDisplayPanel.setMaximumSize(new Dimension(400, 300));
-//        scrollPane = new JScrollPane(contactsDisplayPanel);
-//        scrollPane.setMaximumSize(new Dimension(400, 300));
-//        add(scrollPane, BorderLayout.CENTER);
         contactsListDisplay = new JList<>();
         contactsListDisplay.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         contactsListDisplay.setVisibleRowCount(-1); // Wymuszenie użycia JScrollPane
@@ -65,14 +60,10 @@ public class ContactsPanel extends JPanel {
         backButton.addActionListener(e-> {
             cardLayout.show(cardPanel, "User");
         });
+        createNewContactButton.addActionListener(e -> handleCreateContact());
     }
 
     private void uploadContacts() {
-//        for (Contact contact : contactsList) {
-//            String contactInfo = contact.getName() + " - " + contact.getAccountId();
-//            JLabel contactLabel = new JLabel(contactInfo);
-//            contactsDisplayPanel.add(contactLabel);
-//        }
         DefaultListModel<Contact> listModel = new DefaultListModel<>();
         for (Contact contact : contactsList) {
             listModel.addElement(contact);
@@ -97,12 +88,17 @@ public class ContactsPanel extends JPanel {
             public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
                     Contact selectedContact = contactsListDisplay.getSelectedValue();
-                    // Handle selection of contact here, for example:
-                    //JOptionPane.showMessageDialog(ContactsPanel.this, "Contact selected: " + selectedContact.getName());
-                    TransactionsPanel transactionsPanel = (TransactionsPanel) SwingUtilities.findPanelByName(cardPanel, "Transaction");
-                    //transactionsPanel.setRecipientName()
-                    //transactionsPanel.setReciverId();
-                    cardLayout.show(cardPanel, "Transaction");
+                    TransactionsPanel transactionsPanel = (TransactionsPanel) SwingUtilities.findPanelByName(cardPanel, "Transactions");
+                    if (transactionsPanel != null) {
+                        transactionsPanel.setRecipientName(selectedContact.getName());
+                        try {
+                            transactionsPanel.setUser(user);
+                        } catch (SQLException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                        transactionsPanel.setRecipientNumber(selectedContact.getAccountId());
+                        cardLayout.show(cardPanel, "Transactions");
+                    }
                 }
             }
         });
@@ -119,5 +115,43 @@ public class ContactsPanel extends JPanel {
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
         }
+    }
+
+    public void handleCreateContact() {
+        Dialog dialog = new JDialog();
+        dialog.setSize(350, 250);
+        dialog.setLayout(new GridLayout(0, 2));
+        ((JComponent) ((JDialog) dialog).getContentPane()).setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+
+        dialog.add(new JLabel("New contact name:"));
+        JTextField newNameField = new JTextField();
+        dialog.add(newNameField);
+
+        dialog.add(new JLabel("Account number:"));
+        JTextField accountNumberField = new JTextField();
+        dialog.add(accountNumberField);
+
+        JButton confirmButton = new JButton("Confirm");
+        JButton cancelButton = new JButton("Cancel");
+        dialog.add(confirmButton);
+        dialog.add(cancelButton);
+
+        confirmButton.addActionListener(e -> {
+            try {
+                user.createContact(manager, newNameField.getText(), accountNumberField.getText());
+                JOptionPane.showMessageDialog(dialog, "Added new contact successful.");
+                setUser(manager.findUser(user.getEmail()));
+                dialog.dispose();
+            } catch (MissingInformationException | InvalidAccountNumberException | AccountNotFoundException exception) {
+                JOptionPane.showMessageDialog(dialog, exception.getMessage());
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(dialog, "Database error!");
+            }
+        });
+
+        cancelButton.addActionListener(e -> dialog.dispose());
+        dialog.setLocationRelativeTo(SwingUtilities.findPanelByName(cardPanel, "Contacts"));
+        dialog.setVisible(true);
     }
 }

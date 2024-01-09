@@ -295,11 +295,12 @@ public class ConnectionManager {
         preparedStatement.executeUpdate();
     }
 
-    public void createContact(String name, long account_id) throws SQLException {
-        String sqlInsert = "INSERT INTO contacts (name, accounts_account_id) values (?, ?)";
+    public void createContact(String name, long account_id, int owner_id) throws SQLException {
+        String sqlInsert = "INSERT INTO contacts (name, accounts_account_id, owner_id) values (?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
         preparedStatement.setString(1, name);
         preparedStatement.setLong(2, account_id);
+        preparedStatement.setInt(3, owner_id);
         preparedStatement.executeUpdate();
     }
 

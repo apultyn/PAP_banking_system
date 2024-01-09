@@ -20,11 +20,6 @@ public class Contact {
                 resultSet.getLong("accounts_account_id"));
     }
 
-//    public static Contact createContact(ConnectionManager manager, String name, long accountId) throws SQLException {
-//        manager.createContact(name, accountId);
-//        return manager.findContact(email);
-//    }
-
     public int getContactId() {
         return contactId;
     }
