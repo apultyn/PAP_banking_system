@@ -95,8 +95,10 @@ public class UserProfilePanel extends JPanel {
     }
     public void handleStandingOrders() {
         StandingOrdersPanel savingsPanel = (StandingOrdersPanel) SwingUtilities.findPanelByName(cardPanel, "StandingOrders");;
-        savingsPanel.setUser(user);
-        cardLayout.show(cardPanel, "StandingOrders");
+        if (savingsPanel != null) {
+            savingsPanel.setUser(user);
+            cardLayout.show(cardPanel, "StandingOrders");
+        }
     }
 
     public void handleLoanCalculator() {
@@ -106,7 +108,9 @@ public class UserProfilePanel extends JPanel {
 
     public void handleLoansButton() {
         LoansPanel loansPanel = (LoansPanel) SwingUtilities.findPanelByName(cardPanel, "Loans");
-        loansPanel.setUser(user);
-        cardLayout.show(cardPanel, "Loans");
+        if (loansPanel != null) {
+            loansPanel.setUser(user);
+            cardLayout.show(cardPanel, "Loans");
+        }
     }
 }

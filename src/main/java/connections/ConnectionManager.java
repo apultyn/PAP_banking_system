@@ -331,7 +331,7 @@ public class ConnectionManager {
     }
 
     public List<Loan> findLoansByAccId(long accId) throws SQLException {
-        String sqlQuery = "SELECT * FROM loans WHERE owner_acc_id = ?";
+        String sqlQuery = "SELECT * FROM loans WHERE OWNER_ACC_ID = ?";
 
         PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
         preparedStatement.setLong(1, accId);

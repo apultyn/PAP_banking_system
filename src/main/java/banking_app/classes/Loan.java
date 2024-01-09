@@ -30,7 +30,7 @@ public class Loan {
 
     public Loan(ResultSet resultSet) throws SQLException {
 
-        this(resultSet.getInt("depositId"),
+        this(resultSet.getInt("loan_id"),
                 resultSet.getBigDecimal("amount"),
                 resultSet.getDate("start_date"),
                 resultSet.getBigDecimal("rate"),

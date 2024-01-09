@@ -28,6 +28,8 @@ public class LoansPanel extends JPanel {
 
         setLayout(new BorderLayout());
 
+        add( new JLabel("Loans panel"));
+
         amountLabel = new JLabel("Amount:");
         startDateLabel = new JLabel("Date started:");
         rateLabel = new JLabel("Rate:");
