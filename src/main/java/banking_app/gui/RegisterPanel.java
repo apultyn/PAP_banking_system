@@ -7,9 +7,15 @@ import connections.ConnectionManager;
 import javax.swing.*;
 import java.awt.*;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import static banking_app.gui.SwingUtilities.resetComponents;
 
 public class RegisterPanel extends JPanel {
-
+    private final JLabel registerLabel;
+    private final CardLayout cardLayout;
+    private final JPanel cardPanel;
     private JTextField firstNameField;
     private JTextField lastNameField;
     private JTextField emailField;
@@ -21,52 +27,48 @@ public class RegisterPanel extends JPanel {
 
     public RegisterPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) {
         this.setName(panelName);
+        this.manager = manager;
+        this.cardLayout = cardLayout;
+        this.cardPanel = cardPanel;
+
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
-        this.manager = manager;
+        gbc.gridwidth = 2;
+        gbc.gridheight = 1;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.insets = new Insets(10, 10, 10, 10);
 
-        // Ustawienia dla komponentów
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
-        backButton = new JButton("cofnij");
-        backButton.addActionListener(e-> cardLayout.show(cardPanel, "Login"));
-        add(backButton);
-
-        add(new JLabel("Rejestracja"));
-
-        add(new JLabel("Imię"));
-
-        firstNameField = new JTextField(10);
-        add(firstNameField);
-
-        add(new JLabel("Nazwisko"));
-
-        lastNameField = new JTextField(10);
-        add(lastNameField);
-
-        add(new JLabel("Email"));
-
-        emailField = new JTextField(20);
-        add(emailField);
-
-        add(new JLabel("Podaj haslo"));
-
-        passwordField = new JPasswordField(20);
-        add(passwordField);
-
-
-        add(new JLabel("Powtorz haslo"));
-
-        passwordRepeatedField = new JPasswordField(20);
-        add(passwordRepeatedField);
-
+        add(registerLabel = new JLabel("Register"), gbc);
+        registerLabel.setFont(new Font(registerLabel.getFont().getFontName(), Font.BOLD, 24));
+        gbc.gridwidth = 1;
+        gbc.gridy++;
+        addLabelAndComponent("Name:", firstNameField = new JTextField(20), gbc);
+        addLabelAndComponent("Last name:", lastNameField = new JTextField(20), gbc);
+        addLabelAndComponent("E-mal:", emailField = new JTextField(20), gbc);
+        addLabelAndComponent("Password:", passwordField = new JPasswordField(20), gbc);
+        addLabelAndComponent("Repeat password:", passwordRepeatedField = new JPasswordField(20), gbc);
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         registerButton = new JButton("Register");
-        registerButton.addActionListener(e -> handleRegister(cardLayout, cardPanel));
-        add(registerButton);
+        backButton = new JButton("Back");
+        registerButton.addActionListener(e -> {
+            handleRegister();
+            resetComponents(new ArrayList<Component>(Arrays.asList(passwordField, passwordRepeatedField)));
+        });
+        backButton.addActionListener(e -> {
+            resetComponents(this);
+            cardLayout.show(cardPanel, "Login");
+        });
+
+        add(registerButton, gbc);
+        gbc.gridy++;
+        add(backButton, gbc);
     }
 
-    private void handleRegister(CardLayout cardLayout, JPanel cardPanel) {
+    private void handleRegister() {
         String email = emailField.getText();
         String name = firstNameField.getText();
         String surname = lastNameField.getText();
@@ -92,8 +94,14 @@ public class RegisterPanel extends JPanel {
         }
     }
 
+    private void addLabelAndComponent(String labelText, Component component, GridBagConstraints gbc) {
+        add(new JLabel(labelText), gbc);
+        gbc.gridx++;
+        add(component, gbc);
+        gbc.gridx = 0;
+        gbc.gridy++;
+    }
 
-    // Metody dostępu do pól formularza
     public String getFirstName() {
         return firstNameField.getText();
     }

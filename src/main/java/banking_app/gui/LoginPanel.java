@@ -8,7 +8,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.sql.SQLException;
 
+import static banking_app.gui.SwingUtilities.resetComponents;
+
 public class LoginPanel extends JPanel {
+    private JLabel loginLabel;
     private JTextField emailField;
     private JPasswordField passwordField;
     private JButton loginButton;
@@ -18,6 +21,7 @@ public class LoginPanel extends JPanel {
     private JPanel cardPanel;
 
     public LoginPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) {
+
         this.setName(panelName);
         this.manager = manager;
         this.cardLayout = cardLayout;
@@ -26,13 +30,17 @@ public class LoginPanel extends JPanel {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
-        gbc.gridwidth = 1;
+        gbc.gridwidth = 2;
         gbc.gridheight = 1;
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.anchor = GridBagConstraints.WEST;
+        gbc.anchor = GridBagConstraints.CENTER;
         gbc.insets = new Insets(10, 10, 10, 10);
 
+        add(loginLabel = new JLabel("Login"), gbc);
+        loginLabel.setFont(new Font(loginLabel.getFont().getFontName(), Font.BOLD, 24));
+        gbc.gridwidth = 1;
+        gbc.gridy++;
         addLabelAndComponent("E-mail:", emailField = new JTextField(20), gbc);
         addLabelAndComponent("Password", passwordField = new JPasswordField(20), gbc);
 
@@ -40,8 +48,14 @@ public class LoginPanel extends JPanel {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         loginButton = new JButton("Login");
         registerButton = new JButton("Register");
-        loginButton.addActionListener(e -> handleLogin());
-        registerButton.addActionListener(e -> cardLayout.show(cardPanel, "Register"));
+        loginButton.addActionListener(e -> {
+            handleLogin();
+            passwordField.setText("");
+        });
+        registerButton.addActionListener(e -> {
+            resetComponents(this);
+            cardLayout.show(cardPanel, "Register");
+        });
         add(loginButton, gbc);
         gbc.gridy++;
         add(registerButton, gbc);
