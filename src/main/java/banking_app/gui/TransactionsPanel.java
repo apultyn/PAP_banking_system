@@ -11,7 +11,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 
+import static banking_app.gui.SwingUtilities.addLabelAndComponent;
 import static banking_app.gui.SwingUtilities.resetComponents;
 
 public class TransactionsPanel extends JPanel {
@@ -36,7 +38,6 @@ public class TransactionsPanel extends JPanel {
 
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-
         gbc.gridwidth = 2;
         gbc.gridheight = 1;
         gbc.gridx = 0;
@@ -49,11 +50,28 @@ public class TransactionsPanel extends JPanel {
         gbc.gridwidth = 1;
         gbc.gridy++;
         gbc.anchor = GridBagConstraints.WEST;
-        addLabelAndComponent("Recipient name:", recipientNameField = new JTextField(20), gbc);
-        addLabelAndComponent("Recipient account number:", recipientNumberField = new JTextField(20), gbc);
-        addLabelAndComponent("Title:", titleField = new JTextField(20), gbc);
-        addLabelAndComponent("From account:", accountComboBox = new JComboBox<>(), gbc);
-        addLabelAndComponent("Amount:", amountField = new JTextField(20), gbc);
+        addLabelAndComponent(this, "Recipient name:", recipientNameField = new JTextField(20), gbc);
+        addLabelAndComponent(this, "Recipient account number:", recipientNumberField = new JTextField(20), gbc);
+        addLabelAndComponent(this, "Title:", titleField = new JTextField(20), gbc);
+
+        gbc.gridwidth = 2;
+        add(new JLabel("From account:"), gbc);
+        gbc.gridx++;
+        add(accountComboBox = new JComboBox<>(), gbc);
+        accountComboBox.addActionListener(e -> {
+            if (accountComboBox.getSelectedItem() != null) {
+                try {
+                    balanceLabel.setText(String.format("%.2f pln", manager.findAccount(Long.parseLong(Objects.requireNonNull(accountComboBox.getSelectedItem()).toString())).getBalance()));
+                    balanceLabel.setFont(new Font(balanceLabel.getFont().getFontName(), Font.BOLD, balanceLabel.getFont().getSize()));
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+        gbc.gridy++;
+        gbc.gridx = 0;
+        addLabelAndComponent(this, "Balance:", balanceLabel = new JLabel(), gbc);
+        addLabelAndComponent(this, "Amount:", amountField = new JTextField(20), gbc);
 
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -61,8 +79,9 @@ public class TransactionsPanel extends JPanel {
         backButton = new JButton("Back");
         transferButton.addActionListener(e -> handleMakeTransfer());
         backButton.addActionListener(e -> {
-            resetComponents(this);
             cardLayout.show(cardPanel, "User");
+            balanceLabel.setText("");
+            resetComponents(this);
         });
         add(transferButton, gbc);
         gbc.gridy++;
@@ -80,25 +99,16 @@ public class TransactionsPanel extends JPanel {
     private void handleMakeTransfer() {
         try {
             user.makeTransaction(manager, recipientNameField.getText(), recipientNumberField.getText(),
-                    accountComboBox.getSelectedItem().toString(), titleField.getText(), amountField.getText());
+                    Objects.requireNonNull(accountComboBox.getSelectedItem()).toString(), titleField.getText(), amountField.getText());
             JOptionPane.showMessageDialog(this, String.format("Transferred successfully!\nYour balance is now %.2f pln", manager.findAccount(Long.parseLong(accountComboBox.getSelectedItem().toString())).getBalance()) );
             cardLayout.show(cardPanel, "User");
+            balanceLabel.setText("");
             resetComponents(this);
         } catch (InvalidAccountNumberException | InvalidNameException | InvalidAmountException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }
-    }
-
-    private void addLabelAndComponent(String labelText, Component component, GridBagConstraints gbc) {
-        add(new JLabel(labelText), gbc);
-        gbc.gridx++;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-
-        add(component, gbc);
-        gbc.gridx = 0;
-        gbc.gridy++;
     }
 
     private void updateAccountList() throws SQLException, NullPointerException {
@@ -111,5 +121,6 @@ public class TransactionsPanel extends JPanel {
     public void setUser(User user) throws SQLException {
         this.user = user;
         updateAccountList();
+        balanceLabel.setText(String.format("%.2f pln", manager.findAccount(Long.parseLong(Objects.requireNonNull(accountComboBox.getSelectedItem()).toString())).getBalance()));
     }
 }
