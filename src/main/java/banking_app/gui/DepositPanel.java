@@ -77,7 +77,7 @@ public class DepositPanel extends JPanel {
             }
         });
 
-        // Implement button actions here...
+        goBackButton.addActionListener(e -> cardLayout.show(cardPanel, "User"));
     }
 
     @Override
@@ -92,40 +92,43 @@ public class DepositPanel extends JPanel {
 
 
     private void updateDepositList() throws SQLException {
-        listModel.clear();
-        depositMap.clear();
-        ArrayList<Deposit> deposits = new ArrayList<>(manager.findUsersDeposits(user.getId()));
-        for (Deposit deposit : deposits) {
-            listModel.addElement(deposit.getName());
-            depositMap.put(deposit.getName(), deposit);
-        }
+        if (user != null) {
+            listModel.clear();
+            depositMap.clear();
+            ArrayList<Deposit> deposits = new ArrayList<>(manager.findUsersDeposits(user.getId()));
+            for (Deposit deposit : deposits) {
+                listModel.addElement(deposit.getName());
+                depositMap.put(deposit.getName(), deposit);
+            }
+        } else System.out.println("No user!");
     }
 
     private void displayDepositDetails(Deposit deposit) {
-        // Update labels with deposit details
-        nameLabel.setText("Name: " + deposit.getName());
-        amountLabel.setText("Amount: " + deposit.getAmount().toString());
-        rateLabel.setText("Rate: " + deposit.getRate().toString());
-        startDateLabel.setText("Start Date: " + deposit.getStart().toString());
-        endDateLabel.setText("End Date: " + deposit.getEnd().toString());
-        ownerAccNumLabel.setText("Owner Account Number: " + deposit.getOwnerAccId());
+        if (deposit != null) {
+            nameLabel.setText("Name: " + deposit.getName());
+            amountLabel.setText("Amount: " + deposit.getAmount().toString());
+            rateLabel.setText("Rate: " + deposit.getRate().toString());
+            startDateLabel.setText("Start Date: " + deposit.getStart().toString());
+            endDateLabel.setText("End Date: " + deposit.getEnd().toString());
+            ownerAccNumLabel.setText("Owner Account Number: " + deposit.getOwnerAccId());
+        }
     }
 
-    public void setUser(User user) {
+    public void setUser(User user) throws SQLException {
         this.user = user;
+        updateDepositList();
     }
 
-    // Additional methods like refreshPanel, button actions, etc.
-    public static void main(String[] args) throws SQLException {
-        ConnectionManager manager = new ConnectionManager();
-        User user = manager.findUser("przykladowy.mail@pw.edu.pl");
-        System.out.println(user);
-        JFrame frame = new JFrame("Deposit Panel");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        DepositPanel depositPanel = new DepositPanel(manager, null, null, "Deposits");
-        depositPanel.setUser(user);
-        frame.add(depositPanel);
-        frame.pack();
-        frame.setVisible(true);
-    }
+//    public static void main(String[] args) throws SQLException {
+//        ConnectionManager manager = new ConnectionManager();
+//        User user = manager.findUser("przykladowy.mail@pw.edu.pl");
+//        System.out.println(user);
+//        JFrame frame = new JFrame("Deposit Panel");
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        DepositPanel depositPanel = new DepositPanel(manager, null, null, "Deposits");
+//        depositPanel.setUser(user);
+//        frame.add(depositPanel);
+//        frame.pack();
+//        frame.setVisible(true);
+//    }
 }

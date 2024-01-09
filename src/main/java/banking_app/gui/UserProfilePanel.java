@@ -65,7 +65,14 @@ public class UserProfilePanel extends JPanel {
 
         modifyProfileButton.addActionListener(e -> handleModifyButton());
         automaticSavingButton.addActionListener(e -> handleAutomaticSavings());
-        depositsButton.addActionListener(e -> handleDepositsButton());
+        depositsButton.addActionListener(e -> {
+            try {
+                handleDepositsButton();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
         standingOrdersButton.addActionListener(e->handleStandingOrders());
         createAccountButton.addActionListener(e->handleCreateAccountButton());
         transactionsButton.addActionListener(e -> {
@@ -262,7 +269,7 @@ public class UserProfilePanel extends JPanel {
         }
     }
 
-    public void handleDepositsButton() {
+    public void handleDepositsButton() throws SQLException {
         DepositPanel depositPanel = (DepositPanel) SwingUtilities.findPanelByName(cardPanel, "Deposit");
         if (depositPanel != null) {
             depositPanel.setUser(user);
