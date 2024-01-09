@@ -330,6 +330,14 @@ public class ConnectionManager {
         preparedStatement.executeUpdate();
     }
 
+    public void updateAccountsLimit(long account_id, BigDecimal amount) throws SQLException{
+        String sqlUpdate = "UPDATE accounts SET transaction_limit = ? WHERE account_id = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlUpdate);
+        preparedStatement.setBigDecimal(1, amount);
+        preparedStatement.setLong(2, account_id);
+        preparedStatement.executeUpdate();
+    }
+
     public List<AutomaticSaving> findSavingsBySenderAcc(long accId) throws SQLException {
         String sqlQuery = "SELECT * FROM automatic_savings WHERE sender_id = ?";
 

@@ -17,8 +17,6 @@ public class AccountsPanel extends JPanel {
 
     private JList<String> accountsList;
     private DefaultListModel<String> accountsListModel; // Model dla JList
-
-
     private User user;
     public AccountsPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName){
         this.setName(panelName);
