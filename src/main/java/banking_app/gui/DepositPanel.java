@@ -16,7 +16,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.time.DateTimeException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -143,16 +145,12 @@ public class DepositPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Account selectedAccount = getSelectedAccount(accountComboBox, accounts);
-                long accountId = selectedAccount.getAccountId();
                 try {
                     Deposit deposit = getDeposit(selectedAccount, nameField, amountField, rateField, endDateChooser, accountComboBox);
                     deposit.createDeposit(manager);
                     JOptionPane.showMessageDialog(dialog, "Deposit created");
                     dialog.dispose(); // Close the creating deposit window
                     updateDepositList(); // Update deposit list in main panel
-
-                } catch (SQLException ex) {
-                    throw new RuntimeException(ex);
                 } catch (NotEnoughFundsException ex) {
                     JOptionPane.showMessageDialog(dialog, "Not enough funds on account!");
                 } catch (DepositNameExistingException ex) {
@@ -161,6 +159,10 @@ public class DepositPanel extends JPanel {
                     JOptionPane.showMessageDialog(dialog, "No such account in your user!");
                 } catch (MissingInformationException ex) {
                     JOptionPane.showMessageDialog(dialog, "Missing information!");
+                } catch (DateTimeException ex) {
+                    JOptionPane.showMessageDialog(dialog, "End date can't be before today!");
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
                 }
             }
         });
@@ -195,6 +197,7 @@ public class DepositPanel extends JPanel {
         BigDecimal amount = BigDecimal.valueOf(Double.parseDouble(amountField.getText()));
         BigDecimal rate = BigDecimal.valueOf(Double.parseDouble(rateField.getText()));
         long ownerAccountId = selectedAccount.getAccountId();
+        java.sql.Date startDate =  new java.sql.Date(Calendar.getInstance().getTime().getTime());
         java.sql.Date endDate = new java.sql.Date(endDateChooser.getDate().getTime());
         Deposit deposit = new Deposit(
                 0,
@@ -202,7 +205,7 @@ public class DepositPanel extends JPanel {
                 amount,
                 rate,
                 ownerAccountId,
-                null,
+                startDate,
                 endDate
         );
         return deposit;
