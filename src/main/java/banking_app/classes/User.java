@@ -133,35 +133,19 @@ public class User {
             return false;
         }
     }
-    public void makeTransaction(ConnectionManager manager, String recipientName, String recipientAccountNumber,
-                                String senderAccountNumber, String title, String amount) throws SQLException, InvalidAccountNumberException, InvalidNameException, InvalidAmountException {
-        if (recipientName.isEmpty())
-            throw new InvalidNameException("Recipient name cannot be empty!");
-        if (!recipientAccountNumber.matches("\\d{16}"))
-            throw new InvalidAccountNumberException("Number must be 16 digits long!");
-        if (manager.findAccount(Long.parseLong(recipientAccountNumber)) == null)
-            throw new InvalidAccountNumberException("Account not existing!");
-        if (manager.findUsersAccounts(this.id).contains(manager.findAccount(Long.parseLong(recipientAccountNumber))))
-            throw new InvalidAccountNumberException("Account cannot be yours!");
-        if (title.isEmpty())
-            throw new InvalidNameException("Title cannot be empty!");
-        if (amount.isEmpty())
-            throw new InvalidAmountException("Amount cannot be empty!");
-        if (!isBigDecimal(amount))
-            throw new InvalidAmountException("Amount must be a number!");
-        Account senderAccount =  manager.findAccount(Long.parseLong(senderAccountNumber));
-        Account recipientAccount = manager.findAccount(Long.parseLong(recipientAccountNumber));
-        if (new BigDecimal(amount).compareTo(BigDecimal.ZERO) <= 0)
-            throw new InvalidAmountException("Amount must be positive!");
-        if (!amountIsInRange(BigDecimal.ZERO, senderAccount.getTransactionLimit(), new BigDecimal(amount)))
-            throw new InvalidAmountException("Transaction exceeds the limit!");
-        if (!amountIsInRange(BigDecimal.ZERO, senderAccount.getBalance(), new BigDecimal(amount)))
-            throw new InvalidAmountException("Insufficient funds!");
-        if (senderAccount.getAccountId() == recipientAccount.getAccountId()) {
-            throw new InvalidAccountNumberException("Can not use the same accounts");
-        }
 
-        Transaction transaction = new Transaction(recipientAccount.getAccountId(), senderAccount.getAccountId(), title, new BigDecimal(amount), 1);
+    public void makeTransaction(ConnectionManager manager, Transaction transaction) throws SQLException, InvalidAccountNumberException, InvalidAmountException {
+        if (manager.findAccount(transaction.getTargetId()) == null)
+            throw new InvalidAccountNumberException("Account not existing!");
+        Account senderAccount =  manager.findAccount(transaction.getSourceId());
+        Account recipientAccount = manager.findAccount(transaction.getTargetId());
+        if (senderAccount.getAccountId() == recipientAccount.getAccountId())
+            throw new InvalidAccountNumberException("Can not use the same accounts!");
+        if (!amountIsInRange(BigDecimal.ZERO, senderAccount.getTransactionLimit(), transaction.getAmount()))
+            throw new InvalidAmountException("Transaction exceeds the limit!");
+        if (!amountIsInRange(BigDecimal.ZERO, senderAccount.getBalance(), transaction.getAmount()))
+            throw new InvalidAmountException("Insufficient funds!");
+
         manager.registerTransaction(transaction);
         manager.addBalance(transaction.getSourceId(), transaction.getAmount().negate());
         manager.addBalance(transaction.getTargetId(), transaction.getAmount());

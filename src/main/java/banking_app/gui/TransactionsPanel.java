@@ -1,6 +1,7 @@
 package banking_app.gui;
 
 import banking_app.classes.Account;
+import banking_app.classes.Transaction;
 import banking_app.classes.User;
 import banking_exceptions.InvalidAccountNumberException;
 import banking_exceptions.InvalidAmountException;
@@ -53,11 +54,15 @@ public class TransactionsPanel extends JPanel {
         addLabelAndComponent(this, "Recipient name:", recipientNameField = new JTextField(20), gbc);
         addLabelAndComponent(this, "Recipient account number:", recipientNumberField = new JTextField(20), gbc);
         addLabelAndComponent(this, "Title:", titleField = new JTextField(20), gbc);
+        addLabelAndComponent(this, "From account:", accountComboBox = new JComboBox<>(), gbc);
+        addLabelAndComponent(this, "Balance:", balanceLabel = new JLabel(), gbc);
+        addLabelAndComponent(this, "Amount:", amountField = new JTextField(20), gbc);
 
         gbc.gridwidth = 2;
-        add(new JLabel("From account:"), gbc);
-        gbc.gridx++;
-        add(accountComboBox = new JComboBox<>(), gbc);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        transferButton = new JButton("Transfer");
+        backButton = new JButton("Back");
+
         accountComboBox.addActionListener(e -> {
             if (accountComboBox.getSelectedItem() != null) {
                 try {
@@ -68,15 +73,6 @@ public class TransactionsPanel extends JPanel {
                 }
             }
         });
-        gbc.gridy++;
-        gbc.gridx = 0;
-        addLabelAndComponent(this, "Balance:", balanceLabel = new JLabel(), gbc);
-        addLabelAndComponent(this, "Amount:", amountField = new JTextField(20), gbc);
-
-        gbc.gridwidth = 2;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        transferButton = new JButton("Transfer");
-        backButton = new JButton("Back");
         transferButton.addActionListener(e -> handleMakeTransfer());
         backButton.addActionListener(e -> {
             cardLayout.show(cardPanel, "User");
@@ -98,16 +94,28 @@ public class TransactionsPanel extends JPanel {
 
     private void handleMakeTransfer() {
         try {
-            user.makeTransaction(manager, recipientNameField.getText(), recipientNumberField.getText(),
-                    Objects.requireNonNull(accountComboBox.getSelectedItem()).toString(), titleField.getText(), amountField.getText());
-            JOptionPane.showMessageDialog(this, String.format("Transferred successfully!\nYour balance is now %.2f pln", manager.findAccount(Long.parseLong(accountComboBox.getSelectedItem().toString())).getBalance()) );
+            Transaction transaction = new Transaction(recipientNameField.getText(), recipientNumberField.getText(), Objects.requireNonNull(accountComboBox.getSelectedItem().toString()), titleField.getText(), amountField.getText());
+
+            int attempts = 3;
+            while (attempts > 0) {
+                String PIN = JOptionPane.showInputDialog(this, "Enter your PIN: (Attempts left: " + attempts + ")");
+                if (PIN == null)
+                    break;
+                else if (!validatePIN(PIN)) {
+                    attempts--;
+                    JOptionPane.showMessageDialog(this, "Incorrect PIN!", "PIN error", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    user.makeTransaction(manager, transaction);
+                    JOptionPane.showMessageDialog(this, String.format("Transferred successfully!\nYour balance is now %.2f pln", manager.findAccount(Long.parseLong(accountComboBox.getSelectedItem().toString())).getBalance()) );
+                    break;
+                }
+            }
+
             cardLayout.show(cardPanel, "User");
             balanceLabel.setText("");
             resetComponents(this);
-        } catch (InvalidAccountNumberException | InvalidNameException | InvalidAmountException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage());
-        } catch (SQLException ex) {
-            throw new RuntimeException(ex);
+        } catch (InvalidAccountNumberException | InvalidNameException | InvalidAmountException | SQLException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -118,9 +126,15 @@ public class TransactionsPanel extends JPanel {
         }
     }
 
+    private boolean validatePIN(String PIN) {
+        return PIN.equals(user.getPin());
+    }
+
     public void setUser(User user) throws SQLException {
         this.user = user;
         updateAccountList();
-        balanceLabel.setText(String.format("%.2f pln", manager.findAccount(Long.parseLong(Objects.requireNonNull(accountComboBox.getSelectedItem()).toString())).getBalance()));
+        if (accountComboBox.getSelectedItem() != null) {
+            balanceLabel.setText(String.format("%.2f pln", manager.findAccount(Long.parseLong(Objects.requireNonNull(accountComboBox.getSelectedItem()).toString())).getBalance()));
+        }
     }
 }

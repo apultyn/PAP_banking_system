@@ -1,6 +1,7 @@
 package banking_app.gui;
 
 import banking_app.classes.Account;
+import banking_app.classes.Transaction;
 import banking_app.classes.User;
 import banking_exceptions.InvalidAccountNumberException;
 import banking_exceptions.InvalidAmountException;
@@ -11,7 +12,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 
+import static banking_app.gui.SwingUtilities.addLabelAndComponent;
 import static banking_app.gui.SwingUtilities.resetComponents;
 
 public class OwnTransfer extends JPanel {
@@ -20,6 +23,7 @@ public class OwnTransfer extends JPanel {
     private CardLayout cardLayout;
     private JPanel cardPanel;
     private JLabel transferLabel;
+    private JLabel balanceLabel;
     private JTextField titleField, amountField;
     private JComboBox<Long> senderComboBox;
     private JComboBox<Long> recipientComboBox;
@@ -46,15 +50,27 @@ public class OwnTransfer extends JPanel {
         gbc.gridwidth = 1;
         gbc.gridy++;
         gbc.anchor = GridBagConstraints.WEST;
-        addLabelAndComponent("Title:", titleField = new JTextField(20), gbc);
-        addLabelAndComponent("From account:", senderComboBox = new JComboBox<>(), gbc);
-        addLabelAndComponent("To account:", recipientComboBox = new JComboBox<>(), gbc);
-        addLabelAndComponent("Amount:", amountField = new JTextField(20), gbc);
+        addLabelAndComponent(this, "Title:", titleField = new JTextField(20), gbc);
+        addLabelAndComponent(this,"From account:", senderComboBox = new JComboBox<>(), gbc);
+        addLabelAndComponent(this, "Balance:", balanceLabel = new JLabel(), gbc);
+        addLabelAndComponent(this, "To account:", recipientComboBox = new JComboBox<>(), gbc);
+
+        addLabelAndComponent(this, "Amount:", amountField = new JTextField(20), gbc);
 
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         transferButton = new JButton("Transfer");
         backButton = new JButton("Back");
+        senderComboBox.addActionListener(e -> {
+            if (senderComboBox.getSelectedItem() != null) {
+                try {
+                    balanceLabel.setText(String.format("%.2f pln", manager.findAccount(Long.parseLong(Objects.requireNonNull(senderComboBox.getSelectedItem()).toString())).getBalance()));
+                    balanceLabel.setFont(new Font(balanceLabel.getFont().getFontName(), Font.BOLD, balanceLabel.getFont().getSize()));
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
         transferButton.addActionListener(e -> handleMakeTransfer());
         backButton.addActionListener(e -> {
             resetComponents(this);
@@ -68,8 +84,9 @@ public class OwnTransfer extends JPanel {
 
     private void handleMakeTransfer() {
         try {
-            user.makeTransaction(manager, user.getName() + user.getSurname(), recipientComboBox.getSelectedItem().toString(),
+            Transaction transaction = new Transaction(user.getName() + user.getSurname(), recipientComboBox.getSelectedItem().toString(),
                     senderComboBox.getSelectedItem().toString(), titleField.getText(), amountField.getText());
+            user.makeTransaction(manager, transaction);
             JOptionPane.showMessageDialog(this, String.format("Transferred successfully!\nYour balance is now %.2f pln", manager.findAccount(Long.parseLong(senderComboBox.getSelectedItem().toString())).getBalance()) );
             cardLayout.show(cardPanel, "User");
             resetComponents(this);
@@ -80,16 +97,6 @@ public class OwnTransfer extends JPanel {
         }
     }
 
-
-    private void addLabelAndComponent(String labelText, Component component, GridBagConstraints gbc) {
-        add(new JLabel(labelText), gbc);
-        gbc.gridx++;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-
-        add(component, gbc);
-        gbc.gridx = 0;
-        gbc.gridy++;
-    }
 
     private void updateSenderAccountList() throws SQLException, NullPointerException {
         List<Account> accounts = manager.findUsersAccounts(user.getId());
@@ -115,6 +122,10 @@ public class OwnTransfer extends JPanel {
 //            }
             recipientComboBox.addItem(account.getAccountId());
         }
+    }
+
+    private boolean validatePIN(String PIN) {
+        return PIN.equals(user.getPin());
     }
 
     public void setUser(User user) {

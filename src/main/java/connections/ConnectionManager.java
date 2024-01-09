@@ -108,7 +108,7 @@ public class ConnectionManager {
 
 
     public List<Account> findUsersAccounts(int user_id) throws SQLException {
-        String sqlQuery = "SELECT * FROM accounts WHERE owner_id = ?";
+        String sqlQuery = "SELECT * FROM accounts WHERE owner_id = ? ORDER BY account_id ASC";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
         preparedStatement.setInt(1, user_id);
         List<Account> accounts = new ArrayList<>();
