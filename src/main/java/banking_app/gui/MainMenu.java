@@ -46,12 +46,11 @@ public class MainMenu extends JFrame {
 
         ModifyProfilePanel modifyProfilePanel = new ModifyProfilePanel(manager, cardLayout, cardPanel, "ModifyPanel");
         CreateAccountPanel createAccountPanel = new CreateAccountPanel(manager, cardLayout, cardPanel, "CreateAccount");
-<<<<<<< src/main/java/banking_app/gui/MainMenu.java
+
         ContactsPanel contactsPanel = new ContactsPanel(manager, cardLayout, cardPanel, "Contacts");
-=======
+
         DepositPanel depositPanel = new DepositPanel(manager, cardLayout, cardPanel, "Deposit");
 
->>>>>>> src/main/java/banking_app/gui/MainMenu.java
 
         cardPanel.add(loginPanel, "Login");
         cardPanel.add(registerPanel, "Register");
