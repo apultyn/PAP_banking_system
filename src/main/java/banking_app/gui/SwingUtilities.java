@@ -30,6 +30,8 @@ public class SwingUtilities {
                 ((JTextField) component).setText("");
             } else if (component instanceof JComboBox<?>) {
                 ((JComboBox<?>) component).removeAllItems();
+            } else if (component instanceof JPanel) {
+                ( (JPanel) component).removeAll();
             }
         }
     }

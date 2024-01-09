@@ -395,4 +395,20 @@ public class ConnectionManager {
         }
         return orders;
     }
+
+    public List<Contact> findUsersContacts(int user_id) throws SQLException {
+        String sqlQuery = "SELECT * FROM contacts WHERE owner_id = ?";
+
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+        preparedStatement.setInt(1, user_id);
+
+        List<Contact> contacts = new ArrayList<>();
+        try (ResultSet resultSet = preparedStatement.executeQuery()) {
+            while (resultSet.next()) {
+                Contact contact = new Contact(resultSet);
+                contacts.add(contact);
+            }
+        }
+        return contacts;
+    }
 }
