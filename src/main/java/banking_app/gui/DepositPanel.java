@@ -29,8 +29,18 @@ public class DepositPanel extends JPanel {
     private JButton backButton;
     private JButton createNewButton;
     private ArrayList<Deposit> deposits;
+    private User user;
+    private CardLayout cardLayout;
+    private JPanel cardPanel;
+    private ConnectionManager manager;
 
-    public DepositPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, User user) throws SQLException {
+
+    public DepositPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) throws SQLException {
+        this.setName(panelName);
+        this.cardLayout = cardLayout;
+        this.cardPanel = cardPanel;
+        this.manager = manager;
+
         setLayout(new BorderLayout());
         deposits = new ArrayList<>(manager.findUsersDeposits(user.getId()));
         for (Deposit deposit : deposits) {
@@ -88,6 +98,10 @@ public class DepositPanel extends JPanel {
         buttonPanel.add(backButton);
         buttonPanel.add(createNewButton);
         add(buttonPanel, BorderLayout.SOUTH);
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     private void displaySelectedDeposit() {
@@ -225,20 +239,20 @@ public class DepositPanel extends JPanel {
         );
         return deposit;
     }
-    public static void main(String[] args) throws SQLException, NotEnoughFundsException, DepositNameExistingException, AccountNotFoundException {
-        ConnectionManager manager = new ConnectionManager();
-        User user = manager.findUser("przykladowy.mail@pw.edu.pl");
-//        Deposit deposit = new Deposit(0, "czwarte", new BigDecimal(19.94), new BigDecimal(2),
-//                1000000000000047L, new Date(2024, 1, 10), new Date(2024, 10, 11));
-//        deposit.createDeposit(manager);
-        DepositPanel depositPanel = new DepositPanel(manager, null, null, user);
-
-        JFrame frame = new JFrame("Bank Application");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 600);
-        frame.add(depositPanel);
-        frame.setVisible(true);
-    }
+//    public static void main(String[] args) throws SQLException, NotEnoughFundsException, DepositNameExistingException, AccountNotFoundException {
+//        ConnectionManager manager = new ConnectionManager();
+//        User user = manager.findUser("przykladowy.mail@pw.edu.pl");
+////        Deposit deposit = new Deposit(0, "czwarte", new BigDecimal(19.94), new BigDecimal(2),
+////                1000000000000047L, new Date(2024, 1, 10), new Date(2024, 10, 11));
+////        deposit.createDeposit(manager);
+//        DepositPanel depositPanel = new DepositPanel(manager, null, null, "Deposit");
+//
+//        JFrame frame = new JFrame("Bank Application");
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.setSize(800, 600);
+//        frame.add(depositPanel);
+//        frame.setVisible(true);
+//    }
 }
 
 
