@@ -224,7 +224,7 @@ public class DepositPanel extends JPanel {
                 listModel.addElement(deposit.getName());
                 depositMap.put(deposit.getName(), deposit);
             }
-        } else System.out.println("No user!");
+        }
     }
 
     private void displayDepositDetails(Deposit deposit) {

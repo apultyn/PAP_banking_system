@@ -241,7 +241,6 @@ public class ConnectionManager {
         PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
         preparedStatement.setLong(1, AccountId);
         ResultSet resultSet = preparedStatement.executeQuery();
-        System.out.println("Entered");
         if (resultSet.next()) {
             Account account = new Account(resultSet);
             return account.getBalance().compareTo(amount) > 0;
