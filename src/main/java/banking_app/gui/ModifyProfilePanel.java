@@ -14,6 +14,9 @@ public class ModifyProfilePanel extends JPanel {
     private JButton modifySurnameButton;
     private JButton modifyEmailButton;
     private JButton modifyPasswordButton;
+    private JLabel name;
+    private JLabel surname;
+    private JLabel email;
     private User user;
     private ConnectionManager manager;
     private CardLayout cardLayout;
@@ -25,7 +28,18 @@ public class ModifyProfilePanel extends JPanel {
         this.cardPanel = cardPanel;
         this.cardLayout = cardLayout;
 
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setLayout(new GridBagLayout()); // Ustawienie GridBagLayout dla głównego panelu
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 10, 5, 10); // Odstępy wokół komponentów
+
+        JPanel headerPanel = new JPanel();
+        headerPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        JLabel headerLabel = new JLabel("Modify Data");
+        headerPanel.add(headerLabel);
+        headerLabel.setFont(new Font(headerLabel.getFont().getName(), Font.BOLD, 24));
+        headerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         returnButton = new JButton("Back");
         modifyNameButton = new JButton("Modify Name");
@@ -33,24 +47,50 @@ public class ModifyProfilePanel extends JPanel {
         modifyEmailButton = new JButton("Modify Email");
         modifyPasswordButton = new JButton("Modify Password");
 
+        name = new JLabel();
+        surname = new JLabel();
+        email = new JLabel();
+
+        JPanel namePanel = createLinePanel(name, modifyNameButton);
+        JPanel surnamePanel = createLinePanel(surname, modifySurnameButton);
+        JPanel emailPanel = createLinePanel(email, modifyEmailButton);
+        JPanel passwordPanel = createLinePanel(new JLabel(), modifyPasswordButton); // No label for password
+
+        returnButton = new JButton("Back");
+        returnButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         modifyNameButton.addActionListener(e -> openModifyDialog("Name"));
         modifySurnameButton.addActionListener(e -> openModifyDialog("Surname"));
         modifyEmailButton.addActionListener(e -> openModifyDialog("Email"));
         modifyPasswordButton.addActionListener(e -> openModifyDialog("Password")); // No need to show old password
 
-        add(modifyNameButton);
-        add(modifySurnameButton);
-        add(modifyEmailButton);
-        add(modifyPasswordButton);
-        add(returnButton);
-
         returnButton.addActionListener(e -> cardLayout.show(cardPanel, "User"));
+
+        gbc.anchor = GridBagConstraints.CENTER;
+        add(headerPanel, gbc);
+        add(namePanel, gbc);
+        add(surnamePanel, gbc);
+        add(emailPanel, gbc);
+        add(passwordPanel, gbc);
+        add(returnButton, gbc);
     }
+
+    private JPanel createLinePanel(JComponent label, JButton button) {
+        JPanel linePanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
+        label.setPreferredSize(new Dimension(200, 20)); // Ustawienie preferowanych wymiarów dla etykiety
+        button.setPreferredSize(new Dimension(150, 20)); // Ustawienie preferowanych wymiarów dla przycisku
+        linePanel.add(label);
+        linePanel.add(button);
+        return linePanel;
+    }
+
 
     private void openModifyDialog(String field) {
         // Create and display dialog
-        JDialog dialog = new JDialog();
+        Dialog dialog = new JDialog();
+        dialog.setSize(300, 200);
         dialog.setLayout(new GridLayout(0, 2));
+
         dialog.add(new JLabel("Old " + field + ":"));
         JTextField oldField = new JTextField();
         dialog.add(oldField);
@@ -100,11 +140,16 @@ public class ModifyProfilePanel extends JPanel {
         // Cancel button action
         cancelButton.addActionListener(e -> dialog.dispose());
 
-        dialog.pack();
+        //dialog.pack();
+        dialog.setLocationRelativeTo(SwingUtilities.findPanelByName(cardPanel, "ModifyPanel"));
         dialog.setVisible(true);
+
     }
     public void setUser(User setted_user) {
         user = setted_user;
+        name.setText(user.getName());
+        surname.setText(user.getSurname());
+        email.setText(user.getEmail());
     }
     private void updateUserData(String field, String oldValue, String newValue, String confirmValue) throws
             InvalidNameException, SQLException, RepeatedDataException, MissingInformationException, DataMissmatchException, InvalidPasswordException, PasswordMissmatchException, InvalidEmailException {
@@ -124,18 +169,18 @@ public class ModifyProfilePanel extends JPanel {
                 break;
         }
     }
-    public static void main(String[] args) throws SQLException {
-        ConnectionManager manager = new ConnectionManager();
-        User user = manager.findUser("przykladowy.mail@pw.edu.pl");
-//        Deposit deposit = new Deposit(0, "czwarte", new BigDecimal(19.94), new BigDecimal(2),
-//                1000000000000047L, new Date(2024, 1, 10), new Date(2024, 10, 11));
-//        deposit.createDeposit(manager);
-        ModifyProfilePanel modifyProfilePanel = new ModifyProfilePanel(manager, null, null, "ModifyProfilePanel");
-        modifyProfilePanel.setUser(user);
-        JFrame frame = new JFrame("Bank Application");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 600);
-        frame.add(modifyProfilePanel);
-        frame.setVisible(true);
-    }
+//    public static void main(String[] args) throws SQLException {
+//        ConnectionManager manager = new ConnectionManager();
+//        User user = manager.findUser("przykladowy.mail@pw.edu.pl");
+////        Deposit deposit = new Deposit(0, "czwarte", new BigDecimal(19.94), new BigDecimal(2),
+////                1000000000000047L, new Date(2024, 1, 10), new Date(2024, 10, 11));
+////        deposit.createDeposit(manager);
+//        ModifyProfilePanel modifyProfilePanel = new ModifyProfilePanel(manager, null, null, "ModifyProfilePanel");
+//        modifyProfilePanel.setUser(user);
+//        JFrame frame = new JFrame("Bank Application");
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.setSize(800, 600);
+//        frame.add(modifyProfilePanel);
+//        frame.setVisible(true);
+//    }
 }
