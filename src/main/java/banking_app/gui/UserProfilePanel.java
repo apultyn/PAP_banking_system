@@ -56,6 +56,7 @@ public class UserProfilePanel extends JPanel {
         JButton standingOrdersButton = new JButton("Standing Orders");
         JButton loanCalculatorButton = new JButton("Loan Calculator");
         JButton loanButton = new JButton("Loans");
+        JButton logOutButton = new JButton("LogOut");
 
         menuPanel.add(transactionsButton);
         menuPanel.add(depositsButton);
@@ -67,6 +68,7 @@ public class UserProfilePanel extends JPanel {
         menuPanel.add(standingOrdersButton);
         menuPanel.add(loanCalculatorButton);
         menuPanel.add(loanButton);
+        menuPanel.add(logOutButton);
 
         modifyProfileButton.addActionListener(e -> handleModifyButton());
         automaticSavingButton.addActionListener(e -> handleAutomaticSavings());
@@ -89,6 +91,11 @@ public class UserProfilePanel extends JPanel {
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
+        });
+        logOutButton.addActionListener(e -> {
+            user = null;
+            JOptionPane.showMessageDialog(cardPanel, "Logged out!");
+            cardLayout.show(cardPanel, "Login");
         });
 
         setLayout(new BorderLayout());
