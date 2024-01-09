@@ -85,6 +85,7 @@ public class UserProfilePanel extends JPanel {
         loanButton.addActionListener(e->handleLoansButton());
 
         createAccountButton.addActionListener(e->handleCreateAccountButton());
+        contactsButton.addActionListener(e->handleContactsButton());
         transactionsButton.addActionListener(e -> {
             try {
                 handleTransactionsButton();
@@ -265,6 +266,14 @@ public class UserProfilePanel extends JPanel {
         if (createAccountPanel != null){
             createAccountPanel.setUser(user);
             cardLayout.show(cardPanel, "CreateAccount");
+        }
+    }
+
+    private void handleContactsButton() {
+        ContactsPanel contactsPanel = (ContactsPanel) SwingUtilities.findPanelByName(cardPanel, "Contacts");
+        if (contactsPanel != null) {
+            contactsPanel.setUser(user);
+            cardLayout.show(cardPanel, "Contacts");
         }
     }
 
