@@ -1,20 +1,26 @@
 package banking_app.classes;
 
+import banking_exceptions.InvalidAmountException;
+import connections.ConnectionManager;
+
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import static banking_app.classes.User.isBigDecimal;
+
 public class Account {
-    private final long accountId;
+    private final Long accountId;
     private String name;
-    private float transactionLimit;
+    private BigDecimal transactionLimit;
     private final Date dateCreated;
     private final int userId;
 
-    private final float balance;
+    private final BigDecimal balance;
 
-    public Account(long accountId, String name, float transactionLimit,
-                   Date dateCreated, int userId, float balance) {
+    public Account(long accountId, String name, BigDecimal transactionLimit,
+                   Date dateCreated, int userId, BigDecimal balance) {
         this.accountId = accountId;
         this.name = name;
         this.transactionLimit = transactionLimit;
@@ -23,14 +29,33 @@ public class Account {
         this.balance = balance;
     }
 
+    public Account(int userId, String name, BigDecimal transferLimit) {
+        this.userId = userId;
+        this.name = name;
+        this.transactionLimit = transferLimit;
+        this.accountId = null;
+        this.dateCreated = null;
+        this.balance = BigDecimal.ZERO;
+    }
+
     public Account(ResultSet resultSet) throws SQLException {
 
         this(resultSet.getLong("account_id"),
                 resultSet.getString("name"),
-                resultSet.getFloat("transaction_limit"),
+                resultSet.getBigDecimal("transaction_limit"),
                 resultSet.getDate("creation_date"),
                 resultSet.getInt("owner_id"),
-                resultSet.getFloat("balance"));
+                resultSet.getBigDecimal("balance"));
+    }
+
+    public void updateTransactionLimit(ConnectionManager manager, String transferLimit) throws SQLException, InvalidAmountException{
+        if (transferLimit.isEmpty())
+            throw new InvalidAmountException("Transfer limit cannot be empty!");
+        if (!isBigDecimal(transferLimit))
+            throw new InvalidAmountException("Transfer limit must be a number!");
+        if (new BigDecimal(transferLimit).compareTo(BigDecimal.ZERO) <= 0)
+            throw new InvalidAmountException("Transfer limit must be positive!");
+        manager.updateAccountsLimit(accountId, new BigDecimal(transferLimit));
     }
 
     public long getAccountId() {
@@ -41,7 +66,7 @@ public class Account {
         return name;
     }
 
-    public float getTransactionLimit() {
+    public BigDecimal getTransactionLimit() {
         return transactionLimit;
     }
 
@@ -54,11 +79,11 @@ public class Account {
         return userId;
     }
 
-    public float getBalance() {
+    public BigDecimal getBalance() {
         return balance;
     }
 
-    public void setTransactionLimit(float newLimit) {
+    public void setTransactionLimit(BigDecimal newLimit) {
         this.transactionLimit = newLimit;
     }
 
@@ -66,6 +91,17 @@ public class Account {
         System.out.println("==============================");
         System.out.println("Stan konta: " + String.format("%.2f", this.getBalance()) + " zł");
         System.out.println("==============================");
+    }
 
+    @Override
+    public String toString() {
+        return "Account{" +
+                "accountId=" + accountId +
+                ", name='" + name + '\'' +
+                ", transactionLimit=" + transactionLimit +
+                ", dateCreated=" + dateCreated +
+                ", userId=" + userId +
+                ", balance=" + balance +
+                '}';
     }
 }

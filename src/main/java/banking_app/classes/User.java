@@ -6,8 +6,6 @@ import connections.ConnectionManager;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
@@ -71,15 +69,25 @@ public class User {
             OccupiedEmailException, InvalidEmailException, InvalidPasswordException, PasswordMissmatchException, InvalidNameException {
         EmailValidator emailValidator = new EmailValidator();
         PasswordValidator passwordValidator = new PasswordValidator();
-
+        if (name.isEmpty())
+            throw new InvalidNameException("Name cannot be empty!");
+        if (name.contains(" "))
+            throw new InvalidNameException("Name cannot contain space!");
+        if (surname.isEmpty())
+            throw new InvalidNameException("Last name cannot be empty!");
+        if (surname.contains(" "))
+            throw new InvalidNameException("Last name cannot contain space!");
+        if (email.isEmpty())
+            throw new InvalidEmailException("E-mail cannot  be empty!");
         if (manager.findUser(email) != null)
             throw new OccupiedEmailException("Email already in use!");
         if (!emailValidator.validate(email))
             throw new InvalidEmailException("Wrong email format!");
         if (!passwordValidator.validate(String.valueOf(password)))
-            throw new InvalidPasswordException("Wrong password format!");
+            throw new InvalidPasswordException("Password must be 8-20 characters, uppercase letter, lowercase letter," +
+                    " number and special character!");
         if (!Arrays.equals(repPassword, password))
-            throw new PasswordMissmatchException("Password not repeated correctly!");
+            throw new PasswordMissmatchException("Passwords do not match!");
         if (name.contains(" ") || surname.contains(" "))
             throw new InvalidNameException("Name or surname contains space!");
         manager.registerUser(name, surname, email, String.valueOf(password));
@@ -91,7 +99,7 @@ public class User {
         User user;
         user = manager.findUser(email);
         if (user == null || !String.valueOf(password).equals(user.getPassword()))
-            throw new LoginFailedException("Incorrect logging data");
+            throw new LoginFailedException("Incorrect e-mail or password!");
         return user;
     }
 
@@ -107,66 +115,119 @@ public class User {
             return false;
         }
     }
-    public void makeTransaction(ConnectionManager manager) throws SQLException {
-        ArrayList<Long> usersAccountsIds = new ArrayList<>();
-        manager.findUsersAccounts(this.getId()).forEach(account -> usersAccountsIds.add(account.getAccountId()));
-        System.out.print("Na rachunek: ");
-        String input = scanner.nextLine();
-        long targetAccountId;
-        while (!(input.matches("\\d{16}"))) {
-            System.out.print("Numer rachunku musi się składać z 16 cyfr, wprowadź ponownie: ");
-            input = scanner.nextLine();
-        }
-        targetAccountId = Long.parseLong(input);
+    public void makeTransaction(ConnectionManager manager, String recipientName, String recipientAccountNumber,
+                                String senderAccountNumber, String title, String amount) throws SQLException, InvalidAccountNumberException, InvalidNameException, InvalidAmountException {
+        if (recipientName.isEmpty())
+            throw new InvalidNameException("Recipient name cannot be empty!");
+        if (!recipientAccountNumber.matches("\\d{16}"))
+            throw new InvalidAccountNumberException("Number must be 16 digits long!");
+        if (manager.findAccount(Long.parseLong(recipientAccountNumber)) == null)
+            throw new InvalidAccountNumberException("Account not existing!");
+        if (manager.findUsersAccounts(this.id).contains(manager.findAccount(Long.parseLong(recipientAccountNumber))))
+            throw new InvalidAccountNumberException("Account cannot be yours!");
+        if (title.isEmpty())
+            throw new InvalidNameException("Title cannot be empty!");
+        if (amount.isEmpty())
+            throw new InvalidAmountException("Amount cannot be empty!");
+        if (!isBigDecimal(amount))
+            throw new InvalidAmountException("Amount must be a number!");
+        Account senderAccount =  manager.findAccount(Long.parseLong(senderAccountNumber));
+        Account recipientAccount = manager.findAccount(Long.parseLong(recipientAccountNumber));
+        if (new BigDecimal(amount).compareTo(BigDecimal.ZERO) <= 0)
+            throw new InvalidAmountException("Amount must be positive!");
+        if (!amountIsInRange(BigDecimal.ZERO, senderAccount.getTransactionLimit(), new BigDecimal(amount)))
+            throw new InvalidAmountException("Transaction exceeds the limit!");
+        if (!amountIsInRange(BigDecimal.ZERO, senderAccount.getBalance(), new BigDecimal(amount)))
+            throw new InvalidAmountException("Insufficient funds!");
 
-        long sourceAccountId;
-        System.out.print("Z rachunku: ");
-        input = scanner.nextLine();
-        while (!input.matches("\\d{16}" ) || !usersAccountsIds.contains(sourceAccountId = Long.parseLong(input))) {
-            if (!input.matches("\\d{16}" ))
-                System.out.print("Numer rachunku musi się składać z 16 cyfr, wprowadź ponownie: ");
-            else
-                System.out.print("Rachunek musi należeć do ciebie, wprowadź ponownie: ");
-            input = scanner.nextLine();
-        }
-        Account sourceAccount = manager.findAccount(sourceAccountId);
-        System.out.print("Kwota przelewu: ");
-        BigDecimal amount;
-        input = scanner.nextLine();
-        while (!isBigDecimal(input) ||
-                !amountIsInRange(BigDecimal.ZERO, BigDecimal.valueOf(sourceAccount.getTransactionLimit()).min(BigDecimal.valueOf(sourceAccount.getBalance())), new BigDecimal(input))) {
-            System.out.print("Niepoprawna kwota, wprowadź ponownie: ");
-            input = scanner.nextLine();
-        }
-        amount = new BigDecimal(input);
-        System.out.print("Tytuł przelewu: ");
-        String title = scanner.nextLine();
-        manager.registerTransaction(title, amount, 1, sourceAccountId, targetAccountId);
-        manager.addBalance(sourceAccountId, amount.negate());
-        manager.addBalance(targetAccountId, amount);
+        Transaction transaction = new Transaction(recipientAccount.getAccountId(), senderAccount.getAccountId(), title, new BigDecimal(amount), 1);
+        manager.registerTransaction(transaction);
+        manager.addBalance(transaction.getSourceId(), transaction.getAmount().negate());
+        manager.addBalance(transaction.getTargetId(), transaction.getAmount());
     }
 
-    public void createAccount(ConnectionManager manager) throws SQLException {
-        while (true) {
-            try {
-                System.out.print("Wprowadź nazwę nowego konta: ");
-                String name = scanner.nextLine();
-                BigDecimal limit;
-                System.out.print("Wpisz limit pojedynczej transakcji: ");
-                String limitAns = scanner.nextLine();
-                if (!limitAns.isBlank()) {
-                    limit = new BigDecimal(limitAns);
-                    manager.createAccount(name, limit, this.getId());
-                    break;
-                } else {
-                    throw new NumberFormatException("");
-                }
-            } catch (SQLIntegrityConstraintViolationException e) {
-                System.out.println("Już masz konto o tej nazwie");
-            } catch (NumberFormatException e) {
-                System.out.println("Podaj prawidłową liczbę");
-            }
-        }
+    public void createAccount(ConnectionManager manager, String accountName, String transferLimit) throws SQLException, InvalidNameException, InvalidAmountException {
+        if (accountName.isEmpty())
+            throw new InvalidNameException("Name cannot be empty!");
+        if (manager.findAccount(id, accountName) != null)
+            throw new InvalidNameException("Name is occupied!");
+        if (transferLimit.isEmpty())
+            throw new InvalidAmountException("Transfer limit cannot be empty!");
+        if (!isBigDecimal(transferLimit))
+            throw new InvalidAmountException("Transfer limit must be a number!");
+        if (new BigDecimal(transferLimit).compareTo(BigDecimal.ZERO) <= 0)
+            throw new InvalidAmountException("Transfer limit must be positive!");
+        Account account = new Account(id, accountName, new BigDecimal(transferLimit));
+        manager.createAccount(account);
+    }
+    public void updateFirstName(ConnectionManager manager, String oldName, String newName) throws
+            InvalidNameException, SQLException, MissingInformationException, RepeatedDataException, DataMissmatchException {
+        if (oldName.isEmpty() || newName.isEmpty())
+            throw new MissingInformationException("Missing data!");
+        if (!oldName.equals(name))
+            throw new DataMissmatchException("Wrong old name!");
+        if (newName.equals(name))
+            throw new RepeatedDataException("New name can't be the same as previous!");
+        if (newName.contains(" "))
+            throw new InvalidNameException("New name contains space!");
+        manager.updateUserFirstName(id, newName);
+        name = newName;
+    }
+
+    public void updateSurname(ConnectionManager manager, String oldSurname, String newSurname) throws
+            InvalidNameException, SQLException, MissingInformationException, RepeatedDataException, DataMissmatchException {
+        if (oldSurname.isEmpty() || newSurname.isEmpty())
+            throw new MissingInformationException("Missing data!");
+        if (!oldSurname.equals(surname))
+            throw new DataMissmatchException("Wrong old surname!");
+        if (newSurname.equals(name))
+            throw new RepeatedDataException("New surname can't be the same as previous!");
+        if (newSurname.contains(" "))
+            throw new InvalidNameException("New surname contains space!");
+        manager.updateUserSurname(id, newSurname);
+        surname = newSurname;
+    }
+
+    public void updateEmail(ConnectionManager manager, String oldEmail, String newEmail) throws
+            MissingInformationException, RepeatedDataException, InvalidEmailException, SQLException, DataMissmatchException {
+        if (oldEmail.isEmpty() || newEmail.isEmpty())
+            throw new MissingInformationException("New email can't be null!");
+        if (!oldEmail.equals(email))
+            throw new DataMissmatchException("Wrong old email!");
+        if (newEmail.equals(email))
+            throw new RepeatedDataException("New email can't be the same as previous!");
+        if (!new EmailValidator().validate(newEmail))
+            throw new InvalidEmailException("Email in wrong format!");
+        manager.updateUserEmail(id, newEmail);
+        email = newEmail;
+    }
+
+    public void updatePassword(ConnectionManager manager, String oldPassword, String newPassword, String repNewPassword) throws
+            MissingInformationException, InvalidPasswordException, PasswordMissmatchException, SQLException, DataMissmatchException, RepeatedDataException {
+        if (oldPassword.isEmpty() || newPassword.isEmpty() || repNewPassword.isEmpty())
+            throw new MissingInformationException("Missing some passwords!");
+        if (!oldPassword.equals(password))
+            throw new DataMissmatchException("Wrong old password!");
+        if (password.equals(newPassword))
+            throw new RepeatedDataException("New password can't be the same as old!");
+        if (!new PasswordValidator().validate(newPassword))
+            throw new InvalidPasswordException("Wrong password format!");
+        if (!newPassword.equals(repNewPassword))
+            throw new PasswordMissmatchException("New password not repeated correctly!");
+        manager.updateUserPassword(id, newPassword);
+        password = newPassword;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", accounts=" + accounts +
+                '}';
     }
 }
 
