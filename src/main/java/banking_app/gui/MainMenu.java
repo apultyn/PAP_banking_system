@@ -30,7 +30,6 @@ public class MainMenu extends JFrame {
         UserProfilePanel userProfilePanel = new UserProfilePanel(manager, cardLayout, cardPanel, "User");
         TransactionsPanel transactionsPanel = new TransactionsPanel(manager, cardLayout, cardPanel, "Transactions");
         AutomaticSavingsGui savingsPanel = new AutomaticSavingsGui(manager, cardLayout, cardPanel, "SavingsPanel");
-
         StandingOrdersPanel standingOrdersPanel = new StandingOrdersPanel(manager, cardLayout, cardPanel, "StandingOrders");
         LoanCalculatorPanel loanCalculator = new LoanCalculatorPanel(cardLayout, cardPanel, "LoanCalculator");
         LoansPanel loansPanel = new LoansPanel(manager, cardLayout, cardPanel, "Loans");
