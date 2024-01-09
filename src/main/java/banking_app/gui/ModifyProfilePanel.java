@@ -9,23 +9,29 @@ import java.awt.*;
 import java.sql.SQLException;
 
 public class ModifyProfilePanel extends JPanel {
+    private JButton modifyNameButton;
+    private JButton returnButton;
+    private JButton modifySurnameButton;
+    private JButton modifyEmailButton;
+    private JButton modifyPasswordButton;
     private User user;
     private ConnectionManager manager;
     private CardLayout cardLayout;
     private JPanel cardPanel;
 
     public ModifyProfilePanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) {
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        this.setName(panelName);
         this.manager = manager;
+        this.setName(panelName);
         this.cardPanel = cardPanel;
         this.cardLayout = cardLayout;
 
-        JButton returnButton = new JButton("Back");
-        JButton modifyNameButton = new JButton("Modify Name");
-        JButton modifySurnameButton = new JButton("Modify Surname");
-        JButton modifyEmailButton = new JButton("Modify Email");
-        JButton modifyPasswordButton = new JButton("Modify Password");
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+        returnButton = new JButton("Back");
+        modifyNameButton = new JButton("Modify Name");
+        modifySurnameButton = new JButton("Modify Surname");
+        modifyEmailButton = new JButton("Modify Email");
+        modifyPasswordButton = new JButton("Modify Password");
 
         modifyNameButton.addActionListener(e -> openModifyDialog("Name"));
         modifySurnameButton.addActionListener(e -> openModifyDialog("Surname"));

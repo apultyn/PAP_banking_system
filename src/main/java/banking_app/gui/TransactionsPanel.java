@@ -24,10 +24,7 @@ public class TransactionsPanel extends JPanel {
     protected JButton backButton;
     public TransactionsPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) throws SQLException {
         this.manager = manager;
-
         this.setName(panelName);
-
-
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
