@@ -56,9 +56,11 @@ public class UserProfilePanel extends JPanel {
         JButton standingOrdersButton = new JButton("Standing Orders");
         JButton loanCalculatorButton = new JButton("Loan Calculator");
         JButton loanButton = new JButton("Loans");
+        JButton ownTransferButton = new JButton("Own Transfer");
         JButton logOutButton = new JButton("LogOut");
 
         menuPanel.add(transactionsButton);
+        menuPanel.add(ownTransferButton);
         menuPanel.add(depositsButton);
         menuPanel.add(contactsButton);
         menuPanel.add(createAccountButton);
@@ -86,6 +88,7 @@ public class UserProfilePanel extends JPanel {
 
         createAccountButton.addActionListener(e->handleCreateAccountButton());
         contactsButton.addActionListener(e->handleContactsButton());
+        ownTransferButton.addActionListener(e->handleOwnTransferButton());
         transactionsButton.addActionListener(e -> {
             try {
                 handleTransactionsButton();
@@ -163,6 +166,7 @@ public class UserProfilePanel extends JPanel {
         try {
             List<Account> accounts = manager.findUsersAccounts(user.getId());
             setAccounts(accounts);
+            createTranscationsHistory();
         } catch (SQLException e){
             JOptionPane.showMessageDialog(this, e);
         }
@@ -274,6 +278,14 @@ public class UserProfilePanel extends JPanel {
         if (contactsPanel != null) {
             contactsPanel.setUser(user);
             cardLayout.show(cardPanel, "Contacts");
+        }
+    }
+
+    private void handleOwnTransferButton() {
+        OwnTransfer ownTransfer = (OwnTransfer) SwingUtilities.findPanelByName(cardPanel, "OwnTransfer");
+        if (ownTransfer != null) {
+            ownTransfer.setUser(user);
+            cardLayout.show(cardPanel, "OwnTransfer");
         }
     }
 
