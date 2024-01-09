@@ -9,6 +9,7 @@ import java.awt.*;
 import java.sql.SQLException;
 
 import static banking_app.gui.SwingUtilities.resetComponents;
+import static banking_app.gui.SwingUtilities.addLabelAndComponent;
 
 public class LoginPanel extends JPanel {
     private JLabel loginLabel;
@@ -41,8 +42,8 @@ public class LoginPanel extends JPanel {
         loginLabel.setFont(new Font(loginLabel.getFont().getFontName(), Font.BOLD, 24));
         gbc.gridwidth = 1;
         gbc.gridy++;
-        addLabelAndComponent("E-mail:", emailField = new JTextField(20), gbc);
-        addLabelAndComponent("Password", passwordField = new JPasswordField(20), gbc);
+        addLabelAndComponent(this, "E-mail:", emailField = new JTextField(20), gbc);
+        addLabelAndComponent(this, "Password", passwordField = new JPasswordField(20), gbc);
 
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -79,13 +80,13 @@ public class LoginPanel extends JPanel {
 //        add(registerButton);
     }
 
-    private void addLabelAndComponent(String labelText, Component component, GridBagConstraints gbc) {
-        add(new JLabel(labelText), gbc);
-        gbc.gridx++;
-        add(component, gbc);
-        gbc.gridx = 0;
-        gbc.gridy++;
-    }
+//    private void addLabelAndComponent(String labelText, Component component, GridBagConstraints gbc) {
+//        add(new JLabel(labelText), gbc);
+//        gbc.gridx++;
+//        add(component, gbc);
+//        gbc.gridx = 0;
+//        gbc.gridy++;
+//    }
 
     public void handleLogin() {
         String email = emailField.getText();

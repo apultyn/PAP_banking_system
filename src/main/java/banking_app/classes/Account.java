@@ -6,15 +6,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Account {
-    private final long accountId;
+    private final Long accountId;
     private String name;
-    private float transactionLimit;
+    private BigDecimal transactionLimit;
     private final Date dateCreated;
     private final int userId;
 
     private final BigDecimal balance;
 
-    public Account(long accountId, String name, float transactionLimit,
+    public Account(long accountId, String name, BigDecimal transactionLimit,
                    Date dateCreated, int userId, BigDecimal balance) {
         this.accountId = accountId;
         this.name = name;
@@ -24,11 +24,20 @@ public class Account {
         this.balance = balance;
     }
 
+    public Account(int userId, String name, BigDecimal transferLimit) {
+        this.userId = userId;
+        this.name = name;
+        this.transactionLimit = transferLimit;
+        this.accountId = null;
+        this.dateCreated = null;
+        this.balance = BigDecimal.ZERO;
+    }
+
     public Account(ResultSet resultSet) throws SQLException {
 
         this(resultSet.getLong("account_id"),
                 resultSet.getString("name"),
-                resultSet.getFloat("transaction_limit"),
+                resultSet.getBigDecimal("transaction_limit"),
                 resultSet.getDate("creation_date"),
                 resultSet.getInt("owner_id"),
                 resultSet.getBigDecimal("balance"));
@@ -42,7 +51,7 @@ public class Account {
         return name;
     }
 
-    public float getTransactionLimit() {
+    public BigDecimal getTransactionLimit() {
         return transactionLimit;
     }
 
@@ -59,7 +68,7 @@ public class Account {
         return balance;
     }
 
-    public void setTransactionLimit(float newLimit) {
+    public void setTransactionLimit(BigDecimal newLimit) {
         this.transactionLimit = newLimit;
     }
 

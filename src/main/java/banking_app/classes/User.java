@@ -6,7 +6,6 @@ import connections.ConnectionManager;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
@@ -70,15 +69,25 @@ public class User {
             OccupiedEmailException, InvalidEmailException, InvalidPasswordException, PasswordMissmatchException, InvalidNameException {
         EmailValidator emailValidator = new EmailValidator();
         PasswordValidator passwordValidator = new PasswordValidator();
-
+        if (name.isEmpty())
+            throw new InvalidNameException("Name cannot be empty!");
+        if (name.contains(" "))
+            throw new InvalidNameException("Name cannot contain space!");
+        if (surname.isEmpty())
+            throw new InvalidNameException("Last name cannot be empty!");
+        if (surname.contains(" "))
+            throw new InvalidNameException("Last name cannot contain space!");
+        if (email.isEmpty())
+            throw new InvalidEmailException("E-mail cannot  be empty!");
         if (manager.findUser(email) != null)
             throw new OccupiedEmailException("Email already in use!");
         if (!emailValidator.validate(email))
             throw new InvalidEmailException("Wrong email format!");
         if (!passwordValidator.validate(String.valueOf(password)))
-            throw new InvalidPasswordException("Wrong password format!");
+            throw new InvalidPasswordException("Password must be 8-20 characters, uppercase letter, lowercase letter," +
+                    " number and special character!");
         if (!Arrays.equals(repPassword, password))
-            throw new PasswordMissmatchException("Password not repeated correctly!");
+            throw new PasswordMissmatchException("Passwords do not match!");
         if (name.contains(" ") || surname.contains(" "))
             throw new InvalidNameException("Name or surname contains space!");
         manager.registerUser(name, surname, email, String.valueOf(password));
@@ -108,38 +117,28 @@ public class User {
     }
     public void makeTransaction(ConnectionManager manager, String recipientName, String recipientAccountNumber,
                                 String senderAccountNumber, String title, String amount) throws SQLException, InvalidAccountNumberException, InvalidNameException, InvalidAmountException {
-        if (recipientName.isEmpty()) {
+        if (recipientName.isEmpty())
             throw new InvalidNameException("Recipient name cannot be empty!");
-        }
-        if (!recipientAccountNumber.matches("\\d{16}")) {
+        if (!recipientAccountNumber.matches("\\d{16}"))
             throw new InvalidAccountNumberException("Number must be 16 digits long!");
-        }
-        if (manager.findAccount(Long.parseLong(recipientAccountNumber)) == null) {
+        if (manager.findAccount(Long.parseLong(recipientAccountNumber)) == null)
             throw new InvalidAccountNumberException("Account not existing!");
-        }
-        if (manager.findUsersAccounts(this.id).contains(manager.findAccount(Long.parseLong(recipientAccountNumber)))) {
+        if (manager.findUsersAccounts(this.id).contains(manager.findAccount(Long.parseLong(recipientAccountNumber))))
             throw new InvalidAccountNumberException("Account cannot be yours!");
-        }
-        if (title.isEmpty()) {
+        if (title.isEmpty())
             throw new InvalidNameException("Title cannot be empty!");
-        }
-        if (amount.isEmpty()) {
+        if (amount.isEmpty())
             throw new InvalidAmountException("Amount cannot be empty!");
-        }
-        if (!isBigDecimal(amount)) {
+        if (!isBigDecimal(amount))
             throw new InvalidAmountException("Amount must be a number!");
-        }
         Account senderAccount =  manager.findAccount(Long.parseLong(senderAccountNumber));
         Account recipientAccount = manager.findAccount(Long.parseLong(recipientAccountNumber));
-        if (new BigDecimal(amount).compareTo(BigDecimal.ZERO) <= 0) {
+        if (new BigDecimal(amount).compareTo(BigDecimal.ZERO) <= 0)
             throw new InvalidAmountException("Amount must be positive!");
-        }
-        if (!amountIsInRange(BigDecimal.ZERO, BigDecimal.valueOf(senderAccount.getTransactionLimit()), new BigDecimal(amount))) {
+        if (!amountIsInRange(BigDecimal.ZERO, senderAccount.getTransactionLimit(), new BigDecimal(amount)))
             throw new InvalidAmountException("Transaction exceeds the limit!");
-        }
-        if (!amountIsInRange(BigDecimal.ZERO, senderAccount.getBalance(), new BigDecimal(amount))) {
+        if (!amountIsInRange(BigDecimal.ZERO, senderAccount.getBalance(), new BigDecimal(amount)))
             throw new InvalidAmountException("Insufficient funds!");
-        }
 
         Transaction transaction = new Transaction(recipientAccount.getAccountId(), senderAccount.getAccountId(), title, new BigDecimal(amount), 1);
         manager.registerTransaction(transaction);
@@ -147,27 +146,17 @@ public class User {
         manager.addBalance(transaction.getTargetId(), transaction.getAmount());
     }
 
-    public void createAccount(ConnectionManager manager) throws SQLException {
-        while (true) {
-            try {
-                System.out.print("Wprowadź nazwę nowego konta: ");
-                String name = scanner.nextLine();
-                BigDecimal limit;
-                System.out.print("Wpisz limit pojedynczej transakcji: ");
-                String limitAns = scanner.nextLine();
-                if (!limitAns.isBlank()) {
-                    limit = new BigDecimal(limitAns);
-                    manager.createAccount(name, limit, this.getId());
-                    break;
-                } else {
-                    throw new NumberFormatException("");
-                }
-            } catch (SQLIntegrityConstraintViolationException e) {
-                System.out.println("Już masz konto o tej nazwie");
-            } catch (NumberFormatException e) {
-                System.out.println("Podaj prawidłową liczbę");
-            }
-        }
+    public void createAccount(ConnectionManager manager, String accountName, String transferLimit) throws SQLException, InvalidNameException, InvalidAmountException {
+        if (accountName.isEmpty())
+            throw new InvalidNameException("Name cannot be empty!");
+        if (transferLimit.isEmpty())
+            throw new InvalidAmountException("Transfer limit cannot be empty!");
+        if (!isBigDecimal(transferLimit))
+            throw new InvalidAmountException("Transfer limit must be a number!");
+        if (new BigDecimal(transferLimit).compareTo(BigDecimal.ZERO) <= 0)
+            throw new InvalidAmountException("Transfer limit must be positive!");
+        Account account = new Account(id, name, new BigDecimal(transferLimit));
+        manager.createAccount(account);
     }
     public void updateFirstName(ConnectionManager manager, String oldName, String newName) throws
             InvalidNameException, SQLException, MissingInformationException, RepeatedDataException, DataMissmatchException {

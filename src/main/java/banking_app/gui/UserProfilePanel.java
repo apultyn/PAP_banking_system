@@ -46,7 +46,7 @@ public class UserProfilePanel extends JPanel {
 
         JButton transactionsButton = new JButton("Transactions");
         JButton contactsButton = new JButton("Contacts");
-        JButton transactionHistoryButton = new JButton("Transaction History");
+        JButton createAccountButton = new JButton("Create Account");
         JButton modifyProfileButton = new JButton("Modify data");
         JButton automaticSavingButton = new JButton("Automatic Savings");
         JButton accountsButton = new JButton("My Accounts");
@@ -54,7 +54,7 @@ public class UserProfilePanel extends JPanel {
 
         menuPanel.add(transactionsButton);
         menuPanel.add(contactsButton);
-        menuPanel.add(transactionHistoryButton);
+        menuPanel.add(createAccountButton);
         menuPanel.add(modifyProfileButton);
         menuPanel.add(automaticSavingButton);
         menuPanel.add(accountsButton);
@@ -64,6 +64,7 @@ public class UserProfilePanel extends JPanel {
         automaticSavingButton.addActionListener(e -> handleAutomaticSavings());
         accountsButton.addActionListener(e -> handleAccountsButton());
         standingOrdersButton.addActionListener(e->handleStandingOrders());
+        createAccountButton.addActionListener(e->handleCreateAccountButton());
         transactionsButton.addActionListener(e -> {
             try {
                 handleTransactionsButton();
@@ -102,6 +103,8 @@ public class UserProfilePanel extends JPanel {
         add(scrollPane, BorderLayout.SOUTH);
 
     }
+
+
 
     public void setUser(User setted_user) {
         user = setted_user;
@@ -165,6 +168,14 @@ public class UserProfilePanel extends JPanel {
         if (modifyPanel != null){
             modifyPanel.setUser(user);
             cardLayout.show(cardPanel, "ModifyPanel");
+        }
+    }
+
+    private void handleCreateAccountButton() {
+        CreateAccountPanel createAccountPanel = (CreateAccountPanel) SwingUtilities.findPanelByName(cardPanel, "CreateAccount");
+        if (createAccountPanel != null){
+            createAccountPanel.setUser(user);
+            cardLayout.show(cardPanel, "CreateAccount");
         }
     }
 

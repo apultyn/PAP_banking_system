@@ -33,6 +33,7 @@ public class MainMenu extends JFrame {
         StandingOrdersPanel standingOrdersPanel = new StandingOrdersPanel(manager, cardLayout, cardPanel, "StandingOrders");
         CreateStandingOrdersPanel createStandingOrdersPanel = new CreateStandingOrdersPanel(manager, cardLayout, cardPanel, "CreateStanding");
         ModifyProfilePanel modifyProfilePanel = new ModifyProfilePanel(manager, cardLayout, cardPanel, "ModifyPanel");
+        CreateAccountPanel createAccountPanel = new CreateAccountPanel(manager, cardLayout, cardPanel, "CreateAccount");
 
         cardPanel.add(loginPanel, "Login");
         cardPanel.add(registerPanel, "Register");
@@ -44,6 +45,7 @@ public class MainMenu extends JFrame {
         cardPanel.add(standingOrdersPanel, "StandingOrders");
         cardPanel.add(createStandingOrdersPanel, "CreateStanding");
         cardPanel.add(modifyProfilePanel, "ModifyPanel");
+        cardPanel.add(createAccountPanel, "CreateAccount");
 
         frame.add(cardPanel);
         frame.setVisible(true);
