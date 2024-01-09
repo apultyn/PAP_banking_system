@@ -52,7 +52,7 @@ public class UserProfilePanel extends JPanel {
         JButton createAccountButton = new JButton("Create Account");
         JButton modifyProfileButton = new JButton("Modify data");
         JButton automaticSavingButton = new JButton("Automatic Savings");
-        JButton accountsButton = new JButton("My Accounts");
+        JButton depositsButton = new JButton("Deposits");
         JButton standingOrdersButton = new JButton("Standing Orders");
 
         menuPanel.add(transactionsButton);
@@ -60,12 +60,19 @@ public class UserProfilePanel extends JPanel {
         menuPanel.add(createAccountButton);
         menuPanel.add(modifyProfileButton);
         menuPanel.add(automaticSavingButton);
-        menuPanel.add(accountsButton);
+        menuPanel.add(depositsButton);
         menuPanel.add(standingOrdersButton);
 
         modifyProfileButton.addActionListener(e -> handleModifyButton());
         automaticSavingButton.addActionListener(e -> handleAutomaticSavings());
-        accountsButton.addActionListener(e -> handleAccountsButton());
+        depositsButton.addActionListener(e -> {
+            try {
+                handleDepositsButton();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
         standingOrdersButton.addActionListener(e->handleStandingOrders());
         createAccountButton.addActionListener(e->handleCreateAccountButton());
         transactionsButton.addActionListener(e -> {
@@ -175,10 +182,7 @@ public class UserProfilePanel extends JPanel {
             }
         });
 
-        // Cancel button action
         cancelButton.addActionListener(e -> dialog.dispose());
-
-        //dialog.pack();
         dialog.setLocationRelativeTo(SwingUtilities.findPanelByName(cardPanel, "ModifyPanel"));
         dialog.setVisible(true);
     }
@@ -265,11 +269,11 @@ public class UserProfilePanel extends JPanel {
         }
     }
 
-    public void handleAccountsButton() {
-        AccountsPanel accountsPanel = (AccountsPanel) SwingUtilities.findPanelByName(cardPanel, "Accounts");
-        if (accountsPanel != null){
-            accountsPanel.setUser(user);
-            cardLayout.show(cardPanel, "Accounts");
+    public void handleDepositsButton() throws SQLException {
+        DepositPanel depositPanel = (DepositPanel) SwingUtilities.findPanelByName(cardPanel, "Deposit");
+        if (depositPanel != null) {
+            depositPanel.setUser(user);
+            cardLayout.show(cardPanel, "Deposit");
         }
     }
     public void handleStandingOrders() {

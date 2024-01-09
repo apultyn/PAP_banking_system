@@ -217,5 +217,17 @@ public class User {
         manager.updateUserPassword(id, newPassword);
         password = newPassword;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", accounts=" + accounts +
+                '}';
+    }
 }
 
