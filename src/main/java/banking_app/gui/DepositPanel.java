@@ -8,16 +8,20 @@ import javax.swing.*;
 import java.awt.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DepositPanel extends JPanel {
     private ConnectionManager manager;
     private CardLayout cardLayout;
-    private JPanel cardPanel;
+    private JPanel cardPanel, detailsPanel;
     private JList<String> depositList;
     private DefaultListModel<String> listModel;
     private JTextArea depositDetails;
     private JButton goBackButton, createNewDepositButton;
     private User user;
+    private JLabel nameLabel, amountLabel, rateLabel, startDateLabel, endDateLabel, ownerAccNumLabel;
+    private Map<String, Deposit> depositMap = new HashMap<>();
 
     public DepositPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) throws SQLException {
         this.manager = manager;
@@ -37,6 +41,25 @@ public class DepositPanel extends JPanel {
         depositDetails.setEditable(false);
         add(depositDetails, BorderLayout.CENTER);
 
+        detailsPanel = new JPanel();
+        detailsPanel.setLayout(new BoxLayout(detailsPanel, BoxLayout.Y_AXIS));
+
+        nameLabel = new JLabel("Name: ");
+        amountLabel = new JLabel("Amount: ");
+        rateLabel = new JLabel("Rate: ");
+        startDateLabel = new JLabel("Start Date: ");
+        endDateLabel = new JLabel("End Date: ");
+        ownerAccNumLabel = new JLabel("Owner Account Number: ");
+
+        detailsPanel.add(nameLabel);
+        detailsPanel.add(amountLabel);
+        detailsPanel.add(rateLabel);
+        detailsPanel.add(startDateLabel);
+        detailsPanel.add(endDateLabel);
+        detailsPanel.add(ownerAccNumLabel);
+
+        add(detailsPanel, BorderLayout.CENTER);
+
         // Buttons
         JPanel buttonPanel = new JPanel();
         goBackButton = new JButton("Go Back");
@@ -49,7 +72,8 @@ public class DepositPanel extends JPanel {
         depositList.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 String selectedName = depositList.getSelectedValue();
-                displayDepositDetails(selectedName);
+                Deposit selectedDeposit = depositMap.get(selectedName);
+                displayDepositDetails(selectedDeposit);
             }
         });
 
@@ -69,15 +93,22 @@ public class DepositPanel extends JPanel {
 
     private void updateDepositList() throws SQLException {
         listModel.clear();
+        depositMap.clear();
         ArrayList<Deposit> deposits = new ArrayList<>(manager.findUsersDeposits(user.getId()));
         for (Deposit deposit : deposits) {
             listModel.addElement(deposit.getName());
+            depositMap.put(deposit.getName(), deposit);
         }
     }
 
-    private void displayDepositDetails(String depositName) {
-        // Fetch deposit details based on the depositName and update depositDetails JTextArea
-        // Example: depositDetails.setText("Name: " + deposit.getName() + "\nAmount: " + deposit.getAmount() + ...);
+    private void displayDepositDetails(Deposit deposit) {
+        // Update labels with deposit details
+        nameLabel.setText("Name: " + deposit.getName());
+        amountLabel.setText("Amount: " + deposit.getAmount().toString());
+        rateLabel.setText("Rate: " + deposit.getRate().toString());
+        startDateLabel.setText("Start Date: " + deposit.getStart().toString());
+        endDateLabel.setText("End Date: " + deposit.getEnd().toString());
+        ownerAccNumLabel.setText("Owner Account Number: " + deposit.getOwnerAccId());
     }
 
     public void setUser(User user) {
