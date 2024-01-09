@@ -50,8 +50,8 @@ public class LoanCalculatorPanel extends JPanel {
         try {
             double monthly = LoanCalc.calculateLoanMonthly(amount, loanTerm, rate);
             outcomeLabel.setText("Monthly payment: " +
-                    String.valueOf(monthly) + "Total: " +
-                    String.valueOf(Integer.parseInt(loanTerm) * 12 * monthly));
+                    String.valueOf(monthly) + " Total: " +
+                    String.valueOf(LoanCalc.calculateLoanTotal(amount, loanTerm, rate)));
         } catch (NumberFormatException a) {
             JOptionPane.showMessageDialog(this, "Wrong input data");
         }

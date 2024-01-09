@@ -20,8 +20,28 @@ public class LoanCalc {
         a = Double.parseDouble(amount);
         r = Double.parseDouble(rate);
         l = Integer.parseInt(loanTerm);
-        if (r > 10 || r < 0)
+        if (r > 20 || r < 0)
             throw new NumberFormatException();
         return calculateLoanMonthly(a, l ,r);
+    }
+
+    public static double calculateLoanTotal(double amount, int loanTerm, double rate) {
+        double monthly = calculateLoanMonthly(amount, loanTerm, rate);
+        double total = monthly * 12 * loanTerm;
+        total *= 100;
+        total = Math.round(total);
+        return total / 100;
+    }
+
+    public static double calculateLoanTotal(String amount, String loanTerm, String rate) {
+        double monthly = calculateLoanMonthly(amount, loanTerm, rate);
+
+        int l;
+        l = Integer.parseInt(loanTerm);
+
+        double total = monthly * 12 * l;
+        total *= 100;
+        total = Math.round(total);
+        return total / 100;
     }
 }
