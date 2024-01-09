@@ -38,7 +38,7 @@ public class AutomaticSavingsGui extends JPanel {
         JButton backButton = new JButton("cofnij");
         backButton.addActionListener(e-> cardLayout.show(cardPanel, "User"));
 
-        add(new JLabel("Automatyczne oszczedzanie"));
+        add(new JLabel("Automaatic savings panel"));
 
         registerSavings = new JButton("Create new automatic savings");
         registerSavings.addActionListener(e->handleCreateSaving());

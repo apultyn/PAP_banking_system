@@ -149,13 +149,15 @@ public class User {
     public void createAccount(ConnectionManager manager, String accountName, String transferLimit) throws SQLException, InvalidNameException, InvalidAmountException {
         if (accountName.isEmpty())
             throw new InvalidNameException("Name cannot be empty!");
+        if (manager.findAccount(id, accountName) != null)
+            throw new InvalidNameException("Name is occupied!");
         if (transferLimit.isEmpty())
             throw new InvalidAmountException("Transfer limit cannot be empty!");
         if (!isBigDecimal(transferLimit))
             throw new InvalidAmountException("Transfer limit must be a number!");
         if (new BigDecimal(transferLimit).compareTo(BigDecimal.ZERO) <= 0)
             throw new InvalidAmountException("Transfer limit must be positive!");
-        Account account = new Account(id, name, new BigDecimal(transferLimit));
+        Account account = new Account(id, accountName, new BigDecimal(transferLimit));
         manager.createAccount(account);
     }
     public void updateFirstName(ConnectionManager manager, String oldName, String newName) throws
@@ -214,6 +216,18 @@ public class User {
             throw new PasswordMissmatchException("New password not repeated correctly!");
         manager.updateUserPassword(id, newPassword);
         password = newPassword;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", accounts=" + accounts +
+                '}';
     }
 }
 

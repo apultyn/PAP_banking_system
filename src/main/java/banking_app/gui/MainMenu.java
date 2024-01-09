@@ -8,7 +8,14 @@ import java.sql.SQLException;
 
 public class MainMenu extends JFrame {
     private ConnectionManager manager;
-
+    public MainMenu() {
+        String[] arr = new String[]{};
+        try {
+            main(arr);
+        } catch (SQLException a) {
+            System.out.println("a");
+        }
+    }
     public static void main(String[] args) throws SQLException {
         JFrame frame = new JFrame("Bank Application");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -32,9 +39,19 @@ public class MainMenu extends JFrame {
         AccountsPanel accountsPanel = new AccountsPanel(manager, cardLayout, cardPanel, "Accounts");
         StandingOrdersPanel standingOrdersPanel = new StandingOrdersPanel(manager, cardLayout, cardPanel, "StandingOrders");
         CreateStandingOrdersPanel createStandingOrdersPanel = new CreateStandingOrdersPanel(manager, cardLayout, cardPanel, "CreateStanding");
+
+        LoanCalculatorPanel loanCalculator = new LoanCalculatorPanel(cardLayout, cardPanel, "LoanCalculator");
+        LoansPanel loansPanel = new LoansPanel(manager, cardLayout, cardPanel, "Loans");
+        CreateLoansPanel createLoansPanel = new CreateLoansPanel(manager, cardLayout, cardPanel, "CreateLoans");
+
         ModifyProfilePanel modifyProfilePanel = new ModifyProfilePanel(manager, cardLayout, cardPanel, "ModifyPanel");
         CreateAccountPanel createAccountPanel = new CreateAccountPanel(manager, cardLayout, cardPanel, "CreateAccount");
+<<<<<<< src/main/java/banking_app/gui/MainMenu.java
         ContactsPanel contactsPanel = new ContactsPanel(manager, cardLayout, cardPanel, "Contacts");
+=======
+        DepositPanel depositPanel = new DepositPanel(manager, cardLayout, cardPanel, "Deposit");
+
+>>>>>>> src/main/java/banking_app/gui/MainMenu.java
 
         cardPanel.add(loginPanel, "Login");
         cardPanel.add(registerPanel, "Register");
@@ -45,9 +62,19 @@ public class MainMenu extends JFrame {
         cardPanel.add(accountsPanel, "Accounts");
         cardPanel.add(standingOrdersPanel, "StandingOrders");
         cardPanel.add(createStandingOrdersPanel, "CreateStanding");
+
+        cardPanel.add(loanCalculator, "LoanCalculator");
+        cardPanel.add(loansPanel, "Loans");
+        cardPanel.add(createLoansPanel, "CreateLoans");
+
+
+
+        // Logika przełączania kart
+        // ...
         cardPanel.add(modifyProfilePanel, "ModifyPanel");
         cardPanel.add(createAccountPanel, "CreateAccount");
         cardPanel.add(contactsPanel, "Contacts");
+        cardPanel.add(depositPanel, "Deposit");
 
         frame.add(cardPanel);
         frame.setVisible(true);
