@@ -246,16 +246,4 @@ public class DepositPanel extends JPanel {
         updateDepositList();
     }
 
-//    public static void main(String[] args) throws SQLException {
-//        ConnectionManager manager = new ConnectionManager();
-//        User user = manager.findUser("przykladowy.mail@pw.edu.pl");
-//        System.out.println(user);
-//        JFrame frame = new JFrame("Deposit Panel");
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        DepositPanel depositPanel = new DepositPanel(manager, null, null, "Deposits");
-//        depositPanel.setUser(user);
-//        frame.add(depositPanel);
-//        frame.pack();
-//        frame.setVisible(true);
-//    }
 }

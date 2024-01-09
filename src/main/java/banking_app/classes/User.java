@@ -16,15 +16,19 @@ public class User {
     private String surname;
     private String email;
     private String password;
+    private String reset_code;
+    private String pin;
     private List<Account> accounts;
     private static final Scanner scanner = new Scanner(System.in);
 
-    public User(int id, String name, String surname, String email, String password) {
+    public User(int id, String name, String surname, String email, String password, String reset_code, String pin) {
         this.id = id;
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.password = password;
+        this.reset_code = reset_code;
+        this.pin = pin;
     }
 
 
@@ -33,7 +37,9 @@ public class User {
                 resultSet.getString("name"),
                 resultSet.getString("surname"),
                 resultSet.getString("email"),
-                resultSet.getString("password"));
+                resultSet.getString("password"),
+                resultSet.getString("reset_code"),
+                resultSet.getString("pin"));
     }
 
     public int getId() {
@@ -56,6 +62,14 @@ public class User {
         return password;
     }
 
+    public String getReset_code() {
+        return reset_code;
+    }
+
+    public String getPin() {
+        return pin;
+    }
+
     public List<Account> getAccounts() {
         return accounts;
     }
@@ -65,8 +79,8 @@ public class User {
     }
 
     public static User register(ConnectionManager manager, String email,
-                                String name, String surname, char[] password, char[] repPassword) throws SQLException,
-            OccupiedEmailException, InvalidEmailException, InvalidPasswordException, PasswordMissmatchException, InvalidNameException {
+                                String name, String surname, char[] password, char[] repPassword, String pin, String repPin) throws SQLException,
+            OccupiedEmailException, InvalidEmailException, InvalidPasswordException, PasswordMissmatchException, InvalidNameException, InvalidPinException, DataMissmatchException {
         EmailValidator emailValidator = new EmailValidator();
         PasswordValidator passwordValidator = new PasswordValidator();
         if (name.isEmpty())
@@ -88,9 +102,13 @@ public class User {
                     " number and special character!");
         if (!Arrays.equals(repPassword, password))
             throw new PasswordMissmatchException("Passwords do not match!");
+        if (!new PinValidator().validate(pin))
+            throw new InvalidPinException("Invalid pin!");
+        if (!pin.equals(repPin))
+            throw new DataMissmatchException("Pins do not match!");
         if (name.contains(" ") || surname.contains(" "))
             throw new InvalidNameException("Name or surname contains space!");
-        manager.registerUser(name, surname, email, String.valueOf(password));
+        manager.registerUser(name, surname, email, String.valueOf(password), pin);
         return manager.findUser(email);
     }
 
@@ -139,6 +157,9 @@ public class User {
             throw new InvalidAmountException("Transaction exceeds the limit!");
         if (!amountIsInRange(BigDecimal.ZERO, senderAccount.getBalance(), new BigDecimal(amount)))
             throw new InvalidAmountException("Insufficient funds!");
+        if (senderAccount.getAccountId() == recipientAccount.getAccountId()) {
+            throw new InvalidAccountNumberException("Can not use the same accounts");
+        }
 
         Transaction transaction = new Transaction(recipientAccount.getAccountId(), senderAccount.getAccountId(), title, new BigDecimal(amount), 1);
         manager.registerTransaction(transaction);
@@ -217,9 +238,26 @@ public class User {
         manager.updateUserPassword(id, newPassword);
         password = newPassword;
     }
+    public void updatePin(ConnectionManager manager, String oldPin, String newPin, String repPin) throws
+            MissingInformationException, InvalidPinException, RepeatedDataException, DataMissmatchException,
+            SQLException, PinMissmatchException {
+        System.out.println("Entered user function!");
+        if (oldPin.isEmpty() || newPin.isEmpty() || repPin.isEmpty())
+            throw new MissingInformationException("Fields can't be empty");
+        if (!oldPin.equals(pin))
+            throw new DataMissmatchException("Wrong old pin!");
+        if (pin.equals(newPin))
+            throw new RepeatedDataException("New pin can't be the same as previous!");
+        if (!new PinValidator().validate(newPin))
+            throw new InvalidPinException("Pin invalid!");
+        if (!newPin.equals(repPin))
+            throw new PinMissmatchException("Pin not repeated correctly!");
+        manager.updateUserPin(id, newPin);
+        pin = newPin;
+    }
 
-    public void createContact(ConnectionManager manager, String name, String accountId) throws SQLException,
-            MissingInformationException, InvalidAccountNumberException, AccountNotFoundException, InvalidAccountNumberException {
+    public void createContact(ConnectionManager manager, String name, String accountId) throws
+            SQLException, MissingInformationException, AccountNotFoundException, InvalidAccountNumberException {
         if(name.isEmpty() || accountId.isEmpty()) {
             throw new MissingInformationException("Fields can not be empty.");
         }
