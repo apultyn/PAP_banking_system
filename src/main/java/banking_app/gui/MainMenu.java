@@ -30,12 +30,10 @@ public class MainMenu extends JFrame {
         UserProfilePanel userProfilePanel = new UserProfilePanel(manager, cardLayout, cardPanel, "User");
         TransactionsPanel transactionsPanel = new TransactionsPanel(manager, cardLayout, cardPanel, "Transactions");
         AutomaticSavingsGui savingsPanel = new AutomaticSavingsGui(manager, cardLayout, cardPanel, "SavingsPanel");
-        CreateAutomaticSavingsPanel createSavingPanel = new CreateAutomaticSavingsPanel(manager, cardLayout, cardPanel, "CreateSaving");
+
         StandingOrdersPanel standingOrdersPanel = new StandingOrdersPanel(manager, cardLayout, cardPanel, "StandingOrders");
-        CreateStandingOrdersPanel createStandingOrdersPanel = new CreateStandingOrdersPanel(manager, cardLayout, cardPanel, "CreateStanding");
         LoanCalculatorPanel loanCalculator = new LoanCalculatorPanel(cardLayout, cardPanel, "LoanCalculator");
         LoansPanel loansPanel = new LoansPanel(manager, cardLayout, cardPanel, "Loans");
-        CreateLoansPanel createLoansPanel = new CreateLoansPanel(manager, cardLayout, cardPanel, "CreateLoans");
         ModifyProfilePanel modifyProfilePanel = new ModifyProfilePanel(manager, cardLayout, cardPanel, "ModifyPanel");
         CreateAccountPanel createAccountPanel = new CreateAccountPanel(manager, cardLayout, cardPanel, "CreateAccount");
         ContactsPanel contactsPanel = new ContactsPanel(manager, cardLayout, cardPanel, "Contacts");
@@ -47,12 +45,9 @@ public class MainMenu extends JFrame {
         cardPanel.add(userProfilePanel, "User");
         cardPanel.add(transactionsPanel, "Transactions");
         cardPanel.add(savingsPanel, "SavingsPanel");
-        cardPanel.add(createSavingPanel, "CreateSaving");
         cardPanel.add(standingOrdersPanel, "StandingOrders");
-        cardPanel.add(createStandingOrdersPanel, "CreateStanding");
         cardPanel.add(loanCalculator, "LoanCalculator");
         cardPanel.add(loansPanel, "Loans");
-        cardPanel.add(createLoansPanel, "CreateLoans");
         cardPanel.add(modifyProfilePanel, "ModifyPanel");
         cardPanel.add(createAccountPanel, "CreateAccount");
         cardPanel.add(contactsPanel, "Contacts");
