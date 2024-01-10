@@ -70,7 +70,7 @@ public class StandingOrdersPanel extends JPanel {
         detailsPanel.add(recipientIdLabel);
         detailsPanel.add(new JLabel());
         detailsPanel.add(amountLabel);
-
+        detailsPanel.setVisible(false);
         add(detailsPanel, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel();
@@ -139,7 +139,7 @@ public class StandingOrdersPanel extends JPanel {
 
         // Add a submit button
         JButton submitButton = new JButton("Create");
-        submitButton.addActionListener(e -> handleCreateStandingOrder(accounts));
+        submitButton.addActionListener(e -> handleCreateStandingOrder(accounts, dialog));
 //
         dialog.add(submitButton);
         JButton goBackButton = new JButton("Back");
@@ -163,7 +163,7 @@ public class StandingOrdersPanel extends JPanel {
         return PIN.equals(user.getPin());
     }
 
-    private void handleCreateStandingOrder (ArrayList<Account> accounts) {
+    private void handleCreateStandingOrder (ArrayList<Account> accounts, JDialog dialog) {
         Account selectedAccount = getSelectedAccount(accountComboBox, accounts);
         try {
             StandingOrder standingOrder = new StandingOrder(nameField.getText(), amountField.getText(), String.valueOf(selectedAccount.getAccountId()), recipientField.getText());
@@ -178,6 +178,7 @@ public class StandingOrdersPanel extends JPanel {
                 } else {
                     StandingOrder.registerStandingOrder(manager, standingOrder);
                     JOptionPane.showMessageDialog(this, "Created successfully!");
+                    dialog.dispose();
                     break;
                 }
             }
@@ -213,7 +214,9 @@ public class StandingOrdersPanel extends JPanel {
             senderIdLabel.setText("From which account: " + selectedSO.getSourceAccountId());
             recipientIdLabel.setText("To which account: " + selectedSO.getTargetAccountId());
             amountLabel.setText("How much do you want to send: " + selectedSO.getAmount().toString());
-        }
+            detailsPanel.setVisible(true);
+        } else
+            detailsPanel.setVisible(false);
     }
 
     public void setUser (User user){
