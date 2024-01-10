@@ -55,6 +55,18 @@ public class EmailSender {
         }
     }
 
+    public void sendVerificationNumber(String number, User user) {
+        try {
+            MimeMessage message = getMimeMessage(user.getEmail(), getSession());
+            message.setSubject("Your verification code.");
+            String text = String.format("Your verification code: %s.", number);
+            message.setText(text);
+            Transport.send(message);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private MimeMessage getMimeMessage(String target, Session session) throws MessagingException {
         MimeMessage message = new MimeMessage(session);
         message.setFrom(new InternetAddress(FROM));

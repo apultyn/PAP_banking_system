@@ -243,7 +243,6 @@ public class UserProfilePanel extends JPanel {
         String selected = (String) accountComboBox.getSelectedItem();
         if (selected != null) {
             String[] parts = selected.split(" - ");
-            String accountName = parts[0];
             String accountId = parts.length > 1 ? parts[1] : "";
 
             try {

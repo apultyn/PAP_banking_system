@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class User {
-    private final int id;
+    private final Integer id;
     private String name;
     private String surname;
     private String email;
@@ -21,7 +21,7 @@ public class User {
     private List<Account> accounts;
     private static final Scanner scanner = new Scanner(System.in);
 
-    public User(int id, String name, String surname, String email, String password, String reset_code, String pin) {
+    public User(Integer id, String name, String surname, String email, String password, String reset_code, String pin) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -40,6 +40,37 @@ public class User {
                 resultSet.getString("password"),
                 resultSet.getString("reset_code"),
                 resultSet.getString("pin"));
+    }
+
+    public User(String email, String name, String surname, char[] password, String pin) throws InvalidNameException, InvalidEmailException, InvalidPasswordException, InvalidPinException {
+        EmailValidator emailValidator = new EmailValidator();
+        PasswordValidator passwordValidator = new PasswordValidator();
+        if (name.isEmpty())
+            throw new InvalidNameException("Name cannot be empty!");
+        if (name.contains(" "))
+            throw new InvalidNameException("Name cannot contain space!");
+        if (surname.isEmpty())
+            throw new InvalidNameException("Last name cannot be empty!");
+        if (surname.contains(" "))
+            throw new InvalidNameException("Last name cannot contain space!");
+        if (email.isEmpty())
+            throw new InvalidEmailException("E-mail cannot be empty!");
+        if (!emailValidator.validate(email))
+            throw new InvalidEmailException("Wrong email format!");
+        if (!passwordValidator.validate(String.valueOf(password)))
+            throw new InvalidPasswordException("Password must be 8-20 characters, uppercase letter, lowercase letter," +
+                    " number and special character!");
+        if (!new PinValidator().validate(pin))
+            throw new InvalidPinException("Invalid pin!");
+        if (name.contains(" ") || surname.contains(" "))
+            throw new InvalidNameException("Name or surname contains space!");
+        this.id = null;
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
+        this.password = String.valueOf(password);
+        this.reset_code = null;
+        this.pin = pin;
     }
 
     public int getId() {
@@ -78,38 +109,21 @@ public class User {
         this.accounts = manager.findUsersAccounts(this.id);
     }
 
-    public static User register(ConnectionManager manager, String email,
-                                String name, String surname, char[] password, char[] repPassword, String pin, String repPin) throws SQLException,
-            OccupiedEmailException, InvalidEmailException, InvalidPasswordException, PasswordMissmatchException, InvalidNameException, InvalidPinException, DataMissmatchException {
-        EmailValidator emailValidator = new EmailValidator();
-        PasswordValidator passwordValidator = new PasswordValidator();
-        if (name.isEmpty())
-            throw new InvalidNameException("Name cannot be empty!");
-        if (name.contains(" "))
-            throw new InvalidNameException("Name cannot contain space!");
-        if (surname.isEmpty())
-            throw new InvalidNameException("Last name cannot be empty!");
-        if (surname.contains(" "))
-            throw new InvalidNameException("Last name cannot contain space!");
-        if (email.isEmpty())
-            throw new InvalidEmailException("E-mail cannot  be empty!");
-        if (manager.findUser(email) != null)
+    public static void register(ConnectionManager manager, User user, Account account) throws SQLException {
+        manager.registerUser(user);
+        account.setUserId(manager.findUser(user.getEmail()).getId());
+        manager.createAccount(account);
+    }
+
+    public static User createNewUser(ConnectionManager manager, String email, String name, String surname, char[] password, char[] repPassword, String pin, String repPin) throws SQLException, OccupiedEmailException, PasswordMissmatchException, DataMissmatchException, InvalidNameException, InvalidPasswordException, InvalidEmailException, InvalidPinException {
+        User user = new User(email, name, surname, password, pin);
+        if (manager.findUser(user.getEmail()) != null)
             throw new OccupiedEmailException("Email already in use!");
-        if (!emailValidator.validate(email))
-            throw new InvalidEmailException("Wrong email format!");
-        if (!passwordValidator.validate(String.valueOf(password)))
-            throw new InvalidPasswordException("Password must be 8-20 characters, uppercase letter, lowercase letter," +
-                    " number and special character!");
-        if (!Arrays.equals(repPassword, password))
+        if (!Arrays.equals(repPassword, user.getPassword().toCharArray()))
             throw new PasswordMissmatchException("Passwords do not match!");
-        if (!new PinValidator().validate(pin))
-            throw new InvalidPinException("Invalid pin!");
-        if (!pin.equals(repPin))
+        if (!user.getPin().equals(repPin))
             throw new DataMissmatchException("Pins do not match!");
-        if (name.contains(" ") || surname.contains(" "))
-            throw new InvalidNameException("Name or surname contains space!");
-        manager.registerUser(name, surname, email, String.valueOf(password), pin);
-        return manager.findUser(email);
+        return user;
     }
 
     public static User login(ConnectionManager manager,
@@ -148,19 +162,16 @@ public class User {
         manager.addBalance(transfer.getTargetId(), transfer.getAmount());
     }
 
-    public void createAccount(ConnectionManager manager, String accountName, String transferLimit) throws SQLException, InvalidNameException, InvalidAmountException {
-        if (accountName.isEmpty())
-            throw new InvalidNameException("Name cannot be empty!");
-        if (manager.findAccount(id, accountName) != null)
-            throw new InvalidNameException("Name is occupied!");
-        if (transferLimit.isEmpty())
-            throw new InvalidAmountException("Transfer limit cannot be empty!");
-        if (!isBigDecimal(transferLimit))
-            throw new InvalidAmountException("Transfer limit must be a number!");
-        if (new BigDecimal(transferLimit).compareTo(BigDecimal.ZERO) <= 0)
-            throw new InvalidAmountException("Transfer limit must be positive!");
-        Account account = new Account(id, accountName, new BigDecimal(transferLimit));
-        manager.createAccount(account);
+
+
+    public static Account createAccount(ConnectionManager manager, User user, String accountName, String transferLimit) throws SQLException, InvalidNameException, InvalidAmountException {
+        if (user.id != null) {
+            if (manager.findAccount(user.id, accountName) != null)
+                throw new InvalidNameException("Name is occupied!");
+            return new Account(accountName, transferLimit, user.id);
+        }
+        else
+            return new Account(accountName, transferLimit, null);
     }
 
     public static void checkInputForFirst(String accountName, String transferLimit) throws InvalidNameException, InvalidAmountException {

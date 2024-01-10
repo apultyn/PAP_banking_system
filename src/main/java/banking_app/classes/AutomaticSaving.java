@@ -83,7 +83,8 @@ public class AutomaticSaving {
         return targetAccountId;
     }
 
-    public  BigDecimal getAmount() { return amount; }
+    public BigDecimal getAmount() { return amount; }
+
 
 /*    public static void registerAutomaticSaving(ConnectionManager connection, User user, String name, String senderId, String receiverId, String howMuch)
             throws NumberFormatException, SQLException {
