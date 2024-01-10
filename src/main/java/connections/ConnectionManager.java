@@ -46,6 +46,17 @@ public class ConnectionManager {
         preparedStatement.executeUpdate();
     }
 
+    public void registerUser(User user) throws SQLException {
+        String sqlInsert = "INSERT INTO users (name, surname, email, password, pin) values (?, ?, ?, ?, ?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
+        preparedStatement.setString(1, user.getName());
+        preparedStatement.setString(2, user.getSurname());
+        preparedStatement.setString(3, user.getEmail());
+        preparedStatement.setString(4, user.getPassword());
+        preparedStatement.setString(5, user.getPin());
+        preparedStatement.executeUpdate();
+    }
+
     public User findUser(String email) throws SQLException {
         String sqlQuerry = "SELECT * FROM users WHERE email = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlQuerry);
@@ -190,14 +201,7 @@ public class ConnectionManager {
         }
     }
 
-    public void setTransferLimit(long account_id, float newLimit) throws SQLException {
-        String sqlQuery = "UPDATE accounts SET transfer_limit= ? WHERE account_id= ?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
-            preparedStatement.setFloat(1, newLimit);
-            preparedStatement.setLong(2, account_id);
-            preparedStatement.executeUpdate();
-        }
-    }
+
 
     public void createDeposit(Deposit deposit) throws SQLException {
         String sqlInsert = "INSERT INTO deposits (name, rate, end_date, amount, owner_acc_id) values (?, ?, ?, ?, ?)";
@@ -374,12 +378,14 @@ public class ConnectionManager {
         preparedStatement.executeUpdate();
     }
 
-    public void updateAccountsLimit(long account_id, BigDecimal amount) throws SQLException {
-        String sqlUpdate = "UPDATE accounts SET transfer_limit = ? WHERE account_id = ?";
-        PreparedStatement preparedStatement = connection.prepareStatement(sqlUpdate);
-        preparedStatement.setBigDecimal(1, amount);
-        preparedStatement.setLong(2, account_id);
-        preparedStatement.executeUpdate();
+
+    public void updateTransferLimit(long account_id, BigDecimal newLimit) throws SQLException {
+        String sqlQuery = "UPDATE accounts SET transfer_limit= ? WHERE account_id= ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
+            preparedStatement.setBigDecimal(1, newLimit);
+            preparedStatement.setLong(2, account_id);
+            preparedStatement.executeUpdate();
+        }
     }
 
     public List<AutomaticSaving> findSavingsBySenderAcc(long accId) throws SQLException {
@@ -456,14 +462,14 @@ public class ConnectionManager {
         }
         return contacts;
     }
-    public void createLoan(BigDecimal amount, BigDecimal rate, Date end,long owneraccId, BigDecimal fixed) throws
+    public void createLoan(BigDecimal amount, BigDecimal rate, Date end,long ownerAccId, BigDecimal fixed) throws
             SQLException {
         String sqlInsert = "INSERT INTO loans (amount, rate, finish_date, owner_acc_id, fixed_rate) values (?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
         preparedStatement.setBigDecimal(1, amount);
         preparedStatement.setBigDecimal(2, rate);
         preparedStatement.setDate(3, end);
-        preparedStatement.setLong(4, owneraccId);
+        preparedStatement.setLong(4, ownerAccId);
         preparedStatement.setBigDecimal(5, fixed);
         preparedStatement.executeUpdate();
     }
@@ -496,5 +502,7 @@ public class ConnectionManager {
         }
         return loans;
     }
+
+
 }
 

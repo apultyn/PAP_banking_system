@@ -1,5 +1,7 @@
 package banking_app.gui;
 
+import banking_app.classes.Account;
+import banking_app.classes.EmailSender;
 import banking_app.classes.User;
 import banking_exceptions.*;
 import connections.ConnectionManager;
@@ -9,6 +11,7 @@ import java.awt.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 import static banking_app.gui.SwingUtilities.addLabelAndComponent;
 import static banking_app.gui.SwingUtilities.resetComponents;
@@ -53,7 +56,7 @@ public class RegisterPanel extends JPanel {
         gbc.anchor = GridBagConstraints.WEST;
         addLabelAndComponent(this, "Name:", firstNameField = new JTextField(20), gbc);
         addLabelAndComponent(this, "Last name:", lastNameField = new JTextField(20), gbc);
-        addLabelAndComponent(this, "E-mal:", emailField = new JTextField(20), gbc);
+        addLabelAndComponent(this, "E-mail:", emailField = new JTextField(20), gbc);
         addLabelAndComponent(this, "Password:", passwordField = new JPasswordField(20), gbc);
         addLabelAndComponent(this, "Repeat password:", passwordRepeatedField = new JPasswordField(20), gbc);
         addLabelAndComponent(this, "Pin:", pinField = new JTextField(20), gbc);
@@ -101,17 +104,42 @@ public class RegisterPanel extends JPanel {
         String accName = accountNameField.getText();
         String transferLimitInput = transferLimit.getText();
         try {
-            User.checkInputForFirst(accName, transferLimitInput);
-            User.register(manager, email, name, surname, password, passwordRepeated, pin, repPin);
-            User newUser = manager.findUser(email);
-            User.createAccountGivenId(manager, newUser.getId(), accName, transferLimitInput);
-            JOptionPane.showMessageDialog(this, "Registered!");
+            User user = User.createNewUser(manager, email, name, surname, password, passwordRepeated, pin, repPin);
+            Account account = User.createAccount(manager, user, accName, transferLimitInput);
+            String verificationNumber = generateConfirmationNumber();
+            new EmailSender(manager).sendVerificationNumber(verificationNumber, user);
+
+            int attempts = 3;
+            while (attempts > 0) {
+                String verificationNumberInput = JOptionPane.showInputDialog(this, "A 6-digit verification code has been sent to your email.\nEnter verification code: (Attempts left: " + attempts + ")");
+                if (verificationNumberInput == null)
+                    break;
+                else if (!verificationNumberInput.equals(verificationNumber)) {
+                    attempts--;
+                    JOptionPane.showMessageDialog(this, "Incorrect code!", "Error", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Registered successfully!");
+                    User.register(manager, user, account);
+                    resetComponents(this);
+                    break;
+                }
+            }
             cardLayout.show(cardPanel, "Login");
-        } catch (InvalidNameException | InvalidPasswordException | InvalidEmailException | OccupiedEmailException |
-                 PasswordMissmatchException | DataMissmatchException | InvalidPinException | InvalidAmountException e) {
+        } catch (InvalidNameException | InvalidAmountException | InvalidPasswordException | InvalidEmailException |
+                 OccupiedEmailException | InvalidPinException | PasswordMissmatchException | DataMissmatchException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public String generateConfirmationNumber() {
+        Random random = new Random();
+        StringBuilder code = new StringBuilder();
+
+        for (int i = 0; i < 6; i++) {
+            code.append(random.nextInt(10)); // Dodaje losową cyfrę (0-9) do ciągu
+        }
+        return code.toString();
     }
 }

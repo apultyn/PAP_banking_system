@@ -1,5 +1,6 @@
 package banking_app.gui;
 
+import banking_app.classes.Account;
 import banking_app.classes.User;
 import banking_exceptions.InvalidAmountException;
 import banking_exceptions.InvalidNameException;
@@ -61,7 +62,9 @@ public class CreateAccountPanel extends JPanel {
 
     private void handleCreateAccount() {
         try {
-            user.createAccount(manager, accountNameField.getText(), transferLimit.getText());
+            Account account = User.createAccount(manager, this.user, accountNameField.getText(), transferLimit.getText());
+            manager.createAccount(account);
+
             JOptionPane.showMessageDialog(this, "Account created!");
             UserProfilePanel userProfilePanel = (UserProfilePanel) SwingUtilities.findPanelByName(cardPanel, "User");
             if (userProfilePanel != null) {

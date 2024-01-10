@@ -1,6 +1,7 @@
 package banking_app.classes;
 
 import banking_exceptions.InvalidAmountException;
+import banking_exceptions.InvalidNameException;
 import connections.ConnectionManager;
 
 import java.math.BigDecimal;
@@ -15,7 +16,7 @@ public class Account {
     private final String name;
     private BigDecimal transferLimit;
     private final Date dateCreated;
-    private final int userId;
+    private Integer userId;
 
     private final BigDecimal balance;
 
@@ -48,6 +49,23 @@ public class Account {
                 resultSet.getBigDecimal("balance"));
     }
 
+    public Account(String name, String transferLimit, Integer userId) throws InvalidNameException, InvalidAmountException {
+        if (name.isEmpty())
+            throw new InvalidNameException("Name cannot be empty!");
+        if (transferLimit.isEmpty())
+            throw new InvalidAmountException("Transfer limit cannot be empty!");
+        if (!isBigDecimal(transferLimit))
+            throw new InvalidAmountException("Transfer limit must be a number!");
+        if (new BigDecimal(transferLimit).compareTo(BigDecimal.ZERO) <= 0)
+            throw new InvalidAmountException("Transfer limit must be positive!");
+        this.accountId = null;
+        this.name = name;
+        this.transferLimit = new BigDecimal(transferLimit);
+        this.dateCreated = null;
+        this.userId = userId;
+        this.balance = BigDecimal.ZERO;
+    }
+
     public void updateTransferLimit(ConnectionManager manager, String transferLimit) throws SQLException, InvalidAmountException{
         if (transferLimit.isEmpty())
             throw new InvalidAmountException("Transfer limit cannot be empty!");
@@ -55,7 +73,7 @@ public class Account {
             throw new InvalidAmountException("Transfer limit must be a number!");
         if (new BigDecimal(transferLimit).compareTo(BigDecimal.ZERO) <= 0)
             throw new InvalidAmountException("Transfer limit must be positive!");
-        manager.updateAccountsLimit(accountId, new BigDecimal(transferLimit));
+        manager.updateTransferLimit(accountId, new BigDecimal(transferLimit));
     }
 
     public long getAccountId() {
@@ -81,6 +99,10 @@ public class Account {
 
     public BigDecimal getBalance() {
         return balance;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public void setTransferLimit(BigDecimal newLimit) {

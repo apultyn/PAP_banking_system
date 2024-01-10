@@ -55,6 +55,13 @@ public class EmailSender {
         }
     }
 
+
+    public void sendVerificationNumber(String number, User user) {
+        try {
+            MimeMessage message = getMimeMessage(user.getEmail(), getSession());
+            message.setSubject("Your verification code.");
+            String text = String.format("Your verification code: %s.", number);
+
     public void sendLoginInfo(User user) {
         try {
             MimeMessage message = getMimeMessage(user.getEmail(), getSession());
@@ -63,6 +70,7 @@ public class EmailSender {
                     String.format("There was new logging at your DruzynaBank account registered on email: %s\n", user.getEmail()) +
                     "If that's you, don't respond to this message\n" +
                     "Otherwise, contact our Support, someone probably broke onto your account!";
+
             message.setText(text);
             Transport.send(message);
         } catch (MessagingException e) {
