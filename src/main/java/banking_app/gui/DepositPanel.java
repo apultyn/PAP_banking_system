@@ -12,8 +12,6 @@ import connections.ConnectionManager;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.DateTimeException;
@@ -24,7 +22,6 @@ import java.util.Map;
 
 public class DepositPanel extends JPanel {
     private final ConnectionManager manager;
-    private final CardLayout cardLayout;
     private final JPanel cardPanel;
     private final JPanel detailsPanel;
     private final JList<String> depositList;
@@ -41,20 +38,17 @@ public class DepositPanel extends JPanel {
     private final JLabel ownerAccNumLabel;
     private final Map<String, Deposit> depositMap = new HashMap<>();
 
-    public DepositPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) throws SQLException {
+    public DepositPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) {
         this.manager = manager;
         this.setName(panelName);
         this.cardPanel = cardPanel;
-        this.cardLayout = cardLayout;
 
         setLayout(new BorderLayout());
 
-        // Deposit list
         listModel = new DefaultListModel<>();
         depositList = new JList<>(listModel);
         add(new JScrollPane(depositList), BorderLayout.WEST);
 
-        // Deposit details
         depositDetails = new JTextArea(10, 30);
         depositDetails.setEditable(false);
         add(depositDetails, BorderLayout.CENTER);
@@ -78,7 +72,6 @@ public class DepositPanel extends JPanel {
 
         add(detailsPanel, BorderLayout.CENTER);
 
-        // Buttons
         JPanel buttonPanel = new JPanel();
         goBackButton = new JButton("Back");
         createNewDepositButton = new JButton("Create New Deposit");
@@ -86,7 +79,6 @@ public class DepositPanel extends JPanel {
         buttonPanel.add(createNewDepositButton);
         add(buttonPanel, BorderLayout.SOUTH);
 
-        // Listeners
         depositList.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 String selectedName = depositList.getSelectedValue();
@@ -98,7 +90,7 @@ public class DepositPanel extends JPanel {
         goBackButton.addActionListener(e -> cardLayout.show(cardPanel, "User"));
         createNewDepositButton.addActionListener(e -> {
             try {
-                createNewDeposit(listModel);
+                createNewDeposit();
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
@@ -109,32 +101,30 @@ public class DepositPanel extends JPanel {
     public void addNotify() {
         super.addNotify();
         try {
-            updateDepositList();  // Refresh the deposit list every time the panel is shown
+            updateDepositList();
         } catch (SQLException e) {
-            e.printStackTrace();  // Handle the SQLException appropriately
+            e.printStackTrace();
         }
     }
 
-    private void createNewDeposit(DefaultListModel<String> listModel) throws SQLException {
+    private void createNewDeposit() throws SQLException {
         JDialog dialog = new JDialog();
         dialog.setTitle("Create New Deposit");
-        dialog.setSize(400, 300); // Set the size of the dialog
-        dialog.setLayout(new GridLayout(0, 2)); // Using GridLayout for simplicity
+        dialog.setSize(400, 300);
+        dialog.setLayout(new GridLayout(0, 2));
 
         ArrayList<Account> accounts = new ArrayList<>(manager.findUsersAccounts(user.getId()));
 
         JTextField nameField = new JTextField();
         JTextField amountField = new JTextField();
         JTextField rateField = new JTextField();
-        JDateChooser endDateChooser = new JDateChooser(); // Date chooser for end date
+        JDateChooser endDateChooser = new JDateChooser();
         JComboBox<String> accountComboBox = new JComboBox<>();
 
-        // Populate accountComboBox with account names
         for (Account account : accounts) {
             accountComboBox.addItem(account.getName());
         }
 
-        // Adding form fields to the dialog
         dialog.add(new JLabel("Deposit Name:"));
         dialog.add(nameField);
         dialog.add(new JLabel("Amount:"));
@@ -146,44 +136,36 @@ public class DepositPanel extends JPanel {
         dialog.add(new JLabel("Account:"));
         dialog.add(accountComboBox);
 
-        // Add a submit button
         JButton submitButton = new JButton("Create");
-        submitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Account selectedAccount = getSelectedAccount(accountComboBox, accounts);
-                try {
-                    Deposit deposit = getDeposit(selectedAccount, nameField, amountField, rateField, endDateChooser, accountComboBox);
-                    deposit.createDeposit(manager);
-                    JOptionPane.showMessageDialog(dialog, "Deposit created");
-                    dialog.dispose(); // Close the creating deposit window
-                    updateDepositList(); // Update deposit list in main panel
-                } catch (NotEnoughFundsException ex) {
-                    JOptionPane.showMessageDialog(dialog, "Not enough funds on account!", "Error", JOptionPane.ERROR_MESSAGE);
-                } catch (DepositNameExistingException ex) {
-                    JOptionPane.showMessageDialog(dialog, "You already have deposit with this name on this account!", "Error", JOptionPane.ERROR_MESSAGE);
-                } catch (AccountNotFoundException ex) {
-                    JOptionPane.showMessageDialog(dialog, "No such account in your user!", "Error", JOptionPane.ERROR_MESSAGE);
-                } catch (MissingInformationException ex) {
-                    JOptionPane.showMessageDialog(dialog, "Missing information!", "Error", JOptionPane.ERROR_MESSAGE);
-                } catch (DateTimeException ex) {
-                    JOptionPane.showMessageDialog(dialog, "End date can't be before today!", "Error", JOptionPane.ERROR_MESSAGE);
-                } catch (SQLException ex) {
-                    throw new RuntimeException(ex);
-                }
+        submitButton.addActionListener(e -> {
+            Account selectedAccount = getSelectedAccount(accountComboBox, accounts);
+            try {
+                Deposit deposit = getDeposit(selectedAccount, nameField, amountField, rateField, endDateChooser, accountComboBox);
+                deposit.createDeposit(manager);
+                JOptionPane.showMessageDialog(dialog, "Deposit created");
+                dialog.dispose();
+                updateDepositList();
+            } catch (NotEnoughFundsException ex) {
+                JOptionPane.showMessageDialog(dialog, "Not enough funds on account!", "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (DepositNameExistingException ex) {
+                JOptionPane.showMessageDialog(dialog, "You already have deposit with this name on this account!", "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (AccountNotFoundException ex) {
+                JOptionPane.showMessageDialog(dialog, "No such account in your user!", "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (MissingInformationException ex) {
+                JOptionPane.showMessageDialog(dialog, "Missing information!", "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (DateTimeException ex) {
+                JOptionPane.showMessageDialog(dialog, "End date can't be before today!", "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
             }
         });
         dialog.add(submitButton);
         JButton goBackButton = new JButton("Back");
-        goBackButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dialog.dispose(); // Close the dialog
-            }
+        goBackButton.addActionListener(e -> {
+            dialog.dispose();
         });
         dialog.add(goBackButton);
 
-        // Display the dialog
         dialog.setLocationRelativeTo(SwingUtilities.findPanelByName(cardPanel, "Deposit"));
         dialog.setVisible(true);
     }
@@ -219,12 +201,10 @@ public class DepositPanel extends JPanel {
         return deposit;
     }
 
-
     private Account getSelectedAccount(JComboBox<String> comboBox, ArrayList<Account> accounts) {
         int selectedIndex = comboBox.getSelectedIndex();
         return selectedIndex >= 0 ? accounts.get(selectedIndex) : null;
     }
-
 
     private void updateDepositList() throws SQLException {
         if (user != null) {
@@ -253,5 +233,4 @@ public class DepositPanel extends JPanel {
         this.user = user;
         updateDepositList();
     }
-
 }

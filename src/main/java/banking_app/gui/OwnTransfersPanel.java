@@ -99,16 +99,9 @@ public class OwnTransfersPanel extends JPanel {
         }
     }
 
-
     private void updateSenderAccountList() throws SQLException, NullPointerException {
         List<Account> accounts = manager.findUsersAccounts(user.getId());
-        //senderComboBox.removeAllItems();
         for (var account : accounts) {
-//            if (recipientComboBox.getSelectedItem() != null) {
-//                if (account.getAccountId() == Long.parseLong(recipientComboBox.getSelectedItem().toString())) {
-//                    continue;
-//                }
-//            }
             senderComboBox.addItem(account.getAccountId());
         }
     }
@@ -117,17 +110,8 @@ public class OwnTransfersPanel extends JPanel {
         List<Account> accounts = manager.findUsersAccounts(user.getId());
         //recipientComboBox.removeAllItems();
         for (var account : accounts) {
-//            if (senderComboBox.getSelectedItem() != null) {
-//                if (account.getAccountId() == Long.parseLong(senderComboBox.getSelectedItem().toString())) {
-//                    continue;
-//                }
-//            }
             recipientComboBox.addItem(account.getAccountId());
         }
-    }
-
-    private boolean validatePIN(String PIN) {
-        return PIN.equals(user.getPin());
     }
 
     public void setUser(User user) {
@@ -138,6 +122,5 @@ public class OwnTransfersPanel extends JPanel {
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }
-
     }
 }

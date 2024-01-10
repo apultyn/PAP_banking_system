@@ -32,7 +32,7 @@ public class TransfersPanel extends JPanel {
     private final JButton backButton;
     private final CardLayout cardLayout;
     private final JPanel cardPanel;
-    public TransfersPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) throws SQLException {
+    public TransfersPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) {
         this.setName(panelName);
         this.manager = manager;
         this.cardLayout = cardLayout;

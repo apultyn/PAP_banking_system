@@ -30,7 +30,7 @@ public class TransfersHistoryModel extends AbstractTableModel {
         boolean isIncoming = transfer.getTargetId() == currentAccountId;
 
         switch (columnIndex) {
-            case 0: return transfer.getDate(); // Format daty według potrzeb
+            case 0: return transfer.getDate();
             case 1: return transfer.getTitle();
             case 2: return transfer.getSourceId();
             case 3: return transfer.getTargetId();

@@ -26,7 +26,6 @@ public class LoginPanel extends JPanel {
     private String resetPassword;
 
     public LoginPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) {
-
         this.setName(panelName);
         this.manager = manager;
         this.cardLayout = cardLayout;
@@ -139,11 +138,8 @@ public class LoginPanel extends JPanel {
             } catch (SQLException | MessagingException ex) {
                 throw new RuntimeException(ex);
             }
-
         });
-
         emailDialog.setLocationRelativeTo(SwingUtilities.findPanelByName(cardPanel, "Login"));
-
     }
 
     private String createNewResetCode() {

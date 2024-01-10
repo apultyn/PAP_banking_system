@@ -9,8 +9,6 @@ import connections.ConnectionManager;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.sql.SQLException;
 import java.util.List;
@@ -26,7 +24,6 @@ public class ContactsPanel extends JPanel {
     private final JButton backButton;
     private final JLabel headerLabel;
     private JList<Contact> contactsListDisplay;
-
 
     public ContactsPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) {
         this.setName(panelName);
@@ -82,28 +79,22 @@ public class ContactsPanel extends JPanel {
             }
         });
 
-        // Add selection listener to handle clicks on list items
-        contactsListDisplay.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    Contact selectedContact = contactsListDisplay.getSelectedValue();
-                    TransfersPanel transfersPanel = (TransfersPanel) SwingUtilities.findPanelByName(cardPanel, "Transfers");
-                    if (transfersPanel != null) {
-                        transfersPanel.setRecipientName(selectedContact.getName());
-                        try {
-                            transfersPanel.setUser(user);
-                        } catch (SQLException ex) {
-                            throw new RuntimeException(ex);
-                        }
-                        transfersPanel.setRecipientNumber(selectedContact.getAccountId());
-                        cardLayout.show(cardPanel, "Transfers");
+        contactsListDisplay.addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                Contact selectedContact = contactsListDisplay.getSelectedValue();
+                TransfersPanel transfersPanel = (TransfersPanel) SwingUtilities.findPanelByName(cardPanel, "Transfers");
+                if (transfersPanel != null) {
+                    transfersPanel.setRecipientName(selectedContact.getName());
+                    try {
+                        transfersPanel.setUser(user);
+                    } catch (SQLException ex) {
+                        throw new RuntimeException(ex);
                     }
+                    transfersPanel.setRecipientNumber(selectedContact.getAccountId());
+                    cardLayout.show(cardPanel, "Transfers");
                 }
             }
         });
-
-        // Replace the previous scrollPane's viewport view with the new JList
         scrollPane.setViewportView(contactsListDisplay);
     }
 
@@ -122,7 +113,6 @@ public class ContactsPanel extends JPanel {
         dialog.setSize(350, 250);
         dialog.setLayout(new GridLayout(0, 2));
         ((JComponent) ((JDialog) dialog).getContentPane()).setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
 
         dialog.add(new JLabel("New contact name:"));
         JTextField newNameField = new JTextField();

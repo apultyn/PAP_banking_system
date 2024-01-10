@@ -16,36 +16,6 @@ public class ConnectionManager {
         connection = OracleConnectionManager.getConnection();
     }
 
-    public void Close() throws SQLException {
-        connection.close();
-    }
-
-    public String example() throws SQLException {
-
-        String sqlQuery = "SELECT * FROM users";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                while (resultSet.next()) {
-                    int userId = resultSet.getInt("user_id");
-                    String name = resultSet.getString("name");
-                    System.out.println("User ID: " + userId + ", Name: " + name);
-                }
-            }
-        }
-        return "Worked";
-    }
-
-    public void registerUser(String name, String surname, String email, String password, String pin) throws SQLException {
-        String sqlInsert = "INSERT INTO users (name, surname, email, password, pin) values (?, ?, ?, ?, ?)";
-        PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
-        preparedStatement.setString(1, name);
-        preparedStatement.setString(2, surname);
-        preparedStatement.setString(3, email);
-        preparedStatement.setString(4, password);
-        preparedStatement.setString(5, pin);
-        preparedStatement.executeUpdate();
-    }
-
     public void registerUser(User user) throws SQLException {
         String sqlInsert = "INSERT INTO users (name, surname, email, password, pin) values (?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
@@ -97,23 +67,6 @@ public class ConnectionManager {
         preparedStatement.setString(1, account.getName());
         preparedStatement.setBigDecimal(2, account.getTransferLimit());
         preparedStatement.setInt(3, account.getUserId());
-        preparedStatement.executeUpdate();
-    }
-
-    public void createAccount(String name, BigDecimal transferLimit, int ownerId) throws SQLException {
-        String sqlInsert = "INSERT INTO accounts (name, transfer_limit, owner_id) values (?, ?, ?)";
-        PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
-        preparedStatement.setString(1, name);
-        preparedStatement.setBigDecimal(2, transferLimit);
-        preparedStatement.setInt(3, ownerId);
-        preparedStatement.executeUpdate();
-    }
-
-    public void createAccount(String name, int ownerId) throws SQLException {
-        String sqlInsert = "INSERT INTO accounts (name, owner_id) values (?, ?)";
-        PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
-        preparedStatement.setString(1, name);
-        preparedStatement.setInt(2, ownerId);
         preparedStatement.executeUpdate();
     }
 
@@ -190,18 +143,6 @@ public class ConnectionManager {
             return outcome;
         }
     }
-
-    public List<Transfer> findTransfersByAccount(long account_id) throws SQLException {
-        String sqlQuery = "SELECT * FROM transfers WHERE sender_id= ? OR receiver_id= ? ORDER BY DATE_MADE DESC";
-
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
-            preparedStatement.setLong(1, account_id);
-            preparedStatement.setLong(2, account_id);
-            return getTransfers(preparedStatement);
-        }
-    }
-
-
 
     public void createDeposit(Deposit deposit) throws SQLException {
         String sqlInsert = "INSERT INTO deposits (name, rate, end_date, amount, owner_acc_id) values (?, ?, ?, ?, ?)";
@@ -287,23 +228,6 @@ public class ConnectionManager {
         preparedStatement.executeUpdate();
     }
 
-    public void deleteAutomaticSaving(int saving_id) throws SQLException {
-        String sqlInsert = "DELETE FROM automatic_savings WHERE saving_id = ?";
-        PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
-        preparedStatement.setLong(1, saving_id);
-        preparedStatement.executeUpdate();
-    }
-
-    public void createStandingOrder(String name, BigDecimal amount, long sender_id, long receiver_id) throws SQLException {
-        String sqlInsert = "INSERT INTO standing_orders (name, amount, sender_id, receiver_id) values (?, ?, ?, ?)";
-        PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
-        preparedStatement.setString(1, name);
-        preparedStatement.setBigDecimal(2, amount);
-        preparedStatement.setLong(3, sender_id);
-        preparedStatement.setLong(4, receiver_id);
-        preparedStatement.executeUpdate();
-    }
-
     public void createStandingOrder(StandingOrder standingOrder) throws SQLException {
         String sqlInsert = "INSERT INTO standing_orders (name, amount, sender_id, receiver_id) values (?, ?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
@@ -314,26 +238,12 @@ public class ConnectionManager {
         preparedStatement.executeUpdate();
     }
 
-    public void deleteStandingOrder(long orderId) throws SQLException {
-        String sqlInsert = "DELETE FROM standing_orders WHERE order_id = ?";
-        PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
-        preparedStatement.setLong(1, orderId);
-        preparedStatement.executeUpdate();
-    }
-
     public void createContact(String name, long account_id, int owner_id) throws SQLException {
         String sqlInsert = "INSERT INTO contacts (name, accounts_account_id, owner_id) values (?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
         preparedStatement.setString(1, name);
         preparedStatement.setLong(2, account_id);
         preparedStatement.setInt(3, owner_id);
-        preparedStatement.executeUpdate();
-    }
-
-    public void deleteContact(int contact_id) throws SQLException {
-        String sqlDelete = "DELETE FROM contacts WHERE contact_id = ?";
-        PreparedStatement preparedStatement = connection.prepareStatement(sqlDelete);
-        preparedStatement.setInt(1, contact_id);
         preparedStatement.executeUpdate();
     }
 
@@ -410,7 +320,7 @@ public class ConnectionManager {
 
         List<AutomaticSaving> savings = new ArrayList<>();
         for (Account a : accounts) {
-            List<AutomaticSaving> savingsSingleAcc = new ArrayList<>();
+            List<AutomaticSaving> savingsSingleAcc;
             savingsSingleAcc = findSavingsBySenderAcc(a.getAccountId());
             savings.addAll(savingsSingleAcc);
         }
@@ -496,13 +406,11 @@ public class ConnectionManager {
 
         List<Loan> loans = new ArrayList<>();
         for (Account a : accounts) {
-            List<Loan> loansSingleAcc = new ArrayList<>();
+            List<Loan> loansSingleAcc;
             loansSingleAcc = findLoansByAccId(a.getAccountId());
             loans.addAll(loansSingleAcc);
         }
         return loans;
     }
-
-
 }
 

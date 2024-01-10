@@ -1,12 +1,12 @@
 package banking_app.gui;
 
-import banking_app.classes.*;
+import banking_app.classes.Account;
+import banking_app.classes.Loan;
+import banking_app.classes.User;
 import connections.ConnectionManager;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,10 +14,7 @@ import java.util.Map;
 
 public class LoansPanel extends JPanel {
     private User user;
-    private ArrayList<StandingOrder> orders;
-
     private final ConnectionManager manager;
-    private final CardLayout cardLayout;
     private final JPanel cardPanel;
     private final JPanel detailsPanel;
     private final JButton backButton;
@@ -25,7 +22,6 @@ public class LoansPanel extends JPanel {
     private final JList<String> loansList;
     private final DefaultListModel<String> listModel;
     private final JTextArea loansDetails;
-
     private final JLabel idLabel;
     private final JLabel amountLabel;
     private final JLabel startDateLabel;
@@ -34,9 +30,9 @@ public class LoansPanel extends JPanel {
     private final JLabel ownerAccLabel;
     private final JLabel fixedRateLabel;
     Map<String, Loan> loanMap = new HashMap<>();
+
     public LoansPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) {
         this.manager = manager;
-        this.cardLayout = cardLayout;
         this.cardPanel = cardPanel;
         this.setName(panelName);
 
@@ -50,7 +46,6 @@ public class LoansPanel extends JPanel {
         loansDetails.setEditable(false);
         add(loansDetails, BorderLayout.CENTER);
 
-
         detailsPanel = new JPanel();
         detailsPanel.setLayout(new BoxLayout(detailsPanel, BoxLayout.Y_AXIS));
 
@@ -61,7 +56,6 @@ public class LoansPanel extends JPanel {
         startDateLabel = new JLabel("Date started:");
         endDateLabel = new JLabel("From which account:");
         ownerAccLabel = new JLabel("To which account the loan is bound");
-
 
         detailsPanel.add(idLabel);
         detailsPanel.add(new JLabel());
@@ -95,7 +89,7 @@ public class LoansPanel extends JPanel {
 
         registerLoan.addActionListener(e->{
             try {
-                createNewStandingOrder(listModel);
+                createNewStandingOrder();
             } catch (SQLException ex) {
                 throw new RuntimeException();
             }
@@ -106,17 +100,17 @@ public class LoansPanel extends JPanel {
     public void addNotify() {
         super.addNotify();
         try {
-            updateLoanList();  // Refresh the deposit list every time the panel is shown
+            updateLoanList();
         } catch (SQLException e) {
-            e.printStackTrace();  // Handle the SQLException appropriately
+            e.printStackTrace();
         }
     }
 
-    private void createNewStandingOrder(DefaultListModel<String> listModel) throws SQLException {
+    private void createNewStandingOrder() throws SQLException {
         JDialog dialog = new JDialog();
         dialog.setTitle("Create Loan");
-        dialog.setSize(400, 300); // Set the size of the dialog
-        dialog.setLayout(new GridLayout(0, 2)); // Using GridLayout for simplicity
+        dialog.setSize(400, 300);
+        dialog.setLayout(new GridLayout(0, 2));
 
         ArrayList<Account> accounts = new ArrayList<>(manager.findUsersAccounts(user.getId()));
 
@@ -138,40 +132,32 @@ public class LoansPanel extends JPanel {
         dialog.add(new JLabel("Choose the account: "));
         dialog.add(accountComboBox);
 
-        // Add a submit button
         JButton submitButton = new JButton("Create");
-        submitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Account selectedAccount = getSelectedAccount(accountComboBox, accounts);
-                try {
-                    String amount = amountField.getText();
-                    String rate = rateField.getText();
-                    String end = endDateField.getText();
-                    Loan.createLoan(manager, amount, rate, end , String.valueOf(selectedAccount.getAccountId()) , user);
-                    JOptionPane.showMessageDialog(dialog, "Loan created");
-                    dialog.dispose(); // Close the creating deposit window
-                    updateLoanList(); // Update deposit list in main panel
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(dialog, "Wrong input!", "Error", JOptionPane.ERROR_MESSAGE);
-                } catch (SQLException ex) {
-                    throw new RuntimeException(ex);
-                } catch (IllegalArgumentException ex) {
-                    JOptionPane.showMessageDialog(dialog, "Wrong Date!", "Error", JOptionPane.ERROR_MESSAGE);
-                }
+        submitButton.addActionListener(e -> {
+            Account selectedAccount = getSelectedAccount(accountComboBox, accounts);
+            try {
+                String amount = amountField.getText();
+                String rate = rateField.getText();
+                String end = endDateField.getText();
+                Loan.createLoan(manager, amount, rate, end , String.valueOf(selectedAccount.getAccountId()) , user);
+                JOptionPane.showMessageDialog(dialog, "Loan created");
+                dialog.dispose();
+                updateLoanList();
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(dialog, "Wrong input!", "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            } catch (IllegalArgumentException ex) {
+                JOptionPane.showMessageDialog(dialog, "Wrong Date!", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
         dialog.add(submitButton);
         JButton goBackButton = new JButton("Back");
-        goBackButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dialog.dispose(); // Close the dialog
-            }
+        goBackButton.addActionListener(e -> {
+            dialog.dispose();
         });
         dialog.add(goBackButton);
 
-        // Display the dialog
         dialog.setLocationRelativeTo(SwingUtilities.findPanelByName(cardPanel, "Loans"));
         dialog.setVisible(true);
     }
@@ -193,6 +179,7 @@ public class LoansPanel extends JPanel {
             }
         }
     }
+
     private void displayASDetails(Loan selectedLoan) {
         if (selectedLoan != null) {
             idLabel.setText("Loan id: " + selectedLoan.getLoanId());
@@ -202,7 +189,6 @@ public class LoansPanel extends JPanel {
             startDateLabel.setText("Date started: " + selectedLoan.getStart());
             endDateLabel.setText("From which account: " + selectedLoan.getEnd());
             ownerAccLabel.setText("To which account the loan is bound: " + selectedLoan.getOwnerAccId());
-
         }
     }
 

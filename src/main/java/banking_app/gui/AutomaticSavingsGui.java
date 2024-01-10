@@ -2,7 +2,6 @@ package banking_app.gui;
 
 import banking_app.classes.Account;
 import banking_app.classes.AutomaticSaving;
-import banking_app.classes.StandingOrder;
 import banking_app.classes.User;
 import banking_exceptions.InvalidAccountNumberException;
 import banking_exceptions.InvalidAmountException;
@@ -11,8 +10,6 @@ import connections.ConnectionManager;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,10 +17,7 @@ import java.util.Map;
 
 public class AutomaticSavingsGui extends JPanel {
     private User user;
-    private ArrayList<StandingOrder> orders;
-
     private final ConnectionManager manager;
-    private final CardLayout cardLayout;
     private final JPanel cardPanel;
     private final JPanel detailsPanel;
     private final JButton backButton;
@@ -31,7 +25,6 @@ public class AutomaticSavingsGui extends JPanel {
     private final JList<String> asList;
     private final DefaultListModel<String> listModel;
     private final JTextArea AutomaticSDetails;
-
     private final JLabel nameLabel;
     private final JLabel startDateLabel;
     private final JLabel senderIdLabel;
@@ -42,7 +35,6 @@ public class AutomaticSavingsGui extends JPanel {
     Map<String, AutomaticSaving> asMap = new HashMap<>();
     public AutomaticSavingsGui(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) {
         this.manager = manager;
-        this.cardLayout = cardLayout;
         this.cardPanel = cardPanel;
         this.setName(panelName);
 
@@ -55,7 +47,6 @@ public class AutomaticSavingsGui extends JPanel {
         AutomaticSDetails = new JTextArea(10, 30);
         AutomaticSDetails.setEditable(false);
         add(AutomaticSDetails, BorderLayout.CENTER);
-
 
         detailsPanel = new JPanel();
         detailsPanel.setLayout(new BoxLayout(detailsPanel, BoxLayout.Y_AXIS));
@@ -97,7 +88,7 @@ public class AutomaticSavingsGui extends JPanel {
 
         registerSavings.addActionListener(e->{
             try {
-                createNewStandingOrder(listModel);
+                createNewStandingOrder();
             } catch (SQLException ex) {
                 throw new RuntimeException();
             }
@@ -108,17 +99,17 @@ public class AutomaticSavingsGui extends JPanel {
     public void addNotify() {
         super.addNotify();
         try {
-            updateASList();  // Refresh the deposit list every time the panel is shown
+            updateASList();
         } catch (SQLException e) {
-            e.printStackTrace();  // Handle the SQLException appropriately
+            e.printStackTrace();
         }
     }
 
-    private void createNewStandingOrder(DefaultListModel<String> listModel) throws SQLException {
+    private void createNewStandingOrder() throws SQLException {
         JDialog dialog = new JDialog();
         dialog.setTitle("Create Automatic Saving");
-        dialog.setSize(400, 300); // Set the size of the dialog
-        dialog.setLayout(new GridLayout(0, 2)); // Using GridLayout for simplicity
+        dialog.setSize(400, 300);
+        dialog.setLayout(new GridLayout(0, 2));
 
         ArrayList<Account> accounts = new ArrayList<>(manager.findUsersAccounts(user.getId()));
 
@@ -127,13 +118,11 @@ public class AutomaticSavingsGui extends JPanel {
         receiverComboBox = new JComboBox<>();
         accountComboBox = new JComboBox<>();
 
-        // Populate accountComboBox with account names
         for (Account account : accounts) {
             accountComboBox.addItem(account.getName());
             receiverComboBox.addItem(account.getName());
         }
 
-        // Adding form fields to the dialog
         dialog.add(new JLabel("Saving Name:"));
         dialog.add(nameField);
         dialog.add(new JLabel("Amount:"));
@@ -143,20 +132,15 @@ public class AutomaticSavingsGui extends JPanel {
         dialog.add(new JLabel("Sender:"));
         dialog.add(accountComboBox);
 
-        // Add a submit button
         JButton submitButton = new JButton("Create");
         submitButton.addActionListener(e->handleCreateAutomaticSaving(accounts, dialog));
         dialog.add(submitButton);
         JButton goBackButton = new JButton("Back");
-        goBackButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dialog.dispose(); // Close the dialog
-            }
+        goBackButton.addActionListener(e -> {
+            dialog.dispose();
         });
         dialog.add(goBackButton);
 
-        // Display the dialog
         dialog.setLocationRelativeTo(SwingUtilities.findPanelByName(cardPanel, "SavingsPanel"));
         dialog.setVisible(true);
     }

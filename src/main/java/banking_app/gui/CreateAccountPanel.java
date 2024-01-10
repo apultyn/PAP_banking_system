@@ -23,7 +23,8 @@ public class CreateAccountPanel extends JPanel {
     private final JTextField transferLimit;
     private final JButton createAccountButton;
     private final JButton backButton;
-    public CreateAccountPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) throws SQLException {
+
+    public CreateAccountPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) {
         this.setName(panelName);
         this.manager = manager;
         this.cardLayout = cardLayout;
@@ -31,7 +32,6 @@ public class CreateAccountPanel extends JPanel {
 
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-
 
         gbc.gridwidth = 2;
         gbc.gridheight = 1;

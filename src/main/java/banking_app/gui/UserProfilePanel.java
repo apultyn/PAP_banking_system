@@ -103,7 +103,7 @@ public class UserProfilePanel extends JPanel {
         });
 
         setLayout(new BorderLayout());
-        add(menuPanel, BorderLayout.NORTH); // Add the menu panel at the top
+        add(menuPanel, BorderLayout.NORTH);
 
         helloLabel = new JLabel();
         accountComboBox = new JComboBox<>();
@@ -115,7 +115,7 @@ public class UserProfilePanel extends JPanel {
 
         JPanel limitsPanel = new JPanel();
         limitsPanel.setLayout(new BoxLayout(limitsPanel, BoxLayout.X_AXIS));
-        limitsPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10)); // Dodanie marginesów
+        limitsPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
         Dimension labelMaxSize = new Dimension(350, 50);
         transferLimitLabel.setMaximumSize(labelMaxSize);
@@ -124,10 +124,10 @@ public class UserProfilePanel extends JPanel {
         Dimension buttonMaxSize = new Dimension(250, 50);
         modifyLimitButton.setMaximumSize(buttonMaxSize);
 
-        limitsPanel.add(Box.createHorizontalGlue()); // Elastyczna przestrzeń po lewej stronie
+        limitsPanel.add(Box.createHorizontalGlue());
         limitsPanel.add(transferLimitLabel);
         limitsPanel.add(modifyLimitButton);
-        limitsPanel.add(Box.createHorizontalGlue()); // Elastyczna przestrzeń po lewej stronie
+        limitsPanel.add(Box.createHorizontalGlue());
 
         modifyLimitButton.addActionListener(e -> openModifyDialog());
 
@@ -155,7 +155,6 @@ public class UserProfilePanel extends JPanel {
         add(menuPanel, BorderLayout.NORTH);
         add(contentPanel, BorderLayout.CENTER);
         add(scrollPane, BorderLayout.SOUTH);
-
     }
 
     public void setUser(User setted_user) {

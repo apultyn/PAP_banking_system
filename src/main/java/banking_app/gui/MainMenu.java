@@ -7,7 +7,6 @@ import java.awt.*;
 import java.sql.SQLException;
 
 public class MainMenu extends JFrame {
-    private ConnectionManager manager;
     public MainMenu() {
         String[] arr = new String[]{};
         try {
@@ -56,5 +55,4 @@ public class MainMenu extends JFrame {
         frame.add(cardPanel);
         frame.setVisible(true);
     }
-
 }

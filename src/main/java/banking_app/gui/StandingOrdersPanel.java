@@ -10,8 +10,6 @@ import connections.ConnectionManager;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,10 +19,7 @@ import static javax.swing.SwingUtilities.getWindowAncestor;
 
 public class StandingOrdersPanel extends JPanel {
     private User user;
-    private ArrayList<StandingOrder> orders;
-
     private final ConnectionManager manager;
-    private final CardLayout cardLayout;
     private final JPanel cardPanel;
     private final JPanel detailsPanel;
     private JTextField nameField , amountField, recipientField;
@@ -34,7 +29,6 @@ public class StandingOrdersPanel extends JPanel {
     private final JList<String> asList;
     private final DefaultListModel<String> listModel;
     private final JTextArea standingODetails;
-
     private final JLabel nameLabel;
     private final JLabel startDateLabel;
     private final JLabel senderIdLabel;
@@ -43,7 +37,6 @@ public class StandingOrdersPanel extends JPanel {
     Map<String, StandingOrder> soMap = new HashMap<>();
     public StandingOrdersPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) {
         this.manager = manager;
-        this.cardLayout = cardLayout;
         this.cardPanel = cardPanel;
         this.setName(panelName);
 
@@ -109,17 +102,17 @@ public class StandingOrdersPanel extends JPanel {
     public void addNotify() {
         super.addNotify();
         try {
-            updateSOList();  // Refresh the deposit list every time the panel is shown
+            updateSOList();
         } catch (SQLException e) {
-            e.printStackTrace();  // Handle the SQLException appropriately
+            e.printStackTrace();
         }
     }
 
     private void createNewStandingOrder(DefaultListModel<String> listModel) throws SQLException {
         JDialog dialog = new JDialog((JFrame) getWindowAncestor(this));
         dialog.setTitle("Create New Standing order");
-        dialog.setSize(400, 300); // Set the size of the dialog
-        dialog.setLayout(new GridLayout(0, 2)); // Using GridLayout for simplicity
+        dialog.setSize(400, 300);
+        dialog.setLayout(new GridLayout(0, 2));
 
         ArrayList<Account> accounts = new ArrayList<>(manager.findUsersAccounts(user.getId()));
 
@@ -128,12 +121,10 @@ public class StandingOrdersPanel extends JPanel {
         recipientField = new JTextField();
         accountComboBox = new JComboBox<>();
 
-        // Populate accountComboBox with account names
         for (Account account : accounts) {
             accountComboBox.addItem(account.getName());
         }
 
-        // Adding form fields to the dialog
         dialog.add(new JLabel("Order Name:"));
         dialog.add(nameField);
         dialog.add(new JLabel("Amount:"));
@@ -143,26 +134,18 @@ public class StandingOrdersPanel extends JPanel {
         dialog.add(new JLabel("Account:"));
         dialog.add(accountComboBox);
 
-        // Add a submit button
         JButton submitButton = new JButton("Create");
         submitButton.addActionListener(e -> handleCreateStandingOrder(accounts, dialog));
 //
         dialog.add(submitButton);
         JButton goBackButton = new JButton("Back");
-        goBackButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dialog.dispose(); // Close the dialog
-            }
+        goBackButton.addActionListener(e -> {
+            dialog.dispose();
         });
         dialog.add(goBackButton);
-//
-//        // Display the dialog
 
-        // Display the dialog
         dialog.setLocationRelativeTo(SwingUtilities.findPanelByName(cardPanel, "StandingOrders"));
         dialog.setVisible(true);
-//    }
     }
 
     private boolean validatePIN(String PIN){

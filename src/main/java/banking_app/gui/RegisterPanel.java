@@ -138,7 +138,7 @@ public class RegisterPanel extends JPanel {
         StringBuilder code = new StringBuilder();
 
         for (int i = 0; i < 6; i++) {
-            code.append(random.nextInt(10)); // Dodaje losową cyfrę (0-9) do ciągu
+            code.append(random.nextInt(10));
         }
         return code.toString();
     }

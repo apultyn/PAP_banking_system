@@ -6,8 +6,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public class LoanCalculatorPanel extends JPanel {
-    private final CardLayout cardLayout;
-    private final JPanel cardPanel;
     private final JTextField amountField;
     private final JTextField termField;
     private final JTextField rateField;
@@ -15,9 +13,8 @@ public class LoanCalculatorPanel extends JPanel {
     private final JLabel outcomeLabelM;
     private final JLabel outcomeLabelT;
     private final JLabel welcomeLabel;
+
     public LoanCalculatorPanel(CardLayout cardLayout, JPanel cardPanel, String panelName) {
-        this.cardLayout = cardLayout;
-        this.cardPanel = cardPanel;
         this.setName(panelName);
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));

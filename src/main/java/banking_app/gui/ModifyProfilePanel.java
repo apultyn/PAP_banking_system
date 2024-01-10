@@ -20,20 +20,18 @@ public class ModifyProfilePanel extends JPanel {
     private final JLabel email;
     private User user;
     private final ConnectionManager manager;
-    private final CardLayout cardLayout;
     private final JPanel cardPanel;
 
     public ModifyProfilePanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) {
         this.manager = manager;
         this.setName(panelName);
         this.cardPanel = cardPanel;
-        this.cardLayout = cardLayout;
 
-        setLayout(new GridBagLayout()); // Ustawienie GridBagLayout dla głównego panelu
+        setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(5, 10, 5, 10); // Odstępy wokół komponentów
+        gbc.insets = new Insets(5, 10, 5, 10);
 
         JPanel headerPanel = new JPanel();
         headerPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -65,7 +63,7 @@ public class ModifyProfilePanel extends JPanel {
         modifyNameButton.addActionListener(e -> openModifyDialog("Name"));
         modifySurnameButton.addActionListener(e -> openModifyDialog("Surname"));
         modifyEmailButton.addActionListener(e -> openModifyDialog("Email"));
-        modifyPasswordButton.addActionListener(e -> openModifyDialog("Password")); // No need to show old password
+        modifyPasswordButton.addActionListener(e -> openModifyDialog("Password"));
         modifyPinButton.addActionListener(e -> openModifyDialog("Pin"));
 
         returnButton.addActionListener(e -> cardLayout.show(cardPanel, "User"));
@@ -82,13 +80,12 @@ public class ModifyProfilePanel extends JPanel {
 
     private JPanel createLinePanel(JComponent label, JButton button) {
         JPanel linePanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
-        label.setPreferredSize(new Dimension(200, 20)); // Ustawienie preferowanych wymiarów dla etykiety
-        button.setPreferredSize(new Dimension(150, 20)); // Ustawienie preferowanych wymiarów dla przycisku
+        label.setPreferredSize(new Dimension(200, 20));
+        button.setPreferredSize(new Dimension(150, 20));
         linePanel.add(label);
         linePanel.add(button);
         return linePanel;
     }
-
 
     private void openModifyDialog(String field) {
         // Create and display dialog
@@ -104,7 +101,6 @@ public class ModifyProfilePanel extends JPanel {
         JTextField newField = new JTextField();
         dialog.add(newField);
 
-        // Additional field for password confirmation
         JTextField confirmField = new JTextField();
         switch (field) {
             case "Password" -> {
@@ -151,18 +147,18 @@ public class ModifyProfilePanel extends JPanel {
             }
         });
 
-        // Cancel button action
         cancelButton.addActionListener(e -> dialog.dispose());
         dialog.setLocationRelativeTo(SwingUtilities.findPanelByName(cardPanel, "ModifyPanel"));
         dialog.setVisible(true);
-
     }
+
     public void setUser(User setted_user) {
         user = setted_user;
         name.setText(user.getName());
         surname.setText(user.getSurname());
         email.setText(user.getEmail());
     }
+
     private void updateUserData(String field, String oldValue, String newValue, String confirmValue) throws
             InvalidNameException, SQLException, RepeatedDataException, MissingInformationException, DataMissmatchException,
             InvalidPasswordException, PasswordMissmatchException, InvalidEmailException, InvalidPinException, PinMissmatchException {
