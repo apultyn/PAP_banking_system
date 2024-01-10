@@ -4,6 +4,9 @@ import banking_app.classes.Account;
 import banking_app.classes.AutomaticSaving;
 import banking_app.classes.StandingOrder;
 import banking_app.classes.User;
+import banking_exceptions.InvalidAccountNumberException;
+import banking_exceptions.InvalidAmountException;
+import banking_exceptions.InvalidNameException;
 import connections.ConnectionManager;
 
 import javax.swing.*;
@@ -29,6 +32,8 @@ public class AutomaticSavingsGui extends JPanel {
     private JTextArea AutomaticSDetails;
 
     private JLabel nameLabel, startDateLabel, senderIdLabel, recieverIdLabel, amountLabel;
+    private JComboBox<String> accountComboBox, recieverComboBox;
+    private JTextField nameField, amountField;
     Map<String, AutomaticSaving> asMap = new HashMap<>();
     public AutomaticSavingsGui(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) {
         this.manager = manager;
@@ -65,7 +70,7 @@ public class AutomaticSavingsGui extends JPanel {
         detailsPanel.add(recieverIdLabel);
         detailsPanel.add(new JLabel());
         detailsPanel.add(amountLabel);
-
+        detailsPanel.setVisible(false);
         add(detailsPanel, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel();
@@ -112,10 +117,10 @@ public class AutomaticSavingsGui extends JPanel {
 
         ArrayList<Account> accounts = new ArrayList<>(manager.findUsersAccounts(user.getId()));
 
-        JTextField nameField = new JTextField();
-        JTextField amountField = new JTextField();
-        JComboBox<String> recieverComboBox = new JComboBox<>();
-        JComboBox<String> accountComboBox = new JComboBox<>();
+        nameField = new JTextField();
+        amountField = new JTextField();
+        recieverComboBox = new JComboBox<>();
+        accountComboBox = new JComboBox<>();
 
         // Populate accountComboBox with account names
         for (Account account : accounts) {
@@ -130,32 +135,12 @@ public class AutomaticSavingsGui extends JPanel {
         dialog.add(amountField);
         dialog.add(new JLabel("Recipient:"));
         dialog.add(recieverComboBox);
-        dialog.add(new JLabel("Account:"));
+        dialog.add(new JLabel("Sender:"));
         dialog.add(accountComboBox);
 
         // Add a submit button
         JButton submitButton = new JButton("Create");
-        submitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Account selectedAccount = getSelectedAccount(accountComboBox, accounts);
-                Account selectedRecipient = getSelectedAccount(recieverComboBox, accounts);
-                try {
-                    String name = nameField.getText();
-                    String amount = amountField.getText();
-                    AutomaticSaving.registerAutomaticSaving(manager, user, name,
-                            String.valueOf(selectedAccount.getAccountId()),
-                            String.valueOf(selectedRecipient.getAccountId()), amount);
-                    JOptionPane.showMessageDialog(dialog, "Automatic Saving created");
-                    dialog.dispose(); // Close the creating deposit window
-                    updateASList(); // Update deposit list in main panel
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(dialog, "Wrong input!");
-                } catch (SQLException ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
-        });
+        submitButton.addActionListener(e->handleCreateAutomaticSaving(accounts, dialog));
         dialog.add(submitButton);
         JButton goBackButton = new JButton("Back");
         goBackButton.addActionListener(new ActionListener() {
@@ -169,6 +154,40 @@ public class AutomaticSavingsGui extends JPanel {
         // Display the dialog
         dialog.setLocationRelativeTo(SwingUtilities.findPanelByName(cardPanel, "SavingsPanel"));
         dialog.setVisible(true);
+    }
+
+    private boolean validatePIN(String PIN){
+        return PIN.equals(user.getPin());
+    }
+
+    private void handleCreateAutomaticSaving (ArrayList<Account> accounts, JDialog dialog) {
+        Account selectedSender = getSelectedAccount(accountComboBox, accounts);
+        Account selectedRecipient = getSelectedAccount(recieverComboBox, accounts);
+        try {
+            AutomaticSaving automaticSaving = new AutomaticSaving(nameField.getText(), amountField.getText(), String.valueOf(selectedSender.getAccountId()),
+                    String.valueOf(selectedRecipient.getAccountId()));
+            int attempts = 3;
+            while (attempts > 0) {
+                String PIN = JOptionPane.showInputDialog(this, "Enter your PIN: (Attempts left: " + attempts + ")");
+                if (PIN == null)
+                    break;
+                else if (!validatePIN(PIN)) {
+                    attempts--;
+                    JOptionPane.showMessageDialog(this, "Incorrect PIN!", "PIN error", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    AutomaticSaving.registerAutomaticSaving(manager, automaticSaving);
+                    JOptionPane.showMessageDialog(this, "Created successfully!");
+                    dialog.dispose();
+                    break;
+                }
+            }
+            updateASList();
+        } catch (NumberFormatException | InvalidNameException | InvalidAmountException |
+                 InvalidAccountNumberException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     private Account getSelectedAccount(JComboBox<String> comboBox, ArrayList<Account> accounts) {
@@ -194,7 +213,9 @@ public class AutomaticSavingsGui extends JPanel {
             senderIdLabel.setText("From which account: " + selectedAS.getSourceAccountId());
             recieverIdLabel.setText("To which account: " + selectedAS.getTargetAccountId());
             amountLabel.setText("How much do you want to send: " + selectedAS.getAmount().toString());
-        }
+            detailsPanel.setVisible(true);
+        } else
+            detailsPanel.setVisible(false);
     }
 
     public void setUser (User user) {
