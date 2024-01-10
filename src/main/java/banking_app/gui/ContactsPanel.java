@@ -113,7 +113,7 @@ public class ContactsPanel extends JPanel {
             contactsList = manager.findUsersContacts(user.getId());
             uploadContacts();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage());
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -144,9 +144,9 @@ public class ContactsPanel extends JPanel {
                 setUser(manager.findUser(user.getEmail()));
                 dialog.dispose();
             } catch (MissingInformationException | InvalidAccountNumberException | AccountNotFoundException exception) {
-                JOptionPane.showMessageDialog(dialog, exception.getMessage());
+                JOptionPane.showMessageDialog(dialog, exception.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(dialog, "Database error!");
+                JOptionPane.showMessageDialog(dialog, "Database error!", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 

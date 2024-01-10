@@ -194,7 +194,7 @@ public class UserProfilePanel extends JPanel {
                 setUser(manager.findUser(user.getEmail()));
                 dialog.dispose();
             } catch (InvalidAmountException exception) {
-                JOptionPane.showMessageDialog(dialog, exception.getMessage());
+                JOptionPane.showMessageDialog(dialog, exception.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(dialog, "Database error!");
             }

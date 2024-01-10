@@ -91,7 +91,7 @@ public class OwnTransfer extends JPanel {
             cardLayout.show(cardPanel, "User");
             resetComponents(this);
         } catch (InvalidAccountNumberException | InvalidNameException | InvalidAmountException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage());
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }

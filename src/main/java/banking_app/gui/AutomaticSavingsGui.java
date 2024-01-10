@@ -173,7 +173,7 @@ public class AutomaticSavingsGui extends JPanel {
                     break;
                 else if (!validatePIN(PIN)) {
                     attempts--;
-                    JOptionPane.showMessageDialog(this, "Incorrect PIN!", "PIN error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Incorrect PIN!", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
                     AutomaticSaving.registerAutomaticSaving(manager, automaticSaving);
                     JOptionPane.showMessageDialog(this, "Created successfully!");

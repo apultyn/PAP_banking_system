@@ -66,7 +66,7 @@ public class TransactionsPanel extends JPanel {
             if (accountComboBox.getSelectedItem() != null) {
                 try {
                     balanceLabel.setText(String.format("%.2f pln", manager.findAccount(Long.parseLong(Objects.requireNonNull(accountComboBox.getSelectedItem()).toString())).getBalance()));
-                    balanceLabel.setFont(balanceLabel.getFont().deriveFont(Font.BOLD, 24));
+                    balanceLabel.setFont(balanceLabel.getFont().deriveFont(Font.BOLD));
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -102,11 +102,11 @@ public class TransactionsPanel extends JPanel {
                     break;
                 else if (!validatePIN(PIN)) {
                     attempts--;
-                    JOptionPane.showMessageDialog(this, "Incorrect PIN!", "PIN error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Incorrect PIN!", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
                     user.makeTransaction(manager, transaction);
-                    new EmailSender(manager).sendTransactionInfo(transaction);
                     JOptionPane.showMessageDialog(this, String.format("Transferred successfully!\nYour balance is now %.2f pln", manager.findAccount(Long.parseLong(accountComboBox.getSelectedItem().toString())).getBalance()) );
+                    new EmailSender(manager).sendTransactionInfo(transaction);
                     break;
                 }
             }

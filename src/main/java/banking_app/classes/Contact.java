@@ -1,10 +1,13 @@
 package banking_app.classes;
 
+import banking_exceptions.InvalidAccountNumberException;
+import banking_exceptions.InvalidNameException;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Contact {
-    private final int contactId;
+    private final Integer contactId;
     private String name;
     private long accountId;
 
@@ -18,6 +21,17 @@ public class Contact {
         this(resultSet.getInt("contact_id"),
                 resultSet.getString("name"),
                 resultSet.getLong("accounts_account_id"));
+    }
+
+    public Contact(String name, String recipientAccountNumber) throws InvalidNameException, InvalidAccountNumberException {
+        if (name.isEmpty())
+            throw new InvalidNameException("Name cannot be empty!");
+        if (!recipientAccountNumber.matches("\\d{16}"))
+            throw new InvalidAccountNumberException("Number must be 16 digits long!");
+
+        this.contactId = null;
+        this.name = name;
+        this.accountId = Long.parseLong(recipientAccountNumber);
     }
 
     public int getContactId() {

@@ -108,7 +108,7 @@ public class RegisterPanel extends JPanel {
             cardLayout.show(cardPanel, "Login");
         } catch (InvalidNameException | InvalidPasswordException | InvalidEmailException | OccupiedEmailException |
                  PasswordMissmatchException | DataMissmatchException | InvalidPinException | InvalidAmountException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage());
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

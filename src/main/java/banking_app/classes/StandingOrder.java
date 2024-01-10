@@ -40,7 +40,6 @@ public class StandingOrder {
     }
 
     public StandingOrder(String name, String amount, String senderAccountNumber, String recipientAccountNumber) throws InvalidNameException, InvalidAmountException, InvalidAccountNumberException {
-//        if
         if (name.isEmpty())
             throw new InvalidNameException("Name cannot be empty!");
         if (amount.isEmpty())

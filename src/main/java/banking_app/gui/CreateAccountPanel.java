@@ -70,7 +70,7 @@ public class CreateAccountPanel extends JPanel {
                 resetComponents(this);
             }
         } catch (InvalidNameException | InvalidAmountException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage());
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

@@ -84,7 +84,7 @@ public class LoginPanel extends JPanel {
                 cardLayout.show(cardPanel, "User");
             }
         } catch (LoginFailedException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage());
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -196,7 +196,7 @@ public class LoginPanel extends JPanel {
                 newPasswordDialog.dispose();
             } catch (RepeatedDataException | InvalidPasswordException | MissingInformationException |
                     PasswordMissmatchException | DataMissmatchException ex) {
-                JOptionPane.showMessageDialog(newPasswordDialog, ex.getMessage());
+                JOptionPane.showMessageDialog(newPasswordDialog, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }

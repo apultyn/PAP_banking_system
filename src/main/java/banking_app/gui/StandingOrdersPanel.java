@@ -74,7 +74,7 @@ public class StandingOrdersPanel extends JPanel {
         add(detailsPanel, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel();
-        backButton = new JButton("Go Back");
+        backButton = new JButton("Back");
         registerOrder = new JButton("Create New Standing Order");
         buttonPanel.add(backButton);
         buttonPanel.add(registerOrder);
