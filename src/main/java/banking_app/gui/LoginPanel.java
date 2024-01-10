@@ -113,7 +113,7 @@ public class LoginPanel extends JPanel {
                     JOptionPane.showMessageDialog(emailDialog, "No account with such email!");
                 else {
                     resetPassword = createNewResetCode();
-                    EmailSender.sendResetCode(input, resetPassword);
+                    new EmailSender(manager).sendResetCode(input, resetPassword);
                     emailDialog.dispose();
                     createCodeInputDialog(user);
                 }

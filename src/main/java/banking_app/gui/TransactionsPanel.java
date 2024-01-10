@@ -1,6 +1,7 @@
 package banking_app.gui;
 
 import banking_app.classes.Account;
+import banking_app.classes.EmailSender;
 import banking_app.classes.Transaction;
 import banking_app.classes.User;
 import banking_exceptions.InvalidAccountNumberException;
@@ -104,11 +105,12 @@ public class TransactionsPanel extends JPanel {
                     JOptionPane.showMessageDialog(this, "Incorrect PIN!", "PIN error", JOptionPane.ERROR_MESSAGE);
                 } else {
                     user.makeTransaction(manager, transaction);
+                    new EmailSender(manager).sendTransactionInfo(transaction);
                     JOptionPane.showMessageDialog(this, String.format("Transferred successfully!\nYour balance is now %.2f pln", manager.findAccount(Long.parseLong(accountComboBox.getSelectedItem().toString())).getBalance()) );
                     break;
                 }
             }
-
+            ((UserProfilePanel) Objects.requireNonNull(SwingUtilities.findPanelByName(cardPanel, "User"))).createTranscationsHistory();
             cardLayout.show(cardPanel, "User");
             balanceLabel.setText("");
             resetComponents(this);
