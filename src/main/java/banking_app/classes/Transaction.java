@@ -62,6 +62,7 @@ public class Transaction
         this.title = title;
         this.amount = new BigDecimal(amount);
         this.type = 1;
+        this.date =  new Date(new java.util.Date().getTime());
     }
 
 

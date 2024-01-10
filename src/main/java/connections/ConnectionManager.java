@@ -106,6 +106,17 @@ public class ConnectionManager {
         preparedStatement.executeUpdate();
     }
 
+    public User findUserFromAccount(long accountId) throws SQLException {
+        String sqlQuery = "SELECT * FROM users WHERE user_id = (" +
+                "SELECT owner_id FROM accounts WHERE account_id = ?) ";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+        preparedStatement.setLong(1, accountId);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        if (resultSet.next()) {
+            return new User(resultSet);
+        }
+        return null;
+    }
 
     public List<Account> findUsersAccounts(int user_id) throws SQLException {
         String sqlQuery = "SELECT * FROM accounts WHERE owner_id = ? ORDER BY account_id ASC";

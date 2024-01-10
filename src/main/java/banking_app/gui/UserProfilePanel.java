@@ -226,7 +226,7 @@ public class UserProfilePanel extends JPanel {
         transactionLimitLabel.setText(limit_info);
     }
 
-    private void createTranscationsHistory() throws SQLException {
+    public void createTranscationsHistory() throws SQLException {
         List<Transaction> incomingTransactions = manager.findTransactionsByReceiver(currentAccount.getAccountId());
         List<Transaction> outgoingTransactions = manager.findTransactionsBySender(currentAccount.getAccountId());
         List<Transaction> allTransactions = new ArrayList<>(incomingTransactions);
