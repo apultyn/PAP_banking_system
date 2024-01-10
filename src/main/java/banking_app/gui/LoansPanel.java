@@ -70,7 +70,7 @@ public class LoansPanel extends JPanel {
         add(detailsPanel, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel();
-        backButton = new JButton("Go Back");
+        backButton = new JButton("Back");
         registerLoan = new JButton("Create New Loan");
         buttonPanel.add(backButton);
         buttonPanel.add(registerLoan);
@@ -155,7 +155,7 @@ public class LoansPanel extends JPanel {
             }
         });
         dialog.add(submitButton);
-        JButton goBackButton = new JButton("Go Back");
+        JButton goBackButton = new JButton("Back");
         goBackButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

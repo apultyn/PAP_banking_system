@@ -73,7 +73,7 @@ public class DepositPanel extends JPanel {
 
         // Buttons
         JPanel buttonPanel = new JPanel();
-        goBackButton = new JButton("Go Back");
+        goBackButton = new JButton("Back");
         createNewDepositButton = new JButton("Create New Deposit");
         buttonPanel.add(goBackButton);
         buttonPanel.add(createNewDepositButton);
@@ -167,7 +167,7 @@ public class DepositPanel extends JPanel {
             }
         });
         dialog.add(submitButton);
-        JButton goBackButton = new JButton("Go Back");
+        JButton goBackButton = new JButton("Back");
         goBackButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

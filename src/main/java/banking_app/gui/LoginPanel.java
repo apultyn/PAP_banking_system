@@ -94,7 +94,7 @@ public class LoginPanel extends JPanel {
         emailDialog.setLayout(new FlowLayout());
         JTextField emailInputField = new JTextField(20);
         JLabel emailLabel = new JLabel("Enter email");
-        JButton goBackButton = new JButton("Go Back");
+        JButton goBackButton = new JButton("Back");
         JButton sendResetCodeButton = new JButton("Send Reset Code");
 
         emailDialog.add(emailLabel);
@@ -144,7 +144,7 @@ public class LoginPanel extends JPanel {
         codeDialog.setLayout(new FlowLayout());
         JTextField codeInputField = new JTextField(20);
         JLabel textLabel = new JLabel("Enter code you received at your email");
-        JButton goBackButton = new JButton("Go Back");
+        JButton goBackButton = new JButton("Back");
         JButton submitCodeButton = new JButton("Submit");
 
         codeDialog.add(textLabel);
@@ -170,7 +170,7 @@ public class LoginPanel extends JPanel {
         newPasswordDialog.setLayout(new FlowLayout());
         JPasswordField newPasswordField = new JPasswordField(20);
         JPasswordField confirmPasswordField = new JPasswordField(20);
-        JButton goBackButton = new JButton("Go Back");
+        JButton goBackButton = new JButton("Back");
         JButton submitNewPasswordButton = new JButton("Submit");
 
         JLabel newPasswordLabel = new JLabel("New password");

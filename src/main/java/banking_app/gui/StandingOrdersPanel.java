@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static javax.swing.SwingUtilities.getWindowAncestor;
+
 public class StandingOrdersPanel extends JPanel {
     private User user;
     private ArrayList<StandingOrder> orders;
@@ -108,7 +110,7 @@ public class StandingOrdersPanel extends JPanel {
     }
 
     private void createNewStandingOrder(DefaultListModel<String> listModel) throws SQLException {
-        JDialog dialog = new JDialog();
+        JDialog dialog = new JDialog((JFrame) getWindowAncestor(this));
         dialog.setTitle("Create New Standing order");
         dialog.setSize(400, 300); // Set the size of the dialog
         dialog.setLayout(new GridLayout(0, 2)); // Using GridLayout for simplicity
@@ -140,7 +142,7 @@ public class StandingOrdersPanel extends JPanel {
         submitButton.addActionListener(e -> handleCreateStandingOrder(accounts));
 //
         dialog.add(submitButton);
-        JButton goBackButton = new JButton("Go Back");
+        JButton goBackButton = new JButton("Back");
         goBackButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -152,7 +154,7 @@ public class StandingOrdersPanel extends JPanel {
 //        // Display the dialog
 
         // Display the dialog
-        dialog.setLocationRelativeTo(SwingUtilities.findPanelByName(cardPanel, "StangingOrders"));
+        dialog.setLocationRelativeTo(SwingUtilities.findPanelByName(cardPanel, "StandingOrders"));
         dialog.setVisible(true);
 //    }
     }
