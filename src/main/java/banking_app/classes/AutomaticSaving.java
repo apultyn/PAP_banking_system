@@ -50,7 +50,7 @@ public class AutomaticSaving {
             throw new InvalidAmountException("Amount must be a number!");
         if (new BigDecimal(amount).compareTo(BigDecimal.ZERO) <= 0)
             throw new InvalidAmountException("Amount must be positive!");
-        if (!recipientAccountNumber.matches("\\d{16}") || !senderAccountNumber.matches("\\d{16}"))
+        if (!recipientAccountNumber.matches("\\d{16}"))
             throw new InvalidAccountNumberException("Number must be 16 digits long!");
         if (senderAccountNumber.equals(recipientAccountNumber))
             throw new InvalidAccountNumberException("Accounts must be different!");
@@ -63,7 +63,7 @@ public class AutomaticSaving {
 
     }
 
-    public Integer getSavingID() {
+    public int getSavingID() {
         return savingID;
     }
 

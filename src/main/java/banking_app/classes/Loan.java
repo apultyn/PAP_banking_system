@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class Loan {
-    private final Integer loanId;
+    private final int loanId;
     private final BigDecimal amount;
     private final BigDecimal rate;
     private final long ownerAccId;
@@ -52,7 +52,7 @@ public class Loan {
         return end;
     }
 
-    public Integer getLoanId() {
+    public int getLoanId() {
         return loanId;
     }
 
@@ -78,10 +78,6 @@ public class Loan {
 
         if (yearDiff <= 0)
             throw new NumberFormatException("Wrong date");
-        if (amount.doubleValue() <= 0)
-            throw new NumberFormatException("Amount less then 0");
-        if (rate.doubleValue() <= 0)
-            throw new NumberFormatException("Rate less then 0");
 
         double fixedRate = LoanCalc.calculateLoanMonthly(amount.doubleValue(), yearDiff, rate.doubleValue()), calculatedAmountL;
         BigDecimal finalFixedRate = new BigDecimal(fixedRate);
@@ -95,20 +91,17 @@ public class Loan {
     }
 
     public static void createLoan(ConnectionManager manager, String amount, String rate,
-                                  String end, String ownerAccId, User user) throws SQLException, NumberFormatException, IllegalArgumentException {
+                                  String end, String ownerAccId, User user) throws SQLException, NumberFormatException {
+        List<Account> accounts = manager.findUsersAccounts(user.getId());
+
         if (ownerAccId.length() != 16)
             throw new NumberFormatException("Short id");
 
         double a = Double.parseDouble(amount), r = Double.parseDouble(rate);
         BigDecimal amountBig = BigDecimal.valueOf(a), rateBig = BigDecimal.valueOf(r);
         long owner = Long.parseLong(ownerAccId);
-        if (a <= 0)
-            throw new NumberFormatException("Amount less then 0");
-        if (r <= 0)
-            throw new NumberFormatException("Rate less then 0");
 
         Date e = Date.valueOf(end);
-        List<Account> accounts = manager.findUsersAccounts(user.getId());
 
         boolean myAccount = false;
         for (Account acc : accounts) {

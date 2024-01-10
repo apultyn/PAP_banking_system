@@ -21,8 +21,8 @@ public class StandingOrder {
 
     private final BigDecimal amount;
 
-    public StandingOrder(int orderId, String name, Date started, long sender_id, long receiver_id, BigDecimal am) {
-        this.orderId = orderId;
+    public StandingOrder(int savingID, String name, Date started, long sender_id, long receiver_id, BigDecimal am) {
+        this.orderId = savingID;
         this.name = name;
         this.dateStarted = started;
         this.sourceAccountId = sender_id;
@@ -48,7 +48,7 @@ public class StandingOrder {
             throw new InvalidAmountException("Amount must be a number!");
         if (new BigDecimal(amount).compareTo(BigDecimal.ZERO) <= 0)
             throw new InvalidAmountException("Amount must be positive!");
-        if (!recipientAccountNumber.matches("\\d{16}") || !senderAccountNumber.matches("\\d{16}"))
+        if (!recipientAccountNumber.matches("\\d{16}"))
             throw new InvalidAccountNumberException("Number must be 16 digits long!");
         if (senderAccountNumber.equals(recipientAccountNumber))
             throw new InvalidAccountNumberException("Accounts must be different!");
@@ -61,7 +61,7 @@ public class StandingOrder {
 
     }
 
-    public Integer getOrderId() {
+    public int getSavingID() {
         return orderId;
     }
 
