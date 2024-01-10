@@ -158,8 +158,6 @@ public class UserProfilePanel extends JPanel {
 
     }
 
-
-
     public void setUser(User setted_user) {
         user = setted_user;
         helloLabel.setText("Hello " + user.getName());

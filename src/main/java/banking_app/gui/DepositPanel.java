@@ -177,6 +177,7 @@ public class DepositPanel extends JPanel {
         dialog.add(goBackButton);
 
         // Display the dialog
+        dialog.setLocationRelativeTo(SwingUtilities.findPanelByName(cardPanel, "Deposit"));
         dialog.setVisible(true);
     }
 

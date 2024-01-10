@@ -150,6 +150,9 @@ public class StandingOrdersPanel extends JPanel {
         dialog.add(goBackButton);
 //
 //        // Display the dialog
+
+        // Display the dialog
+        dialog.setLocationRelativeTo(SwingUtilities.findPanelByName(cardPanel, "StangingOrders"));
         dialog.setVisible(true);
 //    }
     }
