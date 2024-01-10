@@ -28,6 +28,7 @@ public class LoanCalculatorPanel extends JPanel {
         gbc.insets = new Insets(10, 10, 10, 10);
 
         welcomeLabel = new JLabel("Loan calculator");
+        welcomeLabel.setFont(welcomeLabel.getFont().deriveFont(20f));
         add(welcomeLabel, gbc);
 
         gbc.gridwidth = 1;
