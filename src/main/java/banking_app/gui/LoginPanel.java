@@ -90,6 +90,7 @@ public class LoginPanel extends JPanel {
                     JOptionPane.showMessageDialog(this, "Logged in!");
                     UserProfilePanel userPanel = (UserProfilePanel) SwingUtilities.findPanelByName(cardPanel, "User");
                     if (userPanel != null) {
+                        new EmailSender(manager).sendLoginInfo(user);
                         userPanel.setUser(user);
                         cardLayout.show(cardPanel, "User");
                     }

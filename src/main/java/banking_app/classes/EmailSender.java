@@ -55,6 +55,21 @@ public class EmailSender {
         }
     }
 
+    public void sendLoginInfo(User user) {
+        try {
+            MimeMessage message = getMimeMessage(user.getEmail(), getSession());
+            message.setSubject("New logging operation at your account!");
+            String text = String.format("Hi: %s\n", user.getName()) +
+                    String.format("There was new logging at your DruzynaBank account registered on email: %s\n", user.getEmail()) +
+                    "If that's you, don't respond to this message\n" +
+                    "Otherwise, contact our Support, someone probably broke onto your account!";
+            message.setText(text);
+            Transport.send(message);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private MimeMessage getMimeMessage(String target, Session session) throws MessagingException {
         MimeMessage message = new MimeMessage(session);
         message.setFrom(new InternetAddress(FROM));
