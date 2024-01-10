@@ -30,7 +30,6 @@ public class Loan {
     }
 
     public Loan(ResultSet resultSet) throws SQLException {
-
         this(resultSet.getInt("loan_id"),
                 resultSet.getBigDecimal("amount"),
                 resultSet.getDate("start_date"),
@@ -95,10 +94,9 @@ public class Loan {
     }
 
     public static void createLoan(ConnectionManager manager, String amount, String rate,
-                                  String end, String ownerAccId, User user) throws SQLException, NumberFormatException, IllegalArgumentException {
+                                  String end, String ownerAccId, User user) throws SQLException, IllegalArgumentException {
         if (ownerAccId.length() != 16)
             throw new NumberFormatException("Short id");
-
         double a = Double.parseDouble(amount), r = Double.parseDouble(rate);
         BigDecimal amountBig = BigDecimal.valueOf(a), rateBig = BigDecimal.valueOf(r);
         long owner = Long.parseLong(ownerAccId);
@@ -106,7 +104,6 @@ public class Loan {
             throw new NumberFormatException("Amount less then 0");
         if (r <= 0)
             throw new NumberFormatException("Rate less then 0");
-
         Date e = Date.valueOf(end);
         List<Account> accounts = manager.findUsersAccounts(user.getId());
 

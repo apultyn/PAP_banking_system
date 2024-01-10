@@ -25,6 +25,7 @@ public class EmailSender {
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.starttls.enable", "true");
     }
+
     public void sendResetCode(String target, String code) throws MessagingException {
         try {
             MimeMessage message = getMimeMessage(target, getSession());
@@ -81,7 +82,6 @@ public class EmailSender {
             throw new RuntimeException(e);
         }
     }
-
 
     private MimeMessage getMimeMessage(String target, Session session) throws MessagingException {
         MimeMessage message = new MimeMessage(session);

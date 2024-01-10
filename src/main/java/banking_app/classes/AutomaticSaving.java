@@ -18,7 +18,6 @@ public class AutomaticSaving {
     private final Date dateStarted;
     private final long sourceAccountId;
     private final long targetAccountId;
-
     private final BigDecimal amount;
 
     public AutomaticSaving(int savingID, String name, Date started, long sender_id, long receiver_id, BigDecimal am) {
@@ -41,7 +40,6 @@ public class AutomaticSaving {
 
     public AutomaticSaving(String name, String amount, String senderAccountNumber, String recipientAccountNumber)
             throws InvalidNameException, InvalidAmountException, InvalidAccountNumberException {
-
         if (name.isEmpty())
             throw new InvalidNameException("Name cannot be empty!");
         if (amount.isEmpty())
@@ -62,7 +60,6 @@ public class AutomaticSaving {
         this.amount = new BigDecimal(amount);
 
     }
-
     public Integer getSavingID() {
         return savingID;
     }
@@ -85,34 +82,8 @@ public class AutomaticSaving {
 
     public BigDecimal getAmount() { return amount; }
 
-
-/*    public static void registerAutomaticSaving(ConnectionManager connection, User user, String name, String senderId, String receiverId, String howMuch)
-            throws NumberFormatException, SQLException {
-        List<Account> accounts = connection.findUsersAccounts(user.getId());
-        if (senderId.equals(receiverId))
-            throw new NumberFormatException("The same accounts");
-        long sender, receiver;
-        BigDecimal amount;
-        if (senderId.length() != 16 || receiverId.length() != 16)
-            throw new NumberFormatException("Short id");
-        sender = Long.parseLong(senderId);
-        receiver = Long.parseLong(receiverId);
-
-        boolean receiverIsMy = false, senderIsMy= false;
-        for (Account a:accounts) {
-            if (a.getAccountId() == sender)
-                senderIsMy = true;
-            if (a.getAccountId() == receiver)
-                receiverIsMy = true;
-        }
-
-        if (!senderIsMy || !receiverIsMy)
-            throw new NumberFormatException("Not my accounts");
-        amount = new BigDecimal(howMuch);
-        connection.createAutomaticSaving(name, sender, receiver, amount);
-    }
-*/
-    public static void registerAutomaticSaving(ConnectionManager manager, AutomaticSaving automaticSaving) throws InvalidNameException, InvalidAmountException, InvalidAccountNumberException, SQLException {
+    public static void registerAutomaticSaving(ConnectionManager manager, AutomaticSaving automaticSaving) throws
+            InvalidNameException, InvalidAmountException, InvalidAccountNumberException, SQLException {
         if (manager.findAccount(automaticSaving.getSourceAccountId()) == null)
             throw new InvalidAccountNumberException("Account not existing!");
         manager.createAutomaticSaving(automaticSaving);

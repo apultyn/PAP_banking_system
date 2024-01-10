@@ -17,7 +17,6 @@ public class Account {
     private BigDecimal transferLimit;
     private final Date dateCreated;
     private Integer userId;
-
     private final BigDecimal balance;
 
     public Account(long accountId, String name, BigDecimal transferLimit,
@@ -40,7 +39,6 @@ public class Account {
     }
 
     public Account(ResultSet resultSet) throws SQLException {
-
         this(resultSet.getLong("account_id"),
                 resultSet.getString("name"),
                 resultSet.getBigDecimal("transfer_limit"),
@@ -92,7 +90,6 @@ public class Account {
         return dateCreated;
     }
 
-
     public int getUserId() {
         return userId;
     }
@@ -107,12 +104,6 @@ public class Account {
 
     public void setTransferLimit(BigDecimal newLimit) {
         this.transferLimit = newLimit;
-    }
-
-    public void showBalance() {
-        System.out.println("==============================");
-        System.out.println("Stan konta: " + String.format("%.2f", this.getBalance()) + " pln");
-        System.out.println("==============================");
     }
 
     @Override

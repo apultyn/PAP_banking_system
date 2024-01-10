@@ -8,7 +8,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
 
 public class User {
     private final Integer id;
@@ -19,7 +18,6 @@ public class User {
     private final String reset_code;
     private String pin;
     private List<Account> accounts;
-    private static final Scanner scanner = new Scanner(System.in);
 
     public User(Integer id, String name, String surname, String email, String password, String reset_code, String pin) {
         this.id = id;
@@ -31,7 +29,6 @@ public class User {
         this.pin = pin;
     }
 
-
     public User(ResultSet resultSet) throws SQLException {
         this(resultSet.getInt("user_id"),
                 resultSet.getString("name"),
@@ -42,7 +39,8 @@ public class User {
                 resultSet.getString("pin"));
     }
 
-    public User(String email, String name, String surname, char[] password, String pin) throws InvalidNameException, InvalidEmailException, InvalidPasswordException, InvalidPinException {
+    public User(String email, String name, String surname, char[] password, String pin) throws
+            InvalidNameException, InvalidEmailException, InvalidPasswordException, InvalidPinException {
         EmailValidator emailValidator = new EmailValidator();
         PasswordValidator passwordValidator = new PasswordValidator();
         if (name.isEmpty())
@@ -105,17 +103,16 @@ public class User {
         return accounts;
     }
 
-    public void loadAccounts(ConnectionManager manager) throws SQLException {
-        this.accounts = manager.findUsersAccounts(this.id);
-    }
-
     public static void register(ConnectionManager manager, User user, Account account) throws SQLException {
         manager.registerUser(user);
         account.setUserId(manager.findUser(user.getEmail()).getId());
         manager.createAccount(account);
     }
 
-    public static User createNewUser(ConnectionManager manager, String email, String name, String surname, char[] password, char[] repPassword, String pin, String repPin) throws SQLException, OccupiedEmailException, PasswordMissmatchException, DataMissmatchException, InvalidNameException, InvalidPasswordException, InvalidEmailException, InvalidPinException {
+    public static User createNewUser(ConnectionManager manager, String email, String name, String surname,
+                                     char[] password, char[] repPassword, String pin, String repPin) throws
+            SQLException, OccupiedEmailException, PasswordMissmatchException, DataMissmatchException, InvalidNameException,
+            InvalidPasswordException, InvalidEmailException, InvalidPinException {
         User user = new User(email, name, surname, password, pin);
         if (manager.findUser(user.getEmail()) != null)
             throw new OccupiedEmailException("Email already in use!");
@@ -138,6 +135,7 @@ public class User {
     public static boolean amountIsInRange(BigDecimal a, BigDecimal b, BigDecimal x) {
         return (x.compareTo(a) > 0 && x.compareTo(b) <= 0);
     }
+
     public static boolean isBigDecimal(String num)
     {
         try {
@@ -148,7 +146,8 @@ public class User {
         }
     }
 
-    public void makeTransfer(ConnectionManager manager, Transfer transfer) throws SQLException, InvalidAccountNumberException, InvalidAmountException {
+    public void makeTransfer(ConnectionManager manager, Transfer transfer) throws
+            SQLException, InvalidAccountNumberException, InvalidAmountException {
         if (manager.findAccount(transfer.getTargetId()) == null)
             throw new InvalidAccountNumberException("Account not existing!");
         Account senderAccount =  manager.findAccount(transfer.getSourceId());
@@ -161,8 +160,6 @@ public class User {
         manager.addBalance(transfer.getSourceId(), transfer.getAmount().negate());
         manager.addBalance(transfer.getTargetId(), transfer.getAmount());
     }
-
-
 
     public static Account createAccount(ConnectionManager manager, User user, String accountName, String transferLimit) throws SQLException, InvalidNameException, InvalidAmountException {
         if (user.id != null) {
@@ -185,20 +182,6 @@ public class User {
             throw new InvalidAmountException("Transfer limit must be positive!");
     }
 
-    public static void createAccountGivenId(ConnectionManager manager, int userId, String accountName, String transferLimit) throws SQLException, InvalidNameException, InvalidAmountException {
-        if (accountName.isEmpty())
-            throw new InvalidNameException("Name cannot be empty!");
-        if (manager.findAccount(userId, accountName) != null)
-            throw new InvalidNameException("Name is occupied!");
-        if (transferLimit.isEmpty())
-            throw new InvalidAmountException("Transfer limit cannot be empty!");
-        if (!isBigDecimal(transferLimit))
-            throw new InvalidAmountException("Transfer limit must be a number!");
-        if (new BigDecimal(transferLimit).compareTo(BigDecimal.ZERO) <= 0)
-            throw new InvalidAmountException("Transfer limit must be positive!");
-        Account account = new Account(userId, accountName, new BigDecimal(transferLimit));
-        manager.createAccount(account);
-    }
     public void updateFirstName(ConnectionManager manager, String oldName, String newName) throws
             InvalidNameException, SQLException, MissingInformationException, RepeatedDataException, DataMissmatchException {
         if (oldName.isEmpty() || newName.isEmpty())
@@ -242,7 +225,8 @@ public class User {
     }
 
     public void updatePassword(ConnectionManager manager, String oldPassword, String newPassword, String repNewPassword) throws
-            MissingInformationException, InvalidPasswordException, PasswordMissmatchException, SQLException, DataMissmatchException, RepeatedDataException {
+            MissingInformationException, InvalidPasswordException, PasswordMissmatchException, SQLException, DataMissmatchException,
+            RepeatedDataException {
         if (oldPassword.isEmpty() || newPassword.isEmpty() || repNewPassword.isEmpty())
             throw new MissingInformationException("Missing some passwords!");
         if (!oldPassword.equals(password))
@@ -256,10 +240,10 @@ public class User {
         manager.updateUserPassword(id, newPassword);
         password = newPassword;
     }
+
     public void updatePin(ConnectionManager manager, String oldPin, String newPin, String repPin) throws
             MissingInformationException, InvalidPinException, RepeatedDataException, DataMissmatchException,
             SQLException, PinMissmatchException {
-        //System.out.println("Entered user function!");
         if (oldPin.isEmpty() || newPin.isEmpty() || repPin.isEmpty())
             throw new MissingInformationException("Fields can't be empty");
         if (!oldPin.equals(pin))
@@ -292,7 +276,6 @@ public class User {
         }
         manager.createContact(name, Long.parseLong(accountId), this.id);
     }
-
 
     @Override
     public String toString() {

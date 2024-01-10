@@ -3,7 +3,6 @@ package banking_app.classes;
 import banking_exceptions.InvalidAccountNumberException;
 import banking_exceptions.InvalidAmountException;
 import banking_exceptions.InvalidNameException;
-import connections.ConnectionManager;
 
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -20,7 +19,6 @@ public class Transfer
     private final BigDecimal amount;
     private final int type;
     private final String title;
-
     private final Date date;
 
     public Transfer(int transferId, long sourceId, long targetId,
@@ -34,7 +32,8 @@ public class Transfer
         this.title = title;
     }
     public Transfer(String recipientName, String recipientAccountNumber,
-                       String senderAccountNumber, String title, String amount) throws InvalidNameException, InvalidAccountNumberException, InvalidAmountException {
+                       String senderAccountNumber, String title, String amount) throws
+            InvalidNameException, InvalidAccountNumberException, InvalidAmountException {
         if (recipientName.isEmpty())
             throw new InvalidNameException("Recipient name cannot be empty!");
         if (!recipientAccountNumber.matches("\\d{16}"))
@@ -57,7 +56,6 @@ public class Transfer
         this.date =  new Date(new java.util.Date().getTime());
     }
 
-
     public Transfer(ResultSet resultSet) throws SQLException {
         this(resultSet.getInt("transfer_id"),
                 resultSet.getLong("sender_id"),
@@ -71,29 +69,28 @@ public class Transfer
     public int getTransferId(){
         return transferId;
     }
+
     public long getSourceId() {
         return sourceId;
     }
+
     public long getTargetId() {
         return targetId;
     }
+
     public Date getDate() {
         return date;
     }
+
     public BigDecimal getAmount() {
         return amount;
     }
+
     public String getTitle() {
         return title;
-        //abc
     }
+
     public int getType() {
         return type;
     }
-
-
-    public static boolean isValidAccountId(ConnectionManager connectionManager, long accountId) throws SQLException {
-        return connectionManager.findAccount(accountId) != null;
-    }
-
 }

@@ -40,6 +40,7 @@ public class Deposit {
                 resultSet.getDate("start_date"),
                 resultSet.getDate("end_date"));
     }
+
     public int getDepositId() {
         return depositId;
     }
@@ -67,7 +68,9 @@ public class Deposit {
     public Date getEnd() {
         return end;
     }
-    public void createDeposit(ConnectionManager manager) throws DepositNameExistingException, SQLException, NotEnoughFundsException, AccountNotFoundException {
+
+    public void createDeposit(ConnectionManager manager) throws
+            DepositNameExistingException, SQLException, NotEnoughFundsException, AccountNotFoundException {
         if (start.after(end))
             throw new DateTimeException("End date can't be earlier than today!");
         if (manager.findAccount(ownerAccId) == null)
