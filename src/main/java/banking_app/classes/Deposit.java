@@ -68,10 +68,10 @@ public class Deposit {
         return end;
     }
     public void createDeposit(ConnectionManager manager) throws DepositNameExistingException, SQLException, NotEnoughFundsException, AccountNotFoundException {
-        if (manager.findAccount(ownerAccId) == null)
-            throw new AccountNotFoundException("No such account found");
         if (start.after(end))
             throw new DateTimeException("End date can't be earlier than today!");
+        if (manager.findAccount(ownerAccId) == null)
+            throw new AccountNotFoundException("No such account found");
         if (!manager.checkDepositName(name, ownerAccId))
             throw new DepositNameExistingException("Deposit with this name already existing!");
         if (!manager.checkAmountAtAccount(amount, ownerAccId))
