@@ -59,6 +59,10 @@ public class ContactsPanel extends JPanel {
         add(bottomPanel, BorderLayout.SOUTH);
 
         backButton.addActionListener(e-> {
+            UserProfilePanel userPanel = (UserProfilePanel) SwingUtilities.findPanelByName(cardPanel,"User");
+            if (userPanel != null && user != null){
+                userPanel.setUser(user);
+            }
             cardLayout.show(cardPanel, "User");
         });
         createNewContactButton.addActionListener(e -> handleCreateContact());

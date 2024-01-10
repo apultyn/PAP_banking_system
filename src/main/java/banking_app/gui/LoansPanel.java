@@ -83,7 +83,13 @@ public class LoansPanel extends JPanel {
         buttonPanel.add(registerLoan);
         add(buttonPanel, BorderLayout.SOUTH);
 
-        backButton.addActionListener(e-> cardLayout.show(cardPanel, "User"));
+        backButton.addActionListener(e-> {
+            UserProfilePanel userPanel = (UserProfilePanel) SwingUtilities.findPanelByName(cardPanel,"User");
+            if (userPanel != null && user != null){
+                userPanel.setUser(user);
+            }
+            cardLayout.show(cardPanel, "User");
+        });
 
         loansList.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {

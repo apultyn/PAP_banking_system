@@ -76,6 +76,10 @@ public class OwnTransfersPanel extends JPanel {
         transferButton.addActionListener(e -> handleMakeTransfer());
         backButton.addActionListener(e -> {
             resetComponents(this);
+            UserProfilePanel userPanel = (UserProfilePanel) SwingUtilities.findPanelByName(cardPanel,"User");
+            if (userPanel != null && user != null){
+                userPanel.setUser(user);
+            }
             cardLayout.show(cardPanel, "User");
         });
         add(transferButton, gbc);
@@ -90,6 +94,10 @@ public class OwnTransfersPanel extends JPanel {
                     senderComboBox.getSelectedItem().toString(), titleField.getText(), amountField.getText());
             user.makeTransfer(manager, transfer);
             JOptionPane.showMessageDialog(this, String.format("Transferred successfully!\nYour balance is now %.2f pln", manager.findAccount(Long.parseLong(senderComboBox.getSelectedItem().toString())).getBalance()) );
+            UserProfilePanel userPanel = (UserProfilePanel) SwingUtilities.findPanelByName(cardPanel,"User");
+            if (userPanel != null && user != null){
+                userPanel.setUser(user);
+            }
             cardLayout.show(cardPanel, "User");
             resetComponents(this);
         } catch (InvalidAccountNumberException | InvalidNameException | InvalidAmountException ex) {
