@@ -151,14 +151,14 @@ public class User {
     public void createAccount(ConnectionManager manager, String accountName, String transferLimit) throws SQLException, InvalidNameException, InvalidAmountException {
         if (accountName.isEmpty())
             throw new InvalidNameException("Name cannot be empty!");
-        if (manager.findAccount(id, accountName) != null)
-            throw new InvalidNameException("Name is occupied!");
         if (transferLimit.isEmpty())
             throw new InvalidAmountException("Transfer limit cannot be empty!");
         if (!isBigDecimal(transferLimit))
             throw new InvalidAmountException("Transfer limit must be a number!");
         if (new BigDecimal(transferLimit).compareTo(BigDecimal.ZERO) <= 0)
             throw new InvalidAmountException("Transfer limit must be positive!");
+        if (manager.findAccount(id, accountName) != null)
+            throw new InvalidNameException("Name is occupied!");
         Account account = new Account(id, accountName, new BigDecimal(transferLimit));
         manager.createAccount(account);
     }
@@ -208,7 +208,7 @@ public class User {
             throw new MissingInformationException("Missing data!");
         if (!oldSurname.equals(surname))
             throw new DataMissmatchException("Wrong old surname!");
-        if (newSurname.equals(name))
+        if (newSurname.equals(surname))
             throw new RepeatedDataException("New surname can't be the same as previous!");
         if (newSurname.contains(" "))
             throw new InvalidNameException("New surname contains space!");
@@ -248,7 +248,7 @@ public class User {
     public void updatePin(ConnectionManager manager, String oldPin, String newPin, String repPin) throws
             MissingInformationException, InvalidPinException, RepeatedDataException, DataMissmatchException,
             SQLException, PinMissmatchException {
-        System.out.println("Entered user function!");
+        //System.out.println("Entered user function!");
         if (oldPin.isEmpty() || newPin.isEmpty() || repPin.isEmpty())
             throw new MissingInformationException("Fields can't be empty");
         if (!oldPin.equals(pin))
