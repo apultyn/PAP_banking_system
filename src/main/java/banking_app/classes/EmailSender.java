@@ -83,7 +83,6 @@ public class EmailSender {
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(FROM, PASSWORD);
             }
-
         });
     }
 }
