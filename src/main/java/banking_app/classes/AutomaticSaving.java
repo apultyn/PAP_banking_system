@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 
 import static banking_app.classes.User.isBigDecimal;
 
@@ -86,7 +85,7 @@ public class AutomaticSaving {
 
     public  BigDecimal getAmount() { return amount; }
 
-    public static void registerAutomaticSaving(ConnectionManager connection, User user, String name, String senderId, String recieverId, String howMuch)
+/*    public static void registerAutomaticSaving(ConnectionManager connection, User user, String name, String senderId, String recieverId, String howMuch)
             throws NumberFormatException, SQLException {
         List<Account> accounts = connection.findUsersAccounts(user.getId());
         if (senderId.equals(recieverId))
@@ -111,7 +110,7 @@ public class AutomaticSaving {
         amount = new BigDecimal(howMuch);
         connection.createAutomaticSaving(name, sender, reciever, amount);
     }
-
+*/
     public static void registerAutomaticSaving(ConnectionManager manager, AutomaticSaving automaticSaving) throws InvalidNameException, InvalidAmountException, InvalidAccountNumberException, SQLException {
         if (manager.findAccount(automaticSaving.getSourceAccountId()) == null)
             throw new InvalidAccountNumberException("Account not existing!");
