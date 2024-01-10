@@ -2,7 +2,7 @@ package banking_app.gui;
 
 import banking_app.classes.Account;
 import banking_app.classes.EmailSender;
-import banking_app.classes.Transaction;
+import banking_app.classes.Transfer;
 import banking_app.classes.User;
 import banking_exceptions.InvalidAccountNumberException;
 import banking_exceptions.InvalidAmountException;
@@ -18,7 +18,7 @@ import java.util.Objects;
 import static banking_app.gui.SwingUtilities.addLabelAndComponent;
 import static banking_app.gui.SwingUtilities.resetComponents;
 
-public class TransactionsPanel extends JPanel {
+public class TransfersPanel extends JPanel {
     private User user;
     private ConnectionManager manager;
     private JLabel transferLabel;
@@ -30,7 +30,7 @@ public class TransactionsPanel extends JPanel {
     private JButton backButton;
     private CardLayout cardLayout;
     private JPanel cardPanel;
-    public TransactionsPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) throws SQLException {
+    public TransfersPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) throws SQLException {
         this.setName(panelName);
         this.manager = manager;
         this.cardLayout = cardLayout;
@@ -93,7 +93,7 @@ public class TransactionsPanel extends JPanel {
 
     private void handleMakeTransfer() {
         try {
-            Transaction transaction = new Transaction(recipientNameField.getText(), recipientNumberField.getText(), Objects.requireNonNull(accountComboBox.getSelectedItem().toString()), titleField.getText(), amountField.getText());
+            Transfer transfer = new Transfer(recipientNameField.getText(), recipientNumberField.getText(), Objects.requireNonNull(accountComboBox.getSelectedItem().toString()), titleField.getText(), amountField.getText());
 
             int attempts = 3;
             while (attempts > 0) {
@@ -104,13 +104,13 @@ public class TransactionsPanel extends JPanel {
                     attempts--;
                     JOptionPane.showMessageDialog(this, "Incorrect PIN!", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    user.makeTransaction(manager, transaction);
+                    user.makeTransfer(manager, transfer);
                     JOptionPane.showMessageDialog(this, String.format("Transferred successfully!\nYour balance is now %.2f pln", manager.findAccount(Long.parseLong(accountComboBox.getSelectedItem().toString())).getBalance()) );
-                    new EmailSender(manager).sendTransactionInfo(transaction);
+                    new EmailSender(manager).sendTransferInfo(transfer);
                     break;
                 }
             }
-            ((UserProfilePanel) Objects.requireNonNull(SwingUtilities.findPanelByName(cardPanel, "User"))).createTranscationsHistory();
+            ((UserProfilePanel) Objects.requireNonNull(SwingUtilities.findPanelByName(cardPanel, "User"))).createTransfersHistory();
             cardLayout.show(cardPanel, "User");
             balanceLabel.setText("");
             resetComponents(this);

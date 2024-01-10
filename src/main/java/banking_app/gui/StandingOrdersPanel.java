@@ -224,7 +224,7 @@ public class StandingOrdersPanel extends JPanel {
         try {
             updateSOList();
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "BD fault");
+            JOptionPane.showMessageDialog(this, "BD fault", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }

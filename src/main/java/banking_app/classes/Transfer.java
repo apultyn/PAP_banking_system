@@ -12,9 +12,9 @@ import java.sql.SQLException;
 
 import static banking_app.classes.User.isBigDecimal;
 
-public class Transaction
+public class Transfer
 {
-    private int transactionId;
+    private int transferId;
     private long sourceId, targetId;
     private BigDecimal amount;
     private int type;
@@ -22,9 +22,9 @@ public class Transaction
 
     private Date date;
 
-    public Transaction(int transactionId, long sourceId, long targetId,
+    public Transfer(int transferId, long sourceId, long targetId,
                        Date date, BigDecimal amount, int type, String title){
-        this.transactionId = transactionId;
+        this.transferId = transferId;
         this.date = date;
         this.sourceId = sourceId;
         this.targetId = targetId;
@@ -32,7 +32,7 @@ public class Transaction
         this.type = type;
         this.title = title;
     }
-    public Transaction(String recipientName, String recipientAccountNumber,
+    public Transfer(String recipientName, String recipientAccountNumber,
                        String senderAccountNumber, String title, String amount) throws InvalidNameException, InvalidAccountNumberException, InvalidAmountException {
         if (recipientName.isEmpty())
             throw new InvalidNameException("Recipient name cannot be empty!");
@@ -57,8 +57,8 @@ public class Transaction
     }
 
 
-    public Transaction(ResultSet resultSet) throws SQLException {
-        this(resultSet.getInt("transaction_id"),
+    public Transfer(ResultSet resultSet) throws SQLException {
+        this(resultSet.getInt("transfer_id"),
                 resultSet.getLong("sender_id"),
                 resultSet.getLong("reciver_id"),
                 resultSet.getDate("date_made"),
@@ -67,8 +67,8 @@ public class Transaction
                 resultSet.getString("title"));
     }
 
-    public int getTransactionId(){
-        return transactionId;
+    public int getTransferId(){
+        return transferId;
     }
     public long getSourceId() {
         return sourceId;

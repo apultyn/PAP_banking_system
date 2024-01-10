@@ -152,15 +152,15 @@ public class DepositPanel extends JPanel {
                     dialog.dispose(); // Close the creating deposit window
                     updateDepositList(); // Update deposit list in main panel
                 } catch (NotEnoughFundsException ex) {
-                    JOptionPane.showMessageDialog(dialog, "Not enough funds on account!");
+                    JOptionPane.showMessageDialog(dialog, "Not enough funds on account!", "Error", JOptionPane.ERROR_MESSAGE);
                 } catch (DepositNameExistingException ex) {
-                    JOptionPane.showMessageDialog(dialog, "You already have deposit with this name on this account!");
+                    JOptionPane.showMessageDialog(dialog, "You already have deposit with this name on this account!", "Error", JOptionPane.ERROR_MESSAGE);
                 } catch (AccountNotFoundException ex) {
-                    JOptionPane.showMessageDialog(dialog, "No such account in your user!");
+                    JOptionPane.showMessageDialog(dialog, "No such account in your user!", "Error", JOptionPane.ERROR_MESSAGE);
                 } catch (MissingInformationException ex) {
-                    JOptionPane.showMessageDialog(dialog, "Missing information!");
+                    JOptionPane.showMessageDialog(dialog, "Missing information!", "Error", JOptionPane.ERROR_MESSAGE);
                 } catch (DateTimeException ex) {
-                    JOptionPane.showMessageDialog(dialog, "End date can't be before today!");
+                    JOptionPane.showMessageDialog(dialog, "End date can't be before today!", "Error", JOptionPane.ERROR_MESSAGE);
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }

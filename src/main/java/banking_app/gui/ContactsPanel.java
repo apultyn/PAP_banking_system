@@ -88,16 +88,16 @@ public class ContactsPanel extends JPanel {
             public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
                     Contact selectedContact = contactsListDisplay.getSelectedValue();
-                    TransactionsPanel transactionsPanel = (TransactionsPanel) SwingUtilities.findPanelByName(cardPanel, "Transactions");
-                    if (transactionsPanel != null) {
-                        transactionsPanel.setRecipientName(selectedContact.getName());
+                    TransfersPanel transfersPanel = (TransfersPanel) SwingUtilities.findPanelByName(cardPanel, "Transfers");
+                    if (transfersPanel != null) {
+                        transfersPanel.setRecipientName(selectedContact.getName());
                         try {
-                            transactionsPanel.setUser(user);
+                            transfersPanel.setUser(user);
                         } catch (SQLException ex) {
                             throw new RuntimeException(ex);
                         }
-                        transactionsPanel.setRecipientNumber(selectedContact.getAccountId());
-                        cardLayout.show(cardPanel, "Transactions");
+                        transfersPanel.setRecipientNumber(selectedContact.getAccountId());
+                        cardLayout.show(cardPanel, "Transfers");
                     }
                 }
             }

@@ -69,7 +69,7 @@ public class LoanCalculatorPanel extends JPanel {
             outcomeLabelT.setText(String.format("Total payment: %.2f pln",
                     LoanCalc.calculateLoanTotal(amount, loanTerm, rate)));
         } catch (NumberFormatException a) {
-            JOptionPane.showMessageDialog(this, "Wrong input data");
+            JOptionPane.showMessageDialog(this, "Wrong input data", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 

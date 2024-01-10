@@ -1,7 +1,7 @@
 package banking_app.gui;
 
 import banking_app.classes.Account;
-import banking_app.classes.Transaction;
+import banking_app.classes.Transfer;
 import banking_app.classes.User;
 import banking_exceptions.InvalidAccountNumberException;
 import banking_exceptions.InvalidAmountException;
@@ -17,7 +17,7 @@ import java.util.Objects;
 import static banking_app.gui.SwingUtilities.addLabelAndComponent;
 import static banking_app.gui.SwingUtilities.resetComponents;
 
-public class OwnTransfer extends JPanel {
+public class OwnTransfersPanel extends JPanel {
     private User user;
     private ConnectionManager manager;
     private CardLayout cardLayout;
@@ -29,7 +29,7 @@ public class OwnTransfer extends JPanel {
     private JComboBox<Long> recipientComboBox;
     private JButton transferButton, backButton;
 
-    public OwnTransfer(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) {
+    public OwnTransfersPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) {
         this.setName(panelName);
         this.cardPanel = cardPanel;
         this.cardLayout = cardLayout;
@@ -84,9 +84,9 @@ public class OwnTransfer extends JPanel {
 
     private void handleMakeTransfer() {
         try {
-            Transaction transaction = new Transaction(user.getName() + user.getSurname(), recipientComboBox.getSelectedItem().toString(),
+            Transfer transfer = new Transfer(user.getName() + user.getSurname(), recipientComboBox.getSelectedItem().toString(),
                     senderComboBox.getSelectedItem().toString(), titleField.getText(), amountField.getText());
-            user.makeTransaction(manager, transaction);
+            user.makeTransfer(manager, transfer);
             JOptionPane.showMessageDialog(this, String.format("Transferred successfully!\nYour balance is now %.2f pln", manager.findAccount(Long.parseLong(senderComboBox.getSelectedItem().toString())).getBalance()) );
             cardLayout.show(cardPanel, "User");
             resetComponents(this);

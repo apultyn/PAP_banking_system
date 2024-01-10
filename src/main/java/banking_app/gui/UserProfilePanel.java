@@ -1,7 +1,7 @@
 package banking_app.gui;
 
 import banking_app.classes.Account;
-import banking_app.classes.Transaction;
+import banking_app.classes.Transfer;
 import banking_app.classes.User;
 import banking_exceptions.*;
 import connections.ConnectionManager;
@@ -23,13 +23,13 @@ public class UserProfilePanel extends JPanel {
     private Account currentAccount;
     private JLabel accountDetailsLabel;
     private JLabel balanceLabel;
-    private JLabel transactionLimitLabel;
+    private JLabel transferLimitLabel;
     private JButton modifyLimitButton;
     private JPanel menuPanel;
     private JPanel contentPanel;
 
-    private JTable transactionHistoryTable;
-    private TransactionsHistoryModel transactionHistoryModel;
+    private JTable transferHistoryTable;
+    private TransfersHistoryModel transferHistoryModel;
 
     public UserProfilePanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) {
         this.setName(panelName);
@@ -38,16 +38,16 @@ public class UserProfilePanel extends JPanel {
         this.cardPanel = cardPanel;
         this.cardLayout = cardLayout;
 
-        transactionHistoryModel = new TransactionsHistoryModel(new ArrayList<>(), 0L);
-        transactionHistoryTable = new JTable(transactionHistoryModel);
-        JScrollPane scrollPane = new JScrollPane(transactionHistoryTable);
+        transferHistoryModel = new TransfersHistoryModel(new ArrayList<>(), 0L);
+        transferHistoryTable = new JTable(transferHistoryModel);
+        JScrollPane scrollPane = new JScrollPane(transferHistoryTable);
 
         menuPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         contentPanel = new JPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        JButton transactionsButton = new JButton("Transactions");
+        JButton transfersButton = new JButton("Transfers");
         JButton contactsButton = new JButton("Contacts");
         JButton createAccountButton = new JButton("Create Account");
         JButton modifyProfileButton = new JButton("Modify data");
@@ -59,7 +59,7 @@ public class UserProfilePanel extends JPanel {
         JButton ownTransferButton = new JButton("Own Transfer");
         JButton logOutButton = new JButton("LogOut");
 
-        menuPanel.add(transactionsButton);
+        menuPanel.add(transfersButton);
         menuPanel.add(ownTransferButton);
         menuPanel.add(depositsButton);
         menuPanel.add(contactsButton);
@@ -89,9 +89,9 @@ public class UserProfilePanel extends JPanel {
         createAccountButton.addActionListener(e->handleCreateAccountButton());
         contactsButton.addActionListener(e->handleContactsButton());
         ownTransferButton.addActionListener(e->handleOwnTransferButton());
-        transactionsButton.addActionListener(e -> {
+        transfersButton.addActionListener(e -> {
             try {
-                handleTransactionsButton();
+                handleTransfersButton();
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
@@ -109,23 +109,23 @@ public class UserProfilePanel extends JPanel {
         accountComboBox = new JComboBox<>();
         accountDetailsLabel = new JLabel();
         balanceLabel = new JLabel();
-        transactionLimitLabel = new JLabel();
+        transferLimitLabel = new JLabel();
 
-        modifyLimitButton = new JButton("Change transactions limit");
+        modifyLimitButton = new JButton("Change transfers limit");
 
         JPanel limitsPanel = new JPanel();
         limitsPanel.setLayout(new BoxLayout(limitsPanel, BoxLayout.X_AXIS));
         limitsPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10)); // Dodanie marginesów
 
         Dimension labelMaxSize = new Dimension(350, 50);
-        transactionLimitLabel.setMaximumSize(labelMaxSize);
-        transactionLimitLabel.setPreferredSize(labelMaxSize);
+        transferLimitLabel.setMaximumSize(labelMaxSize);
+        transferLimitLabel.setPreferredSize(labelMaxSize);
 
         Dimension buttonMaxSize = new Dimension(250, 50);
         modifyLimitButton.setMaximumSize(buttonMaxSize);
 
         limitsPanel.add(Box.createHorizontalGlue()); // Elastyczna przestrzeń po lewej stronie
-        limitsPanel.add(transactionLimitLabel);
+        limitsPanel.add(transferLimitLabel);
         limitsPanel.add(modifyLimitButton);
         limitsPanel.add(Box.createHorizontalGlue()); // Elastyczna przestrzeń po lewej stronie
 
@@ -164,7 +164,7 @@ public class UserProfilePanel extends JPanel {
         try {
             List<Account> accounts = manager.findUsersAccounts(user.getId());
             setAccounts(accounts);
-            createTranscationsHistory();
+            createTransfersHistory();
         } catch (SQLException e){
             JOptionPane.showMessageDialog(this, e);
         }
@@ -178,7 +178,7 @@ public class UserProfilePanel extends JPanel {
         ((JComponent) ((JDialog) dialog).getContentPane()).setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
 
-        dialog.add(new JLabel("New transaction limit:"));
+        dialog.add(new JLabel("New transfer limit:"));
         JTextField newLimitField = new JTextField();
         dialog.add(newLimitField);
 
@@ -189,14 +189,14 @@ public class UserProfilePanel extends JPanel {
 
         confirmButton.addActionListener(e -> {
             try {
-                currentAccount.updateTransactionLimit(manager, newLimitField.getText());
-                JOptionPane.showMessageDialog(dialog, "Modification of transaction limit successful.");
+                currentAccount.updateTransferLimit(manager, newLimitField.getText());
+                JOptionPane.showMessageDialog(dialog, "Modification of transfer limit successful.");
                 setUser(manager.findUser(user.getEmail()));
                 dialog.dispose();
             } catch (InvalidAmountException exception) {
                 JOptionPane.showMessageDialog(dialog, exception.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(dialog, "Database error!");
+                JOptionPane.showMessageDialog(dialog, "Database error!", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -222,20 +222,20 @@ public class UserProfilePanel extends JPanel {
         String balance_info = String.format("Balance: %.2f pln", currentAccount.getBalance());
         balanceLabel.setText(balance_info);
 
-        String limit_info = String.format("Your limit: %.2f pln", currentAccount.getTransactionLimit());
-        transactionLimitLabel.setText(limit_info);
+        String limit_info = String.format("Your limit: %.2f pln", currentAccount.getTransferLimit());
+        transferLimitLabel.setText(limit_info);
     }
 
-    public void createTranscationsHistory() throws SQLException {
-        List<Transaction> incomingTransactions = manager.findTransactionsByReceiver(currentAccount.getAccountId());
-        List<Transaction> outgoingTransactions = manager.findTransactionsBySender(currentAccount.getAccountId());
-        List<Transaction> allTransactions = new ArrayList<>(incomingTransactions);
-        allTransactions.addAll(outgoingTransactions);
+    public void createTransfersHistory() throws SQLException {
+        List<Transfer> incomingTransfers = manager.findTransfersByReceiver(currentAccount.getAccountId());
+        List<Transfer> outgoingTransfers = manager.findTransfersBySender(currentAccount.getAccountId());
+        List<Transfer> allTransfers = new ArrayList<>(incomingTransfers);
+        allTransfers.addAll(outgoingTransfers);
 
-        allTransactions.sort(Comparator.comparing(Transaction::getDate).reversed());
+        allTransfers.sort(Comparator.comparing(Transfer::getDate).reversed());
 
-        transactionHistoryModel = new TransactionsHistoryModel(allTransactions, currentAccount.getAccountId());
-        transactionHistoryTable.setModel(transactionHistoryModel);
+        transferHistoryModel = new TransfersHistoryModel(allTransfers, currentAccount.getAccountId());
+        transferHistoryTable.setModel(transferHistoryModel);
 
     }
 
@@ -248,7 +248,7 @@ public class UserProfilePanel extends JPanel {
 
             try {
                 updateAccountInfo(Long.parseLong(accountId));
-                createTranscationsHistory();
+                createTransfersHistory();
             } catch (SQLException e){
                 JOptionPane.showMessageDialog(this, e);
             }
@@ -280,18 +280,18 @@ public class UserProfilePanel extends JPanel {
     }
 
     private void handleOwnTransferButton() {
-        OwnTransfer ownTransfer = (OwnTransfer) SwingUtilities.findPanelByName(cardPanel, "OwnTransfer");
-        if (ownTransfer != null) {
-            ownTransfer.setUser(user);
+        OwnTransfersPanel ownTransfersPanel = (OwnTransfersPanel) SwingUtilities.findPanelByName(cardPanel, "OwnTransfer");
+        if (ownTransfersPanel != null) {
+            ownTransfersPanel.setUser(user);
             cardLayout.show(cardPanel, "OwnTransfer");
         }
     }
 
-    public void handleTransactionsButton() throws SQLException {
-        TransactionsPanel transactionsPanel = (TransactionsPanel) SwingUtilities.findPanelByName(cardPanel, "Transactions");
-        if (transactionsPanel != null) {
-            transactionsPanel.setUser(user);
-            cardLayout.show(cardPanel, "Transactions");
+    public void handleTransfersButton() throws SQLException {
+        TransfersPanel transfersPanel = (TransfersPanel) SwingUtilities.findPanelByName(cardPanel, "Transfers");
+        if (transfersPanel != null) {
+            transfersPanel.setUser(user);
+            cardLayout.show(cardPanel, "Transfers");
         }
     }
 

@@ -146,11 +146,11 @@ public class LoansPanel extends JPanel {
                     dialog.dispose(); // Close the creating deposit window
                     updateLoanList(); // Update deposit list in main panel
                 } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(dialog, "Wrong input!");
+                    JOptionPane.showMessageDialog(dialog, "Wrong input!", "Error", JOptionPane.ERROR_MESSAGE);
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 } catch (IllegalArgumentException ex) {
-                    JOptionPane.showMessageDialog(dialog, "Wrong Date!");
+                    JOptionPane.showMessageDialog(dialog, "Wrong Date!", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -204,7 +204,7 @@ public class LoansPanel extends JPanel {
         try {
             updateLoanList();
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "BD fault");
+            JOptionPane.showMessageDialog(this, "BD fault", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }

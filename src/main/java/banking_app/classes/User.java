@@ -134,18 +134,18 @@ public class User {
         }
     }
 
-    public void makeTransaction(ConnectionManager manager, Transaction transaction) throws SQLException, InvalidAccountNumberException, InvalidAmountException {
-        if (manager.findAccount(transaction.getTargetId()) == null)
+    public void makeTransfer(ConnectionManager manager, Transfer transfer) throws SQLException, InvalidAccountNumberException, InvalidAmountException {
+        if (manager.findAccount(transfer.getTargetId()) == null)
             throw new InvalidAccountNumberException("Account not existing!");
-        Account senderAccount =  manager.findAccount(transaction.getSourceId());
-        if (!amountIsInRange(BigDecimal.ZERO, senderAccount.getTransactionLimit(), transaction.getAmount()))
-            throw new InvalidAmountException("Transaction exceeds the limit!");
-        if (!amountIsInRange(BigDecimal.ZERO, senderAccount.getBalance(), transaction.getAmount()))
+        Account senderAccount =  manager.findAccount(transfer.getSourceId());
+        if (!amountIsInRange(BigDecimal.ZERO, senderAccount.getTransferLimit(), transfer.getAmount()))
+            throw new InvalidAmountException("Transfer exceeds the limit!");
+        if (!amountIsInRange(BigDecimal.ZERO, senderAccount.getBalance(), transfer.getAmount()))
             throw new InvalidAmountException("Insufficient funds!");
 
-        manager.registerTransaction(transaction);
-        manager.addBalance(transaction.getSourceId(), transaction.getAmount().negate());
-        manager.addBalance(transaction.getTargetId(), transaction.getAmount());
+        manager.registerTransfer(transfer);
+        manager.addBalance(transfer.getSourceId(), transfer.getAmount().negate());
+        manager.addBalance(transfer.getTargetId(), transfer.getAmount());
     }
 
     public void createAccount(ConnectionManager manager, String accountName, String transferLimit) throws SQLException, InvalidNameException, InvalidAmountException {

@@ -123,25 +123,25 @@ public class ModifyProfilePanel extends JPanel {
                 setUser(manager.findUser(user.getEmail()));
                 dialog.dispose();
             } catch (MissingInformationException ex) {
-                JOptionPane.showMessageDialog(dialog, "Missing information!");
+                JOptionPane.showMessageDialog(dialog, "Missing information!", "Error", JOptionPane.ERROR_MESSAGE);
             } catch (DataMissmatchException ex) {
-                JOptionPane.showMessageDialog(dialog, "Wrong old value!");
+                JOptionPane.showMessageDialog(dialog, "Wrong old value!", "Error", JOptionPane.ERROR_MESSAGE);
             } catch (RepeatedDataException ex) {
-                JOptionPane.showMessageDialog(dialog, "New value can't be the same as old!");
+                JOptionPane.showMessageDialog(dialog, "New value can't be the same as old!", "Error", JOptionPane.ERROR_MESSAGE);
             } catch (InvalidNameException ex) {
-                JOptionPane.showMessageDialog(dialog, "New value can't contain spaces!");
+                JOptionPane.showMessageDialog(dialog, "New value can't contain spaces!", "Error", JOptionPane.ERROR_MESSAGE);
             } catch (InvalidEmailException ex) {
-                JOptionPane.showMessageDialog(dialog, "New email is in wrong format!");
+                JOptionPane.showMessageDialog(dialog, "New email is in wrong format!", "Error", JOptionPane.ERROR_MESSAGE);
             } catch (InvalidPasswordException ex) {
-                JOptionPane.showMessageDialog(dialog, "New password is incorrect!");
+                JOptionPane.showMessageDialog(dialog, "New password is incorrect!", "Error", JOptionPane.ERROR_MESSAGE);
             } catch (PasswordMissmatchException ex) {
-                JOptionPane.showMessageDialog(dialog, "New password not repeated correctly!");
+                JOptionPane.showMessageDialog(dialog, "New password not repeated correctly!", "Error", JOptionPane.ERROR_MESSAGE);
             } catch (InvalidPinException ex) {
-                JOptionPane.showMessageDialog(dialog, "New pin is invalid!");
+                JOptionPane.showMessageDialog(dialog, "New pin is invalid!", "Error", JOptionPane.ERROR_MESSAGE);
             } catch (PinMissmatchException ex) {
-                JOptionPane.showMessageDialog(dialog, "New pin not repeated correctly!");
+                JOptionPane.showMessageDialog(dialog, "New pin not repeated correctly!", "Error", JOptionPane.ERROR_MESSAGE);
             } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(dialog, "Database error!");
+                JOptionPane.showMessageDialog(dialog, "Database error!", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 

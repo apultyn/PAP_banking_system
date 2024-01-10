@@ -81,19 +81,19 @@ public class ConnectionManager {
     }
 
     public void createAccount(Account account) throws SQLException {
-        String sqlInsert = "INSERT INTO accounts (name, transaction_limit, owner_id) values (?, ?, ?)";
+        String sqlInsert = "INSERT INTO accounts (name, transfer_limit, owner_id) values (?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
         preparedStatement.setString(1, account.getName());
-        preparedStatement.setBigDecimal(2, account.getTransactionLimit());
+        preparedStatement.setBigDecimal(2, account.getTransferLimit());
         preparedStatement.setInt(3, account.getUserId());
         preparedStatement.executeUpdate();
     }
 
-    public void createAccount(String name, BigDecimal transactionLimit, int ownerId) throws SQLException {
-        String sqlInsert = "INSERT INTO accounts (name, transaction_limit, owner_id) values (?, ?, ?)";
+    public void createAccount(String name, BigDecimal transferLimit, int ownerId) throws SQLException {
+        String sqlInsert = "INSERT INTO accounts (name, transfer_limit, owner_id) values (?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
         preparedStatement.setString(1, name);
-        preparedStatement.setBigDecimal(2, transactionLimit);
+        preparedStatement.setBigDecimal(2, transferLimit);
         preparedStatement.setInt(3, ownerId);
         preparedStatement.executeUpdate();
     }
@@ -141,57 +141,57 @@ public class ConnectionManager {
         preparedStatement.executeUpdate();
     }
 
-    public void registerTransaction(Transaction transaction) throws SQLException {
-        String sqlInsert = "INSERT INTO transactions (title, amount, type, sender_id, reciver_id) values (?, ?, ?, ?, ?)";
+    public void registerTransfer(Transfer transfer) throws SQLException {
+        String sqlInsert = "INSERT INTO transfers (title, amount, type, sender_id, reciver_id) values (?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
-        preparedStatement.setString(1, transaction.getTitle());
-        preparedStatement.setBigDecimal(2, transaction.getAmount());
-        preparedStatement.setInt(3, transaction.getType());
-        preparedStatement.setLong(4, transaction.getSourceId());
-        preparedStatement.setLong(5, transaction.getTargetId());
+        preparedStatement.setString(1, transfer.getTitle());
+        preparedStatement.setBigDecimal(2, transfer.getAmount());
+        preparedStatement.setInt(3, transfer.getType());
+        preparedStatement.setLong(4, transfer.getSourceId());
+        preparedStatement.setLong(5, transfer.getTargetId());
         preparedStatement.executeUpdate();
     }
 
-    public List<Transaction> findTransactionsBySender(long sender_id) throws SQLException {
-        String sqlQuery = "SELECT * FROM transactions WHERE sender_id = ?";
+    public List<Transfer> findTransfersBySender(long sender_id) throws SQLException {
+        String sqlQuery = "SELECT * FROM transfers WHERE sender_id = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
             preparedStatement.setLong(1, sender_id);
-            return getTransactions(preparedStatement);
+            return getTransfers(preparedStatement);
         }
     }
 
-    public List<Transaction> findTransactionsByReceiver(long receiver_id) throws SQLException {
-        String sqlQuery = "SELECT * FROM transactions WHERE reciver_id = ?";
+    public List<Transfer> findTransfersByReceiver(long receiver_id) throws SQLException {
+        String sqlQuery = "SELECT * FROM transfers WHERE reciver_id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
             preparedStatement.setLong(1, receiver_id);
-            return getTransactions(preparedStatement);
+            return getTransfers(preparedStatement);
         }
     }
 
-    private List<Transaction> getTransactions(PreparedStatement preparedStatement) throws SQLException {
+    private List<Transfer> getTransfers(PreparedStatement preparedStatement) throws SQLException {
         try (ResultSet resultSet = preparedStatement.executeQuery()) {
-            List<Transaction> outcome = new ArrayList<>();
+            List<Transfer> outcome = new ArrayList<>();
             while (resultSet.next()) {
-                Transaction newTransaction = new Transaction(resultSet);
-                outcome.add(newTransaction);
+                Transfer newTransfer = new Transfer(resultSet);
+                outcome.add(newTransfer);
             }
             return outcome;
         }
     }
 
-    public List<Transaction> findTransactionsByAccount(long account_id) throws SQLException {
-        String sqlQuery = "SELECT * FROM transactions WHERE sender_id= ? OR reciver_id= ? ORDER BY DATE_MADE DESC";
+    public List<Transfer> findTransfersByAccount(long account_id) throws SQLException {
+        String sqlQuery = "SELECT * FROM transfers WHERE sender_id= ? OR reciver_id= ? ORDER BY DATE_MADE DESC";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
             preparedStatement.setLong(1, account_id);
             preparedStatement.setLong(2, account_id);
-            return getTransactions(preparedStatement);
+            return getTransfers(preparedStatement);
         }
     }
 
-    public void setTransactionLimit(long account_id, float newLimit) throws SQLException {
-        String sqlQuery = "UPDATE accounts SET transaction_limit= ? WHERE account_id= ?";
+    public void setTransferLimit(long account_id, float newLimit) throws SQLException {
+        String sqlQuery = "UPDATE accounts SET transfer_limit= ? WHERE account_id= ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
             preparedStatement.setFloat(1, newLimit);
             preparedStatement.setLong(2, account_id);
@@ -384,7 +384,7 @@ public class ConnectionManager {
     }
 
     public void updateAccountsLimit(long account_id, BigDecimal amount) throws SQLException {
-        String sqlUpdate = "UPDATE accounts SET transaction_limit = ? WHERE account_id = ?";
+        String sqlUpdate = "UPDATE accounts SET transfer_limit = ? WHERE account_id = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlUpdate);
         preparedStatement.setBigDecimal(1, amount);
         preparedStatement.setLong(2, account_id);

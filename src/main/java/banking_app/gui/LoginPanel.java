@@ -77,11 +77,24 @@ public class LoginPanel extends JPanel {
         User user;
         try {
             user = User.login(manager, email, password);
-            JOptionPane.showMessageDialog(this, "Logged in!");
-            UserProfilePanel userPanel = (UserProfilePanel) SwingUtilities.findPanelByName(cardPanel, "User");
-            if (userPanel != null) {
-                userPanel.setUser(user);
-                cardLayout.show(cardPanel, "User");
+
+            int attempts = 3;
+            while (attempts > 0) {
+                String PIN = JOptionPane.showInputDialog(this, "Enter your PIN: (Attempts left: " + attempts + ")");
+                if (PIN == null)
+                    break;
+                else if (!validatePIN(user, PIN)) {
+                    attempts--;
+                    JOptionPane.showMessageDialog(this, "Incorrect PIN!", "Error", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Logged in!");
+                    UserProfilePanel userPanel = (UserProfilePanel) SwingUtilities.findPanelByName(cardPanel, "User");
+                    if (userPanel != null) {
+                        userPanel.setUser(user);
+                        cardLayout.show(cardPanel, "User");
+                    }
+                    break;
+                }
             }
         } catch (LoginFailedException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -89,6 +102,11 @@ public class LoginPanel extends JPanel {
             throw new RuntimeException(e);
         }
     }
+
+    private boolean validatePIN(User user, String PIN) {
+        return PIN.equals(user.getPin());
+    }
+
     private void createEmailInputDialog() {
         JDialog emailDialog = new JDialog();
         emailDialog.setLayout(new FlowLayout());
@@ -110,7 +128,7 @@ public class LoginPanel extends JPanel {
             try {
                 User user = manager.findUser(input);
                 if (user == null)
-                    JOptionPane.showMessageDialog(emailDialog, "No account with such email!");
+                    JOptionPane.showMessageDialog(emailDialog, "No account with such email!", "Error", JOptionPane.ERROR_MESSAGE);
                 else {
                     resetPassword = createNewResetCode();
                     new EmailSender(manager).sendResetCode(input, resetPassword);
@@ -157,7 +175,7 @@ public class LoginPanel extends JPanel {
         goBackButton.addActionListener(e -> codeDialog.dispose());
         submitCodeButton.addActionListener(e -> {
             if (!codeInputField.getText().equals(resetPassword))
-                JOptionPane.showMessageDialog(codeDialog, "Wrong code");
+                JOptionPane.showMessageDialog(codeDialog, "Wrong code", "Error", JOptionPane.ERROR_MESSAGE);
             else {
                 codeDialog.dispose();
                 createNewPasswordDialog(user);

@@ -223,7 +223,7 @@ public class AutomaticSavingsGui extends JPanel {
         try {
             updateASList();
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "BD fault");
+            JOptionPane.showMessageDialog(this, "BD fault", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }

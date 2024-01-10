@@ -13,17 +13,17 @@ import static banking_app.classes.User.isBigDecimal;
 public class Account {
     private final Long accountId;
     private String name;
-    private BigDecimal transactionLimit;
+    private BigDecimal transferLimit;
     private final Date dateCreated;
     private final int userId;
 
     private final BigDecimal balance;
 
-    public Account(long accountId, String name, BigDecimal transactionLimit,
+    public Account(long accountId, String name, BigDecimal transferLimit,
                    Date dateCreated, int userId, BigDecimal balance) {
         this.accountId = accountId;
         this.name = name;
-        this.transactionLimit = transactionLimit;
+        this.transferLimit = transferLimit;
         this.dateCreated = dateCreated;
         this.userId = userId;
         this.balance = balance;
@@ -32,7 +32,7 @@ public class Account {
     public Account(int userId, String name, BigDecimal transferLimit) {
         this.userId = userId;
         this.name = name;
-        this.transactionLimit = transferLimit;
+        this.transferLimit = transferLimit;
         this.accountId = null;
         this.dateCreated = null;
         this.balance = BigDecimal.ZERO;
@@ -42,13 +42,13 @@ public class Account {
 
         this(resultSet.getLong("account_id"),
                 resultSet.getString("name"),
-                resultSet.getBigDecimal("transaction_limit"),
+                resultSet.getBigDecimal("transfer_limit"),
                 resultSet.getDate("creation_date"),
                 resultSet.getInt("owner_id"),
                 resultSet.getBigDecimal("balance"));
     }
 
-    public void updateTransactionLimit(ConnectionManager manager, String transferLimit) throws SQLException, InvalidAmountException{
+    public void updateTransferLimit(ConnectionManager manager, String transferLimit) throws SQLException, InvalidAmountException{
         if (transferLimit.isEmpty())
             throw new InvalidAmountException("Transfer limit cannot be empty!");
         if (!isBigDecimal(transferLimit))
@@ -66,8 +66,8 @@ public class Account {
         return name;
     }
 
-    public BigDecimal getTransactionLimit() {
-        return transactionLimit;
+    public BigDecimal getTransferLimit() {
+        return transferLimit;
     }
 
     public Date getDateCreated() {
@@ -83,8 +83,8 @@ public class Account {
         return balance;
     }
 
-    public void setTransactionLimit(BigDecimal newLimit) {
-        this.transactionLimit = newLimit;
+    public void setTransferLimit(BigDecimal newLimit) {
+        this.transferLimit = newLimit;
     }
 
     public void showBalance() {
@@ -98,7 +98,7 @@ public class Account {
         return "Account{" +
                 "accountId=" + accountId +
                 ", name='" + name + '\'' +
-                ", transactionLimit=" + transactionLimit +
+                ", transferLimit=" + transferLimit +
                 ", dateCreated=" + dateCreated +
                 ", userId=" + userId +
                 ", balance=" + balance +

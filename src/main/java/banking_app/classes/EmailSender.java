@@ -36,18 +36,18 @@ public class EmailSender {
         }
     }
 
-    public void sendTransactionInfo(Transaction transaction) {
+    public void sendTransferInfo(Transfer transfer) {
         try {
-            User target = manager.findUserFromAccount(transaction.getTargetId());
-            User source = manager.findUserFromAccount(transaction.getSourceId());
+            User target = manager.findUserFromAccount(transfer.getTargetId());
+            User source = manager.findUserFromAccount(transfer.getSourceId());
             MimeMessage message = getMimeMessage(target.getEmail(), getSession());
-            message.setSubject("You received new transaction!");
-            String text = String.format("Title: %s\n", transaction.getTitle()) +
+            message.setSubject("You received new transfer!");
+            String text = String.format("Title: %s\n", transfer.getTitle()) +
                     String.format("From: %s %s\n", source.getName(), source.getSurname()) +
-                    String.format("Amount: %s\n", transaction.getAmount().toString()) +
-                    String.format("Source account number: %d\n", transaction.getSourceId()) +
-                    String.format("Target account number: %d\n", transaction.getTargetId()) +
-                    String.format("Date: %s", transaction.getDate().toString());
+                    String.format("Amount: %s\n", transfer.getAmount().toString()) +
+                    String.format("Source account number: %d\n", transfer.getSourceId()) +
+                    String.format("Target account number: %d\n", transfer.getTargetId()) +
+                    String.format("Date: %s", transfer.getDate().toString());
             message.setText(text);
             Transport.send(message);
         } catch (MessagingException | SQLException e) {
