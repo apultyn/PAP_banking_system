@@ -76,7 +76,13 @@ public class AutomaticSavingsGui extends JPanel {
         buttonPanel.add(registerSavings);
         add(buttonPanel, BorderLayout.SOUTH);
 
-        backButton.addActionListener(e-> cardLayout.show(cardPanel, "User"));
+        backButton.addActionListener(e-> {
+            UserProfilePanel userPanel = (UserProfilePanel) SwingUtilities.findPanelByName(cardPanel,"User");
+            if (userPanel != null && user != null){
+                userPanel.setUser(user);
+            }
+            cardLayout.show(cardPanel, "User");
+        });
 
         asList.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {

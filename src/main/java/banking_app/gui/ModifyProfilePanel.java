@@ -66,7 +66,13 @@ public class ModifyProfilePanel extends JPanel {
         modifyPasswordButton.addActionListener(e -> openModifyDialog("Password"));
         modifyPinButton.addActionListener(e -> openModifyDialog("Pin"));
 
-        returnButton.addActionListener(e -> cardLayout.show(cardPanel, "User"));
+        returnButton.addActionListener(e -> {
+            UserProfilePanel userPanel = (UserProfilePanel) SwingUtilities.findPanelByName(cardPanel,"User");
+            if (userPanel != null && user != null){
+                userPanel.setUser(user);
+            }
+            cardLayout.show(cardPanel, "User");
+        });
 
         gbc.anchor = GridBagConstraints.CENTER;
         add(headerPanel, gbc);

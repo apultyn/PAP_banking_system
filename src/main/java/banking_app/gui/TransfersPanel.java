@@ -76,6 +76,10 @@ public class TransfersPanel extends JPanel {
         });
         transferButton.addActionListener(e -> handleMakeTransfer());
         backButton.addActionListener(e -> {
+            UserProfilePanel userPanel = (UserProfilePanel) SwingUtilities.findPanelByName(cardPanel,"User");
+            if (userPanel != null && user != null){
+                userPanel.setUser(user);
+            }
             cardLayout.show(cardPanel, "User");
             balanceLabel.setText("");
             resetComponents(this);

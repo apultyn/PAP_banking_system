@@ -69,6 +69,9 @@ public class CreateAccountPanel extends JPanel {
             UserProfilePanel userProfilePanel = (UserProfilePanel) SwingUtilities.findPanelByName(cardPanel, "User");
             if (userProfilePanel != null) {
                 userProfilePanel.setAccounts(manager.findUsersAccounts(user.getId()));
+                if (user != null){
+                    userProfilePanel.setUser(user);
+                }
                 cardLayout.show(cardPanel, "User");
                 resetComponents(this);
             }
@@ -85,6 +88,10 @@ public class CreateAccountPanel extends JPanel {
 
     public void handleBackButton () {
         resetComponents(this);
+        UserProfilePanel userPanel = (UserProfilePanel) SwingUtilities.findPanelByName(cardPanel,"User");
+        if (userPanel != null && user != null){
+            userPanel.setUser(user);
+        }
         cardLayout.show(cardPanel, "User");
     }
 }
