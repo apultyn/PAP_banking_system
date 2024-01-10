@@ -23,17 +23,23 @@ public class StandingOrdersPanel extends JPanel {
     private User user;
     private ArrayList<StandingOrder> orders;
 
-    private ConnectionManager manager;
-    private CardLayout cardLayout;
-    private JPanel cardPanel, detailsPanel;
+    private final ConnectionManager manager;
+    private final CardLayout cardLayout;
+    private final JPanel cardPanel;
+    private final JPanel detailsPanel;
     private JTextField nameField , amountField, recipientField;
     private JComboBox<String> accountComboBox;
-    private JButton backButton, registerOrder;
-    private JList<String> asList;
-    private DefaultListModel<String> listModel;
-    private JTextArea standingODetails;
+    private final JButton backButton;
+    private final JButton registerOrder;
+    private final JList<String> asList;
+    private final DefaultListModel<String> listModel;
+    private final JTextArea standingODetails;
 
-    private JLabel nameLabel, startDateLabel, senderIdLabel, recipientIdLabel, amountLabel;
+    private final JLabel nameLabel;
+    private final JLabel startDateLabel;
+    private final JLabel senderIdLabel;
+    private final JLabel recipientIdLabel;
+    private final JLabel amountLabel;
     Map<String, StandingOrder> soMap = new HashMap<>();
     public StandingOrdersPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) {
         this.manager = manager;

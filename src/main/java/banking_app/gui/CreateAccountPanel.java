@@ -14,14 +14,14 @@ import static banking_app.gui.SwingUtilities.resetComponents;
 
 public class CreateAccountPanel extends JPanel {
     private User user;
-    private ConnectionManager manager;
-    private CardLayout cardLayout;
-    private JPanel cardPanel;
-    private JLabel createAccountLabel;
-    private JTextField accountNameField;
-    private JTextField transferLimit;
-    private JButton createAccountButton;
-    private JButton backButton;
+    private final ConnectionManager manager;
+    private final CardLayout cardLayout;
+    private final JPanel cardPanel;
+    private final JLabel createAccountLabel;
+    private final JTextField accountNameField;
+    private final JTextField transferLimit;
+    private final JButton createAccountButton;
+    private final JButton backButton;
     public CreateAccountPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) throws SQLException {
         this.setName(panelName);
         this.manager = manager;

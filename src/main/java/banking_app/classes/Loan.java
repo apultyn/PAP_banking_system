@@ -11,10 +11,11 @@ import java.util.List;
 
 public class Loan {
     private final int loanId;
-    private BigDecimal amount;
-    private BigDecimal rate;
-    private long ownerAccId;
-    private Date start, end;
+    private final BigDecimal amount;
+    private final BigDecimal rate;
+    private final long ownerAccId;
+    private final Date start;
+    private final Date end;
     BigDecimal fixed;
 
     public Loan(int loanId, BigDecimal amount, Date start,

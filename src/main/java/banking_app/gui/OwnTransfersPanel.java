@@ -19,15 +19,17 @@ import static banking_app.gui.SwingUtilities.resetComponents;
 
 public class OwnTransfersPanel extends JPanel {
     private User user;
-    private ConnectionManager manager;
-    private CardLayout cardLayout;
-    private JPanel cardPanel;
-    private JLabel transferLabel;
-    private JLabel balanceLabel;
-    private JTextField titleField, amountField;
-    private JComboBox<Long> senderComboBox;
-    private JComboBox<Long> recipientComboBox;
-    private JButton transferButton, backButton;
+    private final ConnectionManager manager;
+    private final CardLayout cardLayout;
+    private final JPanel cardPanel;
+    private final JLabel transferLabel;
+    private final JLabel balanceLabel;
+    private final JTextField titleField;
+    private final JTextField amountField;
+    private final JComboBox<Long> senderComboBox;
+    private final JComboBox<Long> recipientComboBox;
+    private final JButton transferButton;
+    private final JButton backButton;
 
     public OwnTransfersPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) {
         this.setName(panelName);

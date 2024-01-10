@@ -23,16 +23,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DepositPanel extends JPanel {
-    private ConnectionManager manager;
-    private CardLayout cardLayout;
-    private JPanel cardPanel, detailsPanel;
-    private JList<String> depositList;
-    private DefaultListModel<String> listModel;
-    private JTextArea depositDetails;
-    private JButton goBackButton, createNewDepositButton;
+    private final ConnectionManager manager;
+    private final CardLayout cardLayout;
+    private final JPanel cardPanel;
+    private final JPanel detailsPanel;
+    private final JList<String> depositList;
+    private final DefaultListModel<String> listModel;
+    private final JTextArea depositDetails;
+    private final JButton goBackButton;
+    private final JButton createNewDepositButton;
     private User user;
-    private JLabel nameLabel, amountLabel, rateLabel, startDateLabel, endDateLabel, ownerAccNumLabel;
-    private Map<String, Deposit> depositMap = new HashMap<>();
+    private final JLabel nameLabel;
+    private final JLabel amountLabel;
+    private final JLabel rateLabel;
+    private final JLabel startDateLabel;
+    private final JLabel endDateLabel;
+    private final JLabel ownerAccNumLabel;
+    private final Map<String, Deposit> depositMap = new HashMap<>();
 
     public DepositPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) throws SQLException {
         this.manager = manager;

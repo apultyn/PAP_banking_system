@@ -15,14 +15,14 @@ import static banking_app.gui.SwingUtilities.addLabelAndComponent;
 import static banking_app.gui.SwingUtilities.resetComponents;
 
 public class LoginPanel extends JPanel {
-    private JLabel loginLabel;
-    private JTextField emailField;
-    private JPasswordField passwordField;
-    private JButton loginButton;
-    private JButton registerButton;
-    private ConnectionManager manager;
-    private CardLayout cardLayout;
-    private JPanel cardPanel;
+    private final JLabel loginLabel;
+    private final JTextField emailField;
+    private final JPasswordField passwordField;
+    private final JButton loginButton;
+    private final JButton registerButton;
+    private final ConnectionManager manager;
+    private final CardLayout cardLayout;
+    private final JPanel cardPanel;
     private String resetPassword;
 
     public LoginPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) {

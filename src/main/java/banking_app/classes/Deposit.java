@@ -13,12 +13,12 @@ import java.time.DateTimeException;
 
 public class Deposit {
     private final int depositId;
-    private String name;
-    private BigDecimal amount;
-    private BigDecimal rate;
-    private long ownerAccId;
-    private Date start;
-    private Date end;
+    private final String name;
+    private final BigDecimal amount;
+    private final BigDecimal rate;
+    private final long ownerAccId;
+    private final Date start;
+    private final Date end;
 
     public Deposit(int depositId, String name, BigDecimal amount,
                    BigDecimal rate, long ownerAccId, Date start, Date end) {

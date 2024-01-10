@@ -14,19 +14,19 @@ import static banking_app.classes.User.isBigDecimal;
 
 public class AutomaticSaving {
     private final Integer savingID;
-    private String name;
-    private Date dateStarted;
-    private long sourceAccountId;
-    private long targetAccountId;
+    private final String name;
+    private final Date dateStarted;
+    private final long sourceAccountId;
+    private final long targetAccountId;
 
-    private BigDecimal amount;
+    private final BigDecimal amount;
 
-    public AutomaticSaving(int savingID, String name, Date started, long sender_id, long reciever_id, BigDecimal am) {
+    public AutomaticSaving(int savingID, String name, Date started, long sender_id, long receiver_id, BigDecimal am) {
         this.savingID = savingID;
         this.name = name;
         this.dateStarted = started;
         this.sourceAccountId = sender_id;
-        this.targetAccountId = reciever_id;
+        this.targetAccountId = receiver_id;
         this.amount = am;
     }
 
@@ -35,7 +35,7 @@ public class AutomaticSaving {
                 resultSet.getString("name"),
                 resultSet.getDate("start_date"),
                 resultSet.getLong("sender_id"),
-                resultSet.getLong("reciever_id"),
+                resultSet.getLong("receiver_id"),
                 resultSet.getBigDecimal("amount"));
     }
 
@@ -85,30 +85,30 @@ public class AutomaticSaving {
 
     public  BigDecimal getAmount() { return amount; }
 
-/*    public static void registerAutomaticSaving(ConnectionManager connection, User user, String name, String senderId, String recieverId, String howMuch)
+/*    public static void registerAutomaticSaving(ConnectionManager connection, User user, String name, String senderId, String receiverId, String howMuch)
             throws NumberFormatException, SQLException {
         List<Account> accounts = connection.findUsersAccounts(user.getId());
-        if (senderId.equals(recieverId))
+        if (senderId.equals(receiverId))
             throw new NumberFormatException("The same accounts");
-        long sender, reciever;
+        long sender, receiver;
         BigDecimal amount;
-        if (senderId.length() != 16 || recieverId.length() != 16)
+        if (senderId.length() != 16 || receiverId.length() != 16)
             throw new NumberFormatException("Short id");
         sender = Long.parseLong(senderId);
-        reciever = Long.parseLong(recieverId);
+        receiver = Long.parseLong(receiverId);
 
-        boolean recieverIsMy = false, senderIsMy= false;
+        boolean receiverIsMy = false, senderIsMy= false;
         for (Account a:accounts) {
             if (a.getAccountId() == sender)
                 senderIsMy = true;
-            if (a.getAccountId() == reciever)
-                recieverIsMy = true;
+            if (a.getAccountId() == receiver)
+                receiverIsMy = true;
         }
 
-        if (!senderIsMy || !recieverIsMy)
+        if (!senderIsMy || !receiverIsMy)
             throw new NumberFormatException("Not my accounts");
         amount = new BigDecimal(howMuch);
-        connection.createAutomaticSaving(name, sender, reciever, amount);
+        connection.createAutomaticSaving(name, sender, receiver, amount);
     }
 */
     public static void registerAutomaticSaving(ConnectionManager manager, AutomaticSaving automaticSaving) throws InvalidNameException, InvalidAmountException, InvalidAccountNumberException, SQLException {

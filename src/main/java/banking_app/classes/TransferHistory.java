@@ -10,7 +10,7 @@ public class TransferHistory {
     User user;
     long accountId;
     ConnectionManager manager;
-    private  List<Transfer> transfers;
+    private final List<Transfer> transfers;
 
     public TransferHistory(User user, long accountId, ConnectionManager manager) throws SQLException {
         this.user = user;

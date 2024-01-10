@@ -22,17 +22,22 @@ public class AutomaticSavingsGui extends JPanel {
     private User user;
     private ArrayList<StandingOrder> orders;
 
-    private ConnectionManager manager;
-    private CardLayout cardLayout;
-    private JPanel cardPanel, detailsPanel;
-    private JButton backButton;
-    private JButton registerSavings;
-    private JList<String> asList;
-    private DefaultListModel<String> listModel;
-    private JTextArea AutomaticSDetails;
+    private final ConnectionManager manager;
+    private final CardLayout cardLayout;
+    private final JPanel cardPanel;
+    private final JPanel detailsPanel;
+    private final JButton backButton;
+    private final JButton registerSavings;
+    private final JList<String> asList;
+    private final DefaultListModel<String> listModel;
+    private final JTextArea AutomaticSDetails;
 
-    private JLabel nameLabel, startDateLabel, senderIdLabel, recieverIdLabel, amountLabel;
-    private JComboBox<String> accountComboBox, recieverComboBox;
+    private final JLabel nameLabel;
+    private final JLabel startDateLabel;
+    private final JLabel senderIdLabel;
+    private final JLabel receiverIdLabel;
+    private final JLabel amountLabel;
+    private JComboBox<String> accountComboBox, receiverComboBox;
     private JTextField nameField, amountField;
     Map<String, AutomaticSaving> asMap = new HashMap<>();
     public AutomaticSavingsGui(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) {
@@ -58,7 +63,7 @@ public class AutomaticSavingsGui extends JPanel {
         nameLabel = new JLabel("Name:");
         startDateLabel = new JLabel("Date started:");
         senderIdLabel = new JLabel("From which account:");
-        recieverIdLabel = new JLabel("To which account:");
+        receiverIdLabel = new JLabel("To which account:");
         amountLabel = new JLabel("How much do you want to send:");
 
         detailsPanel.add(nameLabel);
@@ -67,7 +72,7 @@ public class AutomaticSavingsGui extends JPanel {
         detailsPanel.add(new JLabel());
         detailsPanel.add(senderIdLabel);
         detailsPanel.add(new JLabel());
-        detailsPanel.add(recieverIdLabel);
+        detailsPanel.add(receiverIdLabel);
         detailsPanel.add(new JLabel());
         detailsPanel.add(amountLabel);
         detailsPanel.setVisible(false);
@@ -119,13 +124,13 @@ public class AutomaticSavingsGui extends JPanel {
 
         nameField = new JTextField();
         amountField = new JTextField();
-        recieverComboBox = new JComboBox<>();
+        receiverComboBox = new JComboBox<>();
         accountComboBox = new JComboBox<>();
 
         // Populate accountComboBox with account names
         for (Account account : accounts) {
             accountComboBox.addItem(account.getName());
-            recieverComboBox.addItem(account.getName());
+            receiverComboBox.addItem(account.getName());
         }
 
         // Adding form fields to the dialog
@@ -134,7 +139,7 @@ public class AutomaticSavingsGui extends JPanel {
         dialog.add(new JLabel("Amount:"));
         dialog.add(amountField);
         dialog.add(new JLabel("Recipient:"));
-        dialog.add(recieverComboBox);
+        dialog.add(receiverComboBox);
         dialog.add(new JLabel("Sender:"));
         dialog.add(accountComboBox);
 
@@ -162,7 +167,7 @@ public class AutomaticSavingsGui extends JPanel {
 
     private void handleCreateAutomaticSaving (ArrayList<Account> accounts, JDialog dialog) {
         Account selectedSender = getSelectedAccount(accountComboBox, accounts);
-        Account selectedRecipient = getSelectedAccount(recieverComboBox, accounts);
+        Account selectedRecipient = getSelectedAccount(receiverComboBox, accounts);
         try {
             AutomaticSaving automaticSaving = new AutomaticSaving(nameField.getText(), amountField.getText(), String.valueOf(selectedSender.getAccountId()),
                     String.valueOf(selectedRecipient.getAccountId()));
@@ -211,7 +216,7 @@ public class AutomaticSavingsGui extends JPanel {
             nameLabel.setText("Name: " + selectedAS.getName());
             startDateLabel.setText("Date started: " + selectedAS.getDateStarted());
             senderIdLabel.setText("From which account: " + selectedAS.getSourceAccountId());
-            recieverIdLabel.setText("To which account: " + selectedAS.getTargetAccountId());
+            receiverIdLabel.setText("To which account: " + selectedAS.getTargetAccountId());
             amountLabel.setText("How much do you want to send: " + selectedAS.getAmount().toString());
             detailsPanel.setVisible(true);
         } else

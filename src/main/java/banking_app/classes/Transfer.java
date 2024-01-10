@@ -15,12 +15,13 @@ import static banking_app.classes.User.isBigDecimal;
 public class Transfer
 {
     private int transferId;
-    private long sourceId, targetId;
-    private BigDecimal amount;
-    private int type;
-    private String title;
+    private final long sourceId;
+    private final long targetId;
+    private final BigDecimal amount;
+    private final int type;
+    private final String title;
 
-    private Date date;
+    private final Date date;
 
     public Transfer(int transferId, long sourceId, long targetId,
                        Date date, BigDecimal amount, int type, String title){
@@ -60,7 +61,7 @@ public class Transfer
     public Transfer(ResultSet resultSet) throws SQLException {
         this(resultSet.getInt("transfer_id"),
                 resultSet.getLong("sender_id"),
-                resultSet.getLong("reciver_id"),
+                resultSet.getLong("receiver_id"),
                 resultSet.getDate("date_made"),
                 resultSet.getBigDecimal("amount"),
                 resultSet.getInt("type"),

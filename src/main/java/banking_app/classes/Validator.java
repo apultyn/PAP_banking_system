@@ -1,6 +1,6 @@
 package banking_app.classes;
 
 public interface Validator {
-    public boolean validate(String text);
+    boolean validate(String text);
 
 }

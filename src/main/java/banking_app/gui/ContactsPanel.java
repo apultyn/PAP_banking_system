@@ -16,14 +16,15 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class ContactsPanel extends JPanel {
-    private CardLayout cardLayout;
-    private JPanel cardPanel;
-    private ConnectionManager manager;
+    private final CardLayout cardLayout;
+    private final JPanel cardPanel;
+    private final ConnectionManager manager;
     private User user;
     private List<Contact> contactsList;
-    private JScrollPane scrollPane;
-    private JButton createNewContactButton, backButton;
-    private JLabel headerLabel;
+    private final JScrollPane scrollPane;
+    private final JButton createNewContactButton;
+    private final JButton backButton;
+    private final JLabel headerLabel;
     private JList<Contact> contactsListDisplay;
 
 
@@ -74,8 +75,7 @@ public class ContactsPanel extends JPanel {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                 Component renderer = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                if (value instanceof Contact) {
-                    Contact contact = (Contact) value;
+                if (value instanceof Contact contact) {
                     setText(contact.getName() + " - " + contact.getAccountId());
                 }
                 return renderer;

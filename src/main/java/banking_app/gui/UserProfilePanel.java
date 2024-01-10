@@ -15,20 +15,20 @@ import java.util.List;
 
 public class UserProfilePanel extends JPanel {
     private User user;
-    private JLabel helloLabel;
-    private ConnectionManager manager;
-    private CardLayout cardLayout;
-    private JPanel cardPanel;
-    private JComboBox<String> accountComboBox;
+    private final JLabel helloLabel;
+    private final ConnectionManager manager;
+    private final CardLayout cardLayout;
+    private final JPanel cardPanel;
+    private final JComboBox<String> accountComboBox;
     private Account currentAccount;
-    private JLabel accountDetailsLabel;
-    private JLabel balanceLabel;
-    private JLabel transferLimitLabel;
-    private JButton modifyLimitButton;
-    private JPanel menuPanel;
-    private JPanel contentPanel;
+    private final JLabel accountDetailsLabel;
+    private final JLabel balanceLabel;
+    private final JLabel transferLimitLabel;
+    private final JButton modifyLimitButton;
+    private final JPanel menuPanel;
+    private final JPanel contentPanel;
 
-    private JTable transferHistoryTable;
+    private final JTable transferHistoryTable;
     private TransfersHistoryModel transferHistoryModel;
 
     public UserProfilePanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) {
@@ -311,7 +311,7 @@ public class UserProfilePanel extends JPanel {
         }
     }
     public void handleStandingOrders() {
-        StandingOrdersPanel savingsPanel = (StandingOrdersPanel) SwingUtilities.findPanelByName(cardPanel, "StandingOrders");;
+        StandingOrdersPanel savingsPanel = (StandingOrdersPanel) SwingUtilities.findPanelByName(cardPanel, "StandingOrders");
         if (savingsPanel != null) {
             savingsPanel.setUser(user);
             cardLayout.show(cardPanel, "StandingOrders");

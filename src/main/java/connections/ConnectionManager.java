@@ -142,7 +142,7 @@ public class ConnectionManager {
     }
 
     public void registerTransfer(Transfer transfer) throws SQLException {
-        String sqlInsert = "INSERT INTO transfers (title, amount, type, sender_id, reciver_id) values (?, ?, ?, ?, ?)";
+        String sqlInsert = "INSERT INTO transfers (title, amount, type, sender_id, receiver_id) values (?, ?, ?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
         preparedStatement.setString(1, transfer.getTitle());
         preparedStatement.setBigDecimal(2, transfer.getAmount());
@@ -162,7 +162,7 @@ public class ConnectionManager {
     }
 
     public List<Transfer> findTransfersByReceiver(long receiver_id) throws SQLException {
-        String sqlQuery = "SELECT * FROM transfers WHERE reciver_id = ?";
+        String sqlQuery = "SELECT * FROM transfers WHERE receiver_id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
             preparedStatement.setLong(1, receiver_id);
             return getTransfers(preparedStatement);
@@ -181,7 +181,7 @@ public class ConnectionManager {
     }
 
     public List<Transfer> findTransfersByAccount(long account_id) throws SQLException {
-        String sqlQuery = "SELECT * FROM transfers WHERE sender_id= ? OR reciver_id= ? ORDER BY DATE_MADE DESC";
+        String sqlQuery = "SELECT * FROM transfers WHERE sender_id= ? OR receiver_id= ? ORDER BY DATE_MADE DESC";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
             preparedStatement.setLong(1, account_id);
@@ -272,18 +272,9 @@ public class ConnectionManager {
         return false;
     }
 
-    public void createAutomaticSaving(String name, long sender_id, long reciever_id, BigDecimal amount) throws SQLException {
-        String sqlInsert = "INSERT INTO automatic_savings (name, sender_id, reciever_id, amount) values (?, ?, ?, ?)";
-        PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
-        preparedStatement.setString(1, name);
-        preparedStatement.setLong(2, sender_id);
-        preparedStatement.setLong(3, reciever_id);
-        preparedStatement.setBigDecimal(4, amount);
-        preparedStatement.executeUpdate();
-    }
 
     public void createAutomaticSaving(AutomaticSaving as) throws SQLException {
-        String sqlInsert = "INSERT INTO automatic_savings (name, sender_id, reciever_id, amount) values (?, ?, ?, ?)";
+        String sqlInsert = "INSERT INTO automatic_savings (name, sender_id, receiver_id, amount) values (?, ?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
         preparedStatement.setString(1, as.getName());
         preparedStatement.setLong(2, as.getSourceAccountId());
@@ -299,18 +290,18 @@ public class ConnectionManager {
         preparedStatement.executeUpdate();
     }
 
-    public void createStandingOrder(String name, BigDecimal amount, long sender_id, long reciever_id) throws SQLException {
-        String sqlInsert = "INSERT INTO standing_orders (name, amount, sender_id, reciever_id) values (?, ?, ?, ?)";
+    public void createStandingOrder(String name, BigDecimal amount, long sender_id, long receiver_id) throws SQLException {
+        String sqlInsert = "INSERT INTO standing_orders (name, amount, sender_id, receiver_id) values (?, ?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
         preparedStatement.setString(1, name);
         preparedStatement.setBigDecimal(2, amount);
         preparedStatement.setLong(3, sender_id);
-        preparedStatement.setLong(4, reciever_id);
+        preparedStatement.setLong(4, receiver_id);
         preparedStatement.executeUpdate();
     }
 
     public void createStandingOrder(StandingOrder standingOrder) throws SQLException {
-        String sqlInsert = "INSERT INTO standing_orders (name, amount, sender_id, reciever_id) values (?, ?, ?, ?)";
+        String sqlInsert = "INSERT INTO standing_orders (name, amount, sender_id, receiver_id) values (?, ?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
         preparedStatement.setString(1, standingOrder.getName());
         preparedStatement.setBigDecimal(2, standingOrder.getAmount());

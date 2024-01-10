@@ -14,19 +14,19 @@ import static banking_app.classes.User.isBigDecimal;
 
 public class StandingOrder {
     private final Integer orderId;
-    private String name;
-    private Date dateStarted;
-    private long sourceAccountId;
-    private long targetAccountId;
+    private final String name;
+    private final Date dateStarted;
+    private final long sourceAccountId;
+    private final long targetAccountId;
 
-    private BigDecimal amount;
+    private final BigDecimal amount;
 
-    public StandingOrder(int savingID, String name, Date started, long sender_id, long reciever_id, BigDecimal am) {
+    public StandingOrder(int savingID, String name, Date started, long sender_id, long receiver_id, BigDecimal am) {
         this.orderId = savingID;
         this.name = name;
         this.dateStarted = started;
         this.sourceAccountId = sender_id;
-        this.targetAccountId = reciever_id;
+        this.targetAccountId = receiver_id;
         this.amount = am;
     }
 
@@ -35,7 +35,7 @@ public class StandingOrder {
                 resultSet.getString("name"),
                 resultSet.getDate("start_date"),
                 resultSet.getLong("sender_id"),
-                resultSet.getLong("reciever_id"),
+                resultSet.getLong("receiver_id"),
                 resultSet.getBigDecimal("amount"));
     }
 

@@ -16,7 +16,7 @@ public class User {
     private String surname;
     private String email;
     private String password;
-    private String reset_code;
+    private final String reset_code;
     private String pin;
     private List<Account> accounts;
     private static final Scanner scanner = new Scanner(System.in);

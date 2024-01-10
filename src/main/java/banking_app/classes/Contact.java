@@ -8,8 +8,8 @@ import java.sql.SQLException;
 
 public class Contact {
     private final Integer contactId;
-    private String name;
-    private long accountId;
+    private final String name;
+    private final long accountId;
 
     public Contact(int contactId, String name, long accountId) {
         this.contactId = contactId;

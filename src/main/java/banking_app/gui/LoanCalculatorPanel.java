@@ -6,11 +6,15 @@ import javax.swing.*;
 import java.awt.*;
 
 public class LoanCalculatorPanel extends JPanel {
-    private CardLayout cardLayout;
-    private JPanel cardPanel;
-    private JTextField amountField, termField, rateField;
-    private JButton confirmButton;
-    private JLabel outcomeLabelM, outcomeLabelT, welcomeLabel;
+    private final CardLayout cardLayout;
+    private final JPanel cardPanel;
+    private final JTextField amountField;
+    private final JTextField termField;
+    private final JTextField rateField;
+    private final JButton confirmButton;
+    private final JLabel outcomeLabelM;
+    private final JLabel outcomeLabelT;
+    private final JLabel welcomeLabel;
     public LoanCalculatorPanel(CardLayout cardLayout, JPanel cardPanel, String panelName) {
         this.cardLayout = cardLayout;
         this.cardPanel = cardPanel;

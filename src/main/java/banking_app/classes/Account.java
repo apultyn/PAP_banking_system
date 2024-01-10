@@ -12,7 +12,7 @@ import static banking_app.classes.User.isBigDecimal;
 
 public class Account {
     private final Long accountId;
-    private String name;
+    private final String name;
     private BigDecimal transferLimit;
     private final Date dateCreated;
     private final int userId;

@@ -17,17 +17,18 @@ public class RegisterPanel extends JPanel {
     private final JLabel registerLabel;
     private final CardLayout cardLayout;
     private final JPanel cardPanel;
-    private JTextField firstNameField;
-    private JTextField lastNameField;
-    private JTextField emailField;
-    private JTextField accountNameField;
-    private JTextField transferLimit;
-    private JPasswordField passwordField;
-    private JPasswordField passwordRepeatedField;
-    private JTextField pinField, repPinField;
-    private JButton registerButton;
-    private JButton backButton;
-    private ConnectionManager manager;
+    private final JTextField firstNameField;
+    private final JTextField lastNameField;
+    private final JTextField emailField;
+    private final JTextField accountNameField;
+    private final JTextField transferLimit;
+    private final JPasswordField passwordField;
+    private final JPasswordField passwordRepeatedField;
+    private final JTextField pinField;
+    private final JTextField repPinField;
+    private final JButton registerButton;
+    private final JButton backButton;
+    private final ConnectionManager manager;
 
     public RegisterPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) {
         this.setName(panelName);

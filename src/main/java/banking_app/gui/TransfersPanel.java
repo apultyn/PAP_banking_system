@@ -20,16 +20,18 @@ import static banking_app.gui.SwingUtilities.resetComponents;
 
 public class TransfersPanel extends JPanel {
     private User user;
-    private ConnectionManager manager;
-    private JLabel transferLabel;
-    private JLabel balanceLabel;
-    private JTextField recipientNameField, recipientNumberField, titleField;
+    private final ConnectionManager manager;
+    private final JLabel transferLabel;
+    private final JLabel balanceLabel;
+    private final JTextField recipientNameField;
+    private final JTextField recipientNumberField;
+    private final JTextField titleField;
     protected JComboBox<Long> accountComboBox;
-    private JTextField amountField;
-    private JButton transferButton;
-    private JButton backButton;
-    private CardLayout cardLayout;
-    private JPanel cardPanel;
+    private final JTextField amountField;
+    private final JButton transferButton;
+    private final JButton backButton;
+    private final CardLayout cardLayout;
+    private final JPanel cardPanel;
     public TransfersPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) throws SQLException {
         this.setName(panelName);
         this.manager = manager;

@@ -9,13 +9,19 @@ import java.awt.*;
 import java.sql.SQLException;
 
 public class ModifyProfilePanel extends JPanel {
-    private JButton modifyNameButton, returnButton, modifySurnameButton,
-            modifyEmailButton, modifyPasswordButton, modifyPinButton;
-    private JLabel name, surname, email;
+    private final JButton modifyNameButton;
+    private JButton returnButton;
+    private final JButton modifySurnameButton;
+    private final JButton modifyEmailButton;
+    private final JButton modifyPasswordButton;
+    private final JButton modifyPinButton;
+    private final JLabel name;
+    private final JLabel surname;
+    private final JLabel email;
     private User user;
-    private ConnectionManager manager;
-    private CardLayout cardLayout;
-    private JPanel cardPanel;
+    private final ConnectionManager manager;
+    private final CardLayout cardLayout;
+    private final JPanel cardPanel;
 
     public ModifyProfilePanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) {
         this.manager = manager;

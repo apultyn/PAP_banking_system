@@ -16,16 +16,23 @@ public class LoansPanel extends JPanel {
     private User user;
     private ArrayList<StandingOrder> orders;
 
-    private ConnectionManager manager;
-    private CardLayout cardLayout;
-    private JPanel cardPanel, detailsPanel;
-    private JButton backButton;
-    private JButton registerLoan;
-    private JList<String> loansList;
-    private DefaultListModel<String> listModel;
-    private JTextArea loansDetails;
+    private final ConnectionManager manager;
+    private final CardLayout cardLayout;
+    private final JPanel cardPanel;
+    private final JPanel detailsPanel;
+    private final JButton backButton;
+    private final JButton registerLoan;
+    private final JList<String> loansList;
+    private final DefaultListModel<String> listModel;
+    private final JTextArea loansDetails;
 
-    private JLabel idLabel, amountLabel, startDateLabel, rateLabel, endDateLabel, ownerAccLabel, fixedRateLabel;
+    private final JLabel idLabel;
+    private final JLabel amountLabel;
+    private final JLabel startDateLabel;
+    private final JLabel rateLabel;
+    private final JLabel endDateLabel;
+    private final JLabel ownerAccLabel;
+    private final JLabel fixedRateLabel;
     Map<String, Loan> loanMap = new HashMap<>();
     public LoansPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) {
         this.manager = manager;
