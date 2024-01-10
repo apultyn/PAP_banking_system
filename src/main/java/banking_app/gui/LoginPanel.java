@@ -122,6 +122,9 @@ public class LoginPanel extends JPanel {
             }
 
         });
+
+        emailDialog.setLocationRelativeTo(SwingUtilities.findPanelByName(cardPanel, "Login"));
+
     }
 
     private String createNewResetCode() {

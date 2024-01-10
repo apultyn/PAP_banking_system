@@ -165,6 +165,7 @@ public class LoansPanel extends JPanel {
         dialog.add(goBackButton);
 
         // Display the dialog
+        dialog.setLocationRelativeTo(SwingUtilities.findPanelByName(cardPanel, "Loans"));
         dialog.setVisible(true);
     }
 

@@ -167,6 +167,7 @@ public class AutomaticSavingsGui extends JPanel {
         dialog.add(goBackButton);
 
         // Display the dialog
+        dialog.setLocationRelativeTo(SwingUtilities.findPanelByName(cardPanel, "SavingsPanel"));
         dialog.setVisible(true);
     }
 
