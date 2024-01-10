@@ -138,9 +138,6 @@ public class User {
         if (manager.findAccount(transaction.getTargetId()) == null)
             throw new InvalidAccountNumberException("Account not existing!");
         Account senderAccount =  manager.findAccount(transaction.getSourceId());
-        Account recipientAccount = manager.findAccount(transaction.getTargetId());
-        if (senderAccount.getAccountId() == recipientAccount.getAccountId())
-            throw new InvalidAccountNumberException("Can not use the same accounts!");
         if (!amountIsInRange(BigDecimal.ZERO, senderAccount.getTransactionLimit(), transaction.getAmount()))
             throw new InvalidAmountException("Transaction exceeds the limit!");
         if (!amountIsInRange(BigDecimal.ZERO, senderAccount.getBalance(), transaction.getAmount()))
@@ -284,6 +281,7 @@ public class User {
         }
         manager.createContact(name, Long.parseLong(accountId), this.id);
     }
+
 
     @Override
     public String toString() {

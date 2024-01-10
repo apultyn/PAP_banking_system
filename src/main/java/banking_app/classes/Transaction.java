@@ -47,6 +47,8 @@ public class Transaction
             throw new InvalidNameException("Recipient name cannot be empty!");
         if (!recipientAccountNumber.matches("\\d{16}"))
             throw new InvalidAccountNumberException("Number must be 16 digits long!");
+        if (senderAccountNumber.equals(recipientAccountNumber))
+            throw new InvalidAccountNumberException("Accounts must be different!");
         if (title.isEmpty())
             throw new InvalidNameException("Title cannot be empty!");
         if (amount.isEmpty())

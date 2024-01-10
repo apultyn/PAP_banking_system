@@ -3,6 +3,9 @@ package banking_app.gui;
 import banking_app.classes.Account;
 import banking_app.classes.StandingOrder;
 import banking_app.classes.User;
+import banking_exceptions.InvalidAccountNumberException;
+import banking_exceptions.InvalidAmountException;
+import banking_exceptions.InvalidNameException;
 import connections.ConnectionManager;
 
 import javax.swing.*;
@@ -21,13 +24,14 @@ public class StandingOrdersPanel extends JPanel {
     private ConnectionManager manager;
     private CardLayout cardLayout;
     private JPanel cardPanel, detailsPanel;
-    private JButton backButton;
-    private JButton registerOrder;
+    private JTextField nameField , amountField, recipientField;
+    private JComboBox<String> accountComboBox;
+    private JButton backButton, registerOrder;
     private JList<String> asList;
     private DefaultListModel<String> listModel;
     private JTextArea standingODetails;
 
-    private JLabel nameLabel, startDateLabel, senderIdLabel, recieverIdLabel, amountLabel;
+    private JLabel nameLabel, startDateLabel, senderIdLabel, recipientIdLabel, amountLabel;
     Map<String, StandingOrder> soMap = new HashMap<>();
     public StandingOrdersPanel(ConnectionManager manager, CardLayout cardLayout, JPanel cardPanel, String panelName) {
         this.manager = manager;
@@ -52,7 +56,7 @@ public class StandingOrdersPanel extends JPanel {
         nameLabel = new JLabel("Name:");
         startDateLabel = new JLabel("Date started:");
         senderIdLabel = new JLabel("From which account:");
-        recieverIdLabel = new JLabel("To which account:");
+        recipientIdLabel = new JLabel("To which account:");
         amountLabel = new JLabel("How much:");
 
         detailsPanel.add(nameLabel);
@@ -61,7 +65,7 @@ public class StandingOrdersPanel extends JPanel {
         detailsPanel.add(new JLabel());
         detailsPanel.add(senderIdLabel);
         detailsPanel.add(new JLabel());
-        detailsPanel.add(recieverIdLabel);
+        detailsPanel.add(recipientIdLabel);
         detailsPanel.add(new JLabel());
         detailsPanel.add(amountLabel);
 
@@ -84,11 +88,11 @@ public class StandingOrdersPanel extends JPanel {
             }
         });
 
-        registerOrder.addActionListener(e->{
+        registerOrder.addActionListener(e-> {
             try {
                 createNewStandingOrder(listModel);
             } catch (SQLException ex) {
-                throw new RuntimeException();
+                throw new RuntimeException(ex);
             }
         });
     }
@@ -111,10 +115,10 @@ public class StandingOrdersPanel extends JPanel {
 
         ArrayList<Account> accounts = new ArrayList<>(manager.findUsersAccounts(user.getId()));
 
-        JTextField nameField = new JTextField();
-        JTextField amountField = new JTextField();
-        JTextField recieverField = new JTextField();
-        JComboBox<String> accountComboBox = new JComboBox<>();
+        nameField = new JTextField();
+        amountField = new JTextField();
+        recipientField = new JTextField();
+        accountComboBox = new JComboBox<>();
 
         // Populate accountComboBox with account names
         for (Account account : accounts) {
@@ -127,32 +131,14 @@ public class StandingOrdersPanel extends JPanel {
         dialog.add(new JLabel("Amount:"));
         dialog.add(amountField);
         dialog.add(new JLabel("Recipient:"));
-        dialog.add(recieverField);
+        dialog.add(recipientField);
         dialog.add(new JLabel("Account:"));
         dialog.add(accountComboBox);
 
         // Add a submit button
         JButton submitButton = new JButton("Create");
-        submitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Account selectedAccount = getSelectedAccount(accountComboBox, accounts);
-                try {
-                    String name = nameField.getText();
-                    String recipientId = recieverField.getText();
-                    String amount = amountField.getText();
-                    StandingOrder.registerStandingOrder(manager, user, name,
-                            String.valueOf(selectedAccount.getAccountId()), recipientId, amount);
-                    JOptionPane.showMessageDialog(dialog, "Standing Order created");
-                    dialog.dispose(); // Close the creating deposit window
-                    updateSOList(); // Update deposit list in main panel
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(dialog, "Wrong input!");
-                } catch (SQLException ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
-        });
+        submitButton.addActionListener(e -> handleCreateStandingOrder(accounts));
+//
         dialog.add(submitButton);
         JButton goBackButton = new JButton("Go Back");
         goBackButton.addActionListener(new ActionListener() {
@@ -162,17 +148,49 @@ public class StandingOrdersPanel extends JPanel {
             }
         });
         dialog.add(goBackButton);
-
-        // Display the dialog
+//
+//        // Display the dialog
         dialog.setVisible(true);
+//    }
     }
 
-    private Account getSelectedAccount(JComboBox<String> comboBox, ArrayList<Account> accounts) {
+    private boolean validatePIN(String PIN){
+        return PIN.equals(user.getPin());
+    }
+
+    private void handleCreateStandingOrder (ArrayList<Account> accounts) {
+        Account selectedAccount = getSelectedAccount(accountComboBox, accounts);
+        try {
+            StandingOrder standingOrder = new StandingOrder(nameField.getText(), amountField.getText(), String.valueOf(selectedAccount.getAccountId()), recipientField.getText());
+            int attempts = 3;
+            while (attempts > 0) {
+                String PIN = JOptionPane.showInputDialog(this, "Enter your PIN: (Attempts left: " + attempts + ")");
+                if (PIN == null)
+                    break;
+                else if (!validatePIN(PIN)) {
+                    attempts--;
+                    JOptionPane.showMessageDialog(this, "Incorrect PIN!", "PIN error", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    StandingOrder.registerStandingOrder(manager, standingOrder);
+                    JOptionPane.showMessageDialog(this, "Created successfully!");
+                    break;
+                }
+            }
+            updateSOList();
+        } catch (NumberFormatException | InvalidNameException | InvalidAmountException | InvalidAccountNumberException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+
+    private Account getSelectedAccount (JComboBox < String > comboBox, ArrayList < Account > accounts){
         int selectedIndex = comboBox.getSelectedIndex();
         return selectedIndex >= 0 ? accounts.get(selectedIndex) : null;
     }
 
-    private void updateSOList() throws SQLException {
+    private void updateSOList () throws SQLException {
         if (user != null) {
             listModel.clear();
             soMap.clear();
@@ -183,17 +201,17 @@ public class StandingOrdersPanel extends JPanel {
             }
         }
     }
-    private void displaySODetails(StandingOrder selectedSO) {
+    private void displaySODetails (StandingOrder selectedSO){
         if (selectedSO != null) {
             nameLabel.setText("Name: " + selectedSO.getName());
             startDateLabel.setText("Date started: " + selectedSO.getDateStarted());
             senderIdLabel.setText("From which account: " + selectedSO.getSourceAccountId());
-            recieverIdLabel.setText("To which account: " + selectedSO.getTargetAccountId());
+            recipientIdLabel.setText("To which account: " + selectedSO.getTargetAccountId());
             amountLabel.setText("How much do you want to send: " + selectedSO.getAmount().toString());
         }
     }
 
-    public void setUser (User user) {
+    public void setUser (User user){
         this.user = user;
         try {
             updateSOList();

@@ -57,11 +57,17 @@ public class RegisterPanel extends JPanel {
         addLabelAndComponent(this, "Repeat password:", passwordRepeatedField = new JPasswordField(20), gbc);
         addLabelAndComponent(this, "Pin:", pinField = new JTextField(20), gbc);
         addLabelAndComponent(this, "Repeat pin:", repPinField = new JTextField(20), gbc);
+
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.gridwidth = 2;
+
         JLabel headlineLabel = new JLabel("Create your first account");
-        headlineLabel.setFont(headlineLabel.getFont().deriveFont(20f));
+        headlineLabel.setFont(headlineLabel.getFont().deriveFont(Font.BOLD, 24));
         add(headlineLabel, gbc);
         gbc.gridy++;
         gbc.gridx = 0;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.gridwidth = 1;
         addLabelAndComponent(this, "Account name:", accountNameField = new JTextField(20), gbc);
         addLabelAndComponent(this, "Transfer limit:", transferLimit = new JTextField(20), gbc);
 

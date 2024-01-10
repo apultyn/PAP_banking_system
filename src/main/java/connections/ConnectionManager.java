@@ -278,7 +278,7 @@ public class ConnectionManager {
         preparedStatement.executeUpdate();
     }
 
-    public void createStadningOrder(String name, BigDecimal amount, long sender_id, long reciever_id) throws SQLException {
+    public void createStandingOrder(String name, BigDecimal amount, long sender_id, long reciever_id) throws SQLException {
         String sqlInsert = "INSERT INTO standing_orders (name, amount, sender_id, reciever_id) values (?, ?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
         preparedStatement.setString(1, name);
@@ -288,7 +288,17 @@ public class ConnectionManager {
         preparedStatement.executeUpdate();
     }
 
-    public void deleteStadingOrder(long orderId) throws SQLException {
+    public void createStandingOrder(StandingOrder standingOrder) throws SQLException {
+        String sqlInsert = "INSERT INTO standing_orders (name, amount, sender_id, reciever_id) values (?, ?, ?, ?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
+        preparedStatement.setString(1, standingOrder.getName());
+        preparedStatement.setBigDecimal(2, standingOrder.getAmount());
+        preparedStatement.setLong(3, standingOrder.getSourceAccountId());
+        preparedStatement.setLong(4, standingOrder.getTargetAccountId());
+        preparedStatement.executeUpdate();
+    }
+
+    public void deleteStandingOrder(long orderId) throws SQLException {
         String sqlInsert = "DELETE FROM standing_orders WHERE order_id = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
         preparedStatement.setLong(1, orderId);

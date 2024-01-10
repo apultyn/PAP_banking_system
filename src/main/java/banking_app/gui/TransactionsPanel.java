@@ -22,9 +22,7 @@ public class TransactionsPanel extends JPanel {
     private ConnectionManager manager;
     private JLabel transferLabel;
     private JLabel balanceLabel;
-    private JTextField recipientNameField;
-    private JTextField recipientNumberField;
-    private JTextField titleField;
+    private JTextField recipientNameField, recipientNumberField, titleField;
     protected JComboBox<Long> accountComboBox;
     private JTextField amountField;
     private JButton transferButton;
@@ -47,7 +45,7 @@ public class TransactionsPanel extends JPanel {
         gbc.insets = new Insets(10, 10, 10, 10);
 
         add(transferLabel = new JLabel("New transfer"), gbc);
-        transferLabel.setFont(new Font(transferLabel.getFont().getFontName(), Font.BOLD, 24));
+        transferLabel.setFont(transferLabel.getFont().deriveFont(Font.BOLD, 24));
         gbc.gridwidth = 1;
         gbc.gridy++;
         gbc.anchor = GridBagConstraints.WEST;
@@ -67,7 +65,7 @@ public class TransactionsPanel extends JPanel {
             if (accountComboBox.getSelectedItem() != null) {
                 try {
                     balanceLabel.setText(String.format("%.2f pln", manager.findAccount(Long.parseLong(Objects.requireNonNull(accountComboBox.getSelectedItem()).toString())).getBalance()));
-                    balanceLabel.setFont(new Font(balanceLabel.getFont().getFontName(), Font.BOLD, balanceLabel.getFont().getSize()));
+                    balanceLabel.setFont(balanceLabel.getFont().deriveFont(Font.BOLD, 24));
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
                 }
