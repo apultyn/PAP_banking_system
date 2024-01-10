@@ -131,7 +131,7 @@ class UserTest {
     void createAccountEmptyName() {
         User user = new User(1000, "Name", "Surname", "email@op.pl", "Password123!", "1234", "9999");
         InvalidNameException thrown = assertThrows(InvalidNameException.class, ()-> {
-            user.createAccount(null, "", "100");
+            user.createAccount(null, user,"", "100");
         });
         assertEquals("Name cannot be empty!", thrown.getMessage());
     }
@@ -140,7 +140,7 @@ class UserTest {
     void createAccountEmptyLimit() {
         User user = new User(1000, "Name", "Surname", "email@op.pl", "Password123!", "1234", "9999");
         InvalidAmountException thrown = assertThrows(InvalidAmountException.class, ()-> {
-            user.createAccount(null, "Main acc", "");
+            user.createAccount(null, user, "Main acc", "");
         });
         assertEquals("Transfer limit cannot be empty!", thrown.getMessage());
 
@@ -150,7 +150,7 @@ class UserTest {
     void createAccountLimitWrongFormat() {
         User user = new User(1000, "Name", "Surname", "email@op.pl", "Password123!", "1234", "9999");
         InvalidAmountException thrown = assertThrows(InvalidAmountException.class, ()-> {
-            user.createAccount(null, "Main acc", "200a");
+            user.createAccount(null, user, "Main acc", "200a");
         });
         assertEquals("Transfer limit must be a number!", thrown.getMessage());
 
@@ -160,7 +160,7 @@ class UserTest {
     void createAccountLimitNegative() {
         User user = new User(1000, "Name", "Surname", "email@op.pl", "Password123!", "1234", "9999");
         InvalidAmountException thrown = assertThrows(InvalidAmountException.class, ()-> {
-            user.createAccount(null, "Main acc", "-200.02");
+            user.createAccount(null, user, "Main acc", "-200.02");
         });
         assertEquals("Transfer limit must be positive!", thrown.getMessage());
 
