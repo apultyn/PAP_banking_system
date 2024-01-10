@@ -271,6 +271,16 @@ public class ConnectionManager {
         preparedStatement.executeUpdate();
     }
 
+    public void createAutomaticSaving(AutomaticSaving as) throws SQLException {
+        String sqlInsert = "INSERT INTO automatic_savings (name, sender_id, reciever_id, amount) values (?, ?, ?, ?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
+        preparedStatement.setString(1, as.getName());
+        preparedStatement.setLong(2, as.getSourceAccountId());
+        preparedStatement.setLong(3, as.getTargetAccountId());
+        preparedStatement.setBigDecimal(4, as.getAmount());
+        preparedStatement.executeUpdate();
+    }
+
     public void deleteAutomaticSaving(int saving_id) throws SQLException {
         String sqlInsert = "DELETE FROM automatic_savings WHERE saving_id = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
@@ -444,45 +454,45 @@ public class ConnectionManager {
         }
         return contacts;
     }
-        public void createLoan(BigDecimal amount, BigDecimal rate, Date end,long owneraccId, BigDecimal fixed) throws
-        SQLException {
-            String sqlInsert = "INSERT INTO loans (amount, rate, finish_date, owner_acc_id, fixed_rate) values (?, ?, ?, ?, ?)";
-            PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
-            preparedStatement.setBigDecimal(1, amount);
-            preparedStatement.setBigDecimal(2, rate);
-            preparedStatement.setDate(3, end);
-            preparedStatement.setLong(4, owneraccId);
-            preparedStatement.setBigDecimal(5, fixed);
-            preparedStatement.executeUpdate();
-        }
-
-        public List<Loan> findLoansByAccId ( long accId) throws SQLException {
-            String sqlQuery = "SELECT * FROM loans WHERE OWNER_ACC_ID = ?";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
-            preparedStatement.setLong(1, accId);
-
-            List<Loan> loans = new ArrayList<>();
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                while (resultSet.next()) {
-                    Loan loan = new Loan(resultSet);
-                    loans.add(loan);
-                }
-            }
-            return loans;
-        }
-
-        public List<Loan> findUsersLoans ( int user_id) throws SQLException {
-            List<Account> accounts = new ArrayList<>();
-            accounts = findUsersAccounts(user_id);
-
-            List<Loan> loans = new ArrayList<>();
-            for (Account a : accounts) {
-                List<Loan> loansSingleAcc = new ArrayList<>();
-                loansSingleAcc = findLoansByAccId(a.getAccountId());
-                loans.addAll(loansSingleAcc);
-            }
-            return loans;
-        }
+    public void createLoan(BigDecimal amount, BigDecimal rate, Date end,long owneraccId, BigDecimal fixed) throws
+            SQLException {
+        String sqlInsert = "INSERT INTO loans (amount, rate, finish_date, owner_acc_id, fixed_rate) values (?, ?, ?, ?, ?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
+        preparedStatement.setBigDecimal(1, amount);
+        preparedStatement.setBigDecimal(2, rate);
+        preparedStatement.setDate(3, end);
+        preparedStatement.setLong(4, owneraccId);
+        preparedStatement.setBigDecimal(5, fixed);
+        preparedStatement.executeUpdate();
     }
+
+    public List<Loan> findLoansByAccId ( long accId) throws SQLException {
+        String sqlQuery = "SELECT * FROM loans WHERE OWNER_ACC_ID = ?";
+
+        PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery);
+        preparedStatement.setLong(1, accId);
+
+        List<Loan> loans = new ArrayList<>();
+        try (ResultSet resultSet = preparedStatement.executeQuery()) {
+            while (resultSet.next()) {
+                Loan loan = new Loan(resultSet);
+                loans.add(loan);
+            }
+        }
+        return loans;
+    }
+
+    public List<Loan> findUsersLoans ( int user_id) throws SQLException {
+        List<Account> accounts = new ArrayList<>();
+        accounts = findUsersAccounts(user_id);
+
+        List<Loan> loans = new ArrayList<>();
+        for (Account a : accounts) {
+            List<Loan> loansSingleAcc = new ArrayList<>();
+            loansSingleAcc = findLoansByAccId(a.getAccountId());
+            loans.addAll(loansSingleAcc);
+        }
+        return loans;
+    }
+}
 
